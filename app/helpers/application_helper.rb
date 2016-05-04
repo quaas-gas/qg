@@ -4,6 +4,10 @@ module ApplicationHelper
     values.select(&:present?).join('<br>').html_safe
   end
 
+  def gmaps_link(obj)
+    ['https://maps.google.de?q=', obj.street, obj.zip, obj.city].join(' ')
+  end
+
   def bool_icon(val, yes_title = 'yes', no_title = 'no')
     label, icon, title = case val
     when true then ['success', 'ok-sign', yes_title]
