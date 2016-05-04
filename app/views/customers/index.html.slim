@@ -9,32 +9,42 @@
     => @customers.total_count
     = Customer.model_name.human count: @customers.count
 
-.table-responsive
-  table.table.table-striped.table-bordered.table-hover.table-clickable
-    thead
-      tr
-        th = Customer.human_attribute_name(:id)
-        th = Customer.human_attribute_name(:name)
-        th = Customer.human_attribute_name(:own_customer)
-        th = Customer.human_attribute_name(:city)
-        th = Customer.human_attribute_name(:phone)
-        th = Customer.human_attribute_name(:gets_invoice)
-        th = Customer.human_attribute_name(:region)
-        th = Customer.human_attribute_name(:kind)
-        th = Customer.human_attribute_name(:price_in_net)
-        th = Customer.human_attribute_name(:has_stock)
-    tbody
-      - @customers.each do | customer |
-        tr data = {url: url_for(customer)}
-          td = customer.id
-          td = customer.name
-          td = bool_icon customer.own_customer
-          td = customer.city
-          td = customer.phone
-          td = bool_icon customer.gets_invoice
-          td = customer.region
-          td = customer.kind
-          td = bool_icon customer.price_in_net
-          td = bool_icon customer.has_stock
-
-= paginate @customers
+section
+  .col-md-2
+    h4 Filter
+    = render 'search_form'
+  .col-md-10
+    .pull-right = paginate @customers
+    .clearfix
+    .table-responsive
+      table.table.table-striped.table-bordered.table-hover.table-clickable
+        thead
+          tr
+            th = Customer.human_attribute_name(:id)
+            th = Customer.human_attribute_name(:name)
+            th = Customer.human_attribute_name(:phone)
+            - if !@filter.own_customer.in?([true, false])
+              th = Customer.human_attribute_name(:own_customer)
+            /th = Customer.human_attribute_name(:city)
+            th = Customer.human_attribute_name(:gets_invoice)
+            /th = Customer.human_attribute_name(:region)
+            - if @filter.kind.blank?
+              th = Customer.human_attribute_name(:kind)
+            th = Customer.human_attribute_name(:price_in_net)
+            th = Customer.human_attribute_name(:has_stock)
+        tbody
+          - @customers.each do | customer |
+            tr data = {url: url_for(customer)}
+              td = customer.id
+              td = lines_for [customer.salut, customer.name, customer.name2, customer.city]
+              td = lines_for [customer.phone, customer.email]
+              - if !@filter.own_customer.in?([true, false])
+                td = bool_icon customer.own_customer
+              /td = customer.city
+              td = bool_icon customer.gets_invoice
+              /td = customer.region
+              - if @filter.kind.blank?
+                td = customer.kind
+              td = bool_icon customer.price_in_net
+              td = bool_icon customer.has_stock
+    .pull-right = paginate @customers

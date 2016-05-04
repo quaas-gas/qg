@@ -1,4 +1,9 @@
 module ApplicationHelper
+
+  def lines_for(values)
+    values.select(&:present?).join('<br>').html_safe
+  end
+
   def bool_icon(val, yes_title = 'yes', no_title = 'no')
     label, icon, title = case val
     when true then ['success', 'ok-sign', yes_title]

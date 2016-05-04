@@ -33,7 +33,8 @@ de:
         gets_invoice: Rechnungskunde
         has_stock: Bestandsführung
         invoice_address: Rechnungsadresse
-        own_customer: Quaas-Gas
+        kind: Kundenart
+        own_customer: Direktkunde
         price_in_net: hat Netto-Preise
       enum:
         value: Name

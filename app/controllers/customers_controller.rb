@@ -5,7 +5,8 @@ class CustomersController < ApplicationController
 
   def index
     authorize Customer
-    @customers = Customer.page(params[:page]).all
+    @filter = CustomersFilter.new(params)
+    @customers = @filter.result.page(params[:page]).all
   end
 
   def show
