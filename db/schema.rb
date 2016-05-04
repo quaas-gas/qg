@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20160504122733) do
     t.string   "kind"
     t.boolean  "price_in_net",    default: true
     t.boolean  "has_stock",       default: false
+    t.date     "last_stock_date"
     t.text     "invoice_address"
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false

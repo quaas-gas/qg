@@ -15,6 +15,7 @@ class CreateCustomers < ActiveRecord::Migration
       t.string :kind
       t.boolean :price_in_net, default: true
       t.boolean :has_stock, default: false
+      t.date :last_stock_date
       t.text :invoice_address
 
       t.timestamps null: false
