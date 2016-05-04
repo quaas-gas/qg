@@ -29,6 +29,7 @@ de:
         other: Aufzählungen
     attributes:
       customer:
+        id: KDN
         gets_invoice: Rechnungskunde
         has_stock: Bestandsführung
         invoice_address: Rechnungsadresse

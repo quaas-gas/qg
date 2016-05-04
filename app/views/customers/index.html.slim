@@ -13,6 +13,7 @@
   table.table.table-striped.table-bordered.table-hover.table-clickable
     thead
       tr
+        th = Customer.human_attribute_name(:id)
         th = Customer.human_attribute_name(:name)
         th = Customer.human_attribute_name(:own_customer)
         th = Customer.human_attribute_name(:city)
@@ -25,6 +26,7 @@
     tbody
       - @customers.each do | customer |
         tr data = {url: url_for(customer)}
+          td = customer.id
           td = customer.name
           td = bool_icon customer.own_customer
           td = customer.city
