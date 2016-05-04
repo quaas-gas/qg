@@ -1,1 +1,16 @@
 de:
+  cancel: Abbrechen
+  created: "%{model} gespeichert."
+  updated: "%{model} gespeichert."
+  destroyed: "%{model} gelöscht."
+  confirm_delete: "%{model} löschen?"
+  customers:
+    form:
+      error: Kunde konnte nicht gespeichert werden.
+    new:
+      title: "Kunden anlegen"
+  delete: Löschen
+  edit: Bearbeiten
+  list: Liste
+  new: Neu
+  save: Speichern

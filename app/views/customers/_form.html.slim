@@ -1,0 +1,32 @@
+= simple_form_for(@customer) do |f|
+  - if @customer.errors.any?
+    .alert.alert-danger.alert-dismissable@alert
+      button.close type="button" data-dismiss="alert"
+        span aria-hidden="true" &times;
+        span.sr-only Close
+      h4 = t('.error')
+
+  section
+    .col-md-4
+      .form-inputs
+        = f.input :salut
+        = f.input :name
+        = f.input :name2
+        = f.input :own_customer
+        = f.input :street
+        = f.input :city
+        = f.input :zip
+        = f.input :phone
+        = f.input :email
+        = f.input :gets_invoice
+        = f.input :region
+        = f.input :kind
+        = f.input :price_in_net
+        = f.input :has_stock
+        = f.input :invoice_address
+
+  section.action-buttons
+    .col-md-12
+      .pull-right
+        => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+        = f.submit t(:save), class: 'btn btn-primary'

@@ -1,0 +1,61 @@
+.page-header
+  = link_to customers_path, class: 'btn btn-default' do 
+    span.glyphicon.glyphicon-list-alt
+    =< t(:list)
+  = link_to edit_customer_path(@customer), class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-pencil
+    =< t(:edit)
+  => link_to @customer, method: :delete, data: { confirm: t(:confirm_delete, model: Customer.model_name.human) }, class: 'btn btn-danger' do
+    span.glyphicon.glyphicon-remove
+    =< t(:delete)
+  h2
+    => @customer.name
+    small = Customer.model_name.human
+
+.row
+  .col-md-6 = panel_box title: Customer.model_name.human do
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:salut)
+      .col-md-8 = @customer.salut
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:name)
+      .col-md-8 = @customer.name
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:name2)
+      .col-md-8 = @customer.name2
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:own_customer)
+      .col-md-8 = @customer.own_customer
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:street)
+      .col-md-8 = @customer.street
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:city)
+      .col-md-8 = @customer.city
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:zip)
+      .col-md-8 = @customer.zip
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:phone)
+      .col-md-8 = @customer.phone
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:email)
+      .col-md-8 = @customer.email
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:gets_invoice)
+      .col-md-8 = @customer.gets_invoice
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:region)
+      .col-md-8 = @customer.region
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:kind)
+      .col-md-8 = @customer.kind
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
+      .col-md-8 = @customer.price_in_net
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:has_stock)
+      .col-md-8 = @customer.has_stock
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:invoice_address)
+      .col-md-8 = @customer.invoice_address

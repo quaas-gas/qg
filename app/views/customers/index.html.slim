@@ -1,0 +1,36 @@
+.page-header
+  /= link_to customers_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_customer_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @customers.count
+    = Customer.model_name.human count: @customers.count
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Customer.human_attribute_name(:name)
+        th = Customer.human_attribute_name(:own_customer)
+        th = Customer.human_attribute_name(:city)
+        th = Customer.human_attribute_name(:phone)
+        th = Customer.human_attribute_name(:gets_invoice)
+        th = Customer.human_attribute_name(:region)
+        th = Customer.human_attribute_name(:kind)
+        th = Customer.human_attribute_name(:price_in_net)
+        th = Customer.human_attribute_name(:has_stock)
+    tbody
+      - @customers.each do | customer |
+        tr data = {url: url_for(customer)}
+          td = customer.name
+          td = bool_icon customer.own_customer
+          td = customer.city
+          td = customer.phone
+          td = bool_icon customer.gets_invoice
+          td = customer.region
+          td = customer.kind
+          td = bool_icon customer.price_in_net
+          td = bool_icon customer.has_stock

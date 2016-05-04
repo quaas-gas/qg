@@ -1,0 +1,55 @@
+de:
+  attributes:
+    active:      aktiv
+    address:     Adresse
+    city:        Ort
+    comments:    Bemerkungen
+    created_at:  Angelegt
+    date:        Datum
+    description: Beschreibung
+    email:       E-Mail
+    end_date:    Ende
+    first_name:  Vorname
+    gender:      Geschlecht
+    last_name:   Nachname
+    mobile:      Mobil
+    phone:       Telefon
+    salut:       Anrede
+    start_date:  Beginn
+    street:      Straße/Nr
+    updated_at:  Bearbeitet
+    zip:         PLZ
+  activerecord:
+    models:
+      customer:
+        one: Kunde
+        other: Kunden
+      enum:
+        one:   Aufzählung
+        other: Aufzählungen
+    attributes:
+      customer:
+        gets_invoice: Rechnungskunde
+        has_stock: Bestandsführung
+        invoice_address: Rechnungsadresse
+        own_customer: Quaas-Gas
+        price_in_net: hat Netto-Preise
+      enum:
+        value: Name
+      user:
+        login: "Handle"
+        email: E-Mail
+        username: Benutzername
+        password: Passwort
+        encrypted_password: Verschlüsseltes Passwort
+        reset_password_token: Reset-Password-Token
+        reset_password_sent_at: Passwort zurück gesetzt am
+        sign_in_count: Anzahl Anmeldungen
+        current_sign_in_at: Aktuell angemeldet um
+        last_sign_in_at: Zuletzt angemeldet am
+        current_sign_in_ip: current_sign_in_ip
+        last_sign_in_ip: last_sign_in_ip
+        confirmation_token: string
+        confirmed_at: Bestätigt am
+        confirmation_sent_at: Bestätigung gesendet am
+        unconfirmed_email: Unbestätigte Email

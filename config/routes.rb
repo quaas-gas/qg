@@ -1,7 +1,8 @@
 Rails.application.routes.draw do
-  get 'dashboard' => 'dashboard#index'
-
   devise_for :users
 
+  resources :customers
+
+  get 'dashboard' => 'dashboard#index'
   root to: 'dashboard#index'
 end
