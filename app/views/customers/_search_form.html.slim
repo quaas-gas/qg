@@ -1,6 +1,5 @@
 .search-form
-  /h3 Suche
-  form action=customers_url
+  form.form-inline action=customers_url
     .form-group
       select.form-control name="own_customer"
         option selected=(@filter.own_customer.blank?) value='' Direktkunde
@@ -18,7 +17,7 @@
           option selected=(kind == @filter.kind) value=kind  #{kind} (#{count})
     .form-group
       => link_to 'Alle', customers_path, class: 'btn btn-info btn-block'
-      /input.btn.btn-primary type="submit" value="Suchen"
+
 coffee:
   $ ->
     $('.search-form select').change -> $('.search-form form').submit()
