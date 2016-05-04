@@ -6,7 +6,7 @@
     span.glyphicon.glyphicon-plus
     =< t(:new)
   h2
-    => @customers.count
+    => @customers.total_count
     = Customer.model_name.human count: @customers.count
 
 .table-responsive
@@ -36,3 +36,5 @@
           td = customer.kind
           td = bool_icon customer.price_in_net
           td = bool_icon customer.has_stock
+
+= paginate @customers

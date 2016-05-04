@@ -5,7 +5,7 @@ class CustomersController < ApplicationController
 
   def index
     authorize Customer
-    @customers = Customer.all
+    @customers = Customer.page(params[:page]).all
   end
 
   def show
