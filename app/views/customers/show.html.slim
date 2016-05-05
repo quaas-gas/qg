@@ -25,7 +25,17 @@
       .col-md-8 = @customer.name2
     .row
       label.col-md-4 => Customer.human_attribute_name(:own_customer)
-      .col-md-8 = @customer.own_customer
+      .col-md-8 = bool_icon @customer.own_customer
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:region)
+      .col-md-8 = @customer.region
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:kind)
+      .col-md-8 = @customer.kind
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
+      .col-md-8 = bool_icon @customer.price_in_net
+  .col-md-6 = panel_box title: 'Kontaktdaten' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:street)
       .col-md-8 = @customer.street
@@ -35,27 +45,30 @@
     .row
       label.col-md-4 => Customer.human_attribute_name(:zip)
       .col-md-8 = @customer.zip
+    p = link_to 'Karte', gmaps_link(@customer), target: '_blank'
     .row
       label.col-md-4 => Customer.human_attribute_name(:phone)
       .col-md-8 = @customer.phone
     .row
+      label.col-md-4 => Customer.human_attribute_name(:mobile)
+      .col-md-8 = @customer.mobile
+    .row
       label.col-md-4 => Customer.human_attribute_name(:email)
       .col-md-8 = @customer.email
+.row
+  .col-md-6 = panel_box title: 'Rechnungen' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:gets_invoice)
-      .col-md-8 = @customer.gets_invoice
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:region)
-      .col-md-8 = @customer.region
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:kind)
-      .col-md-8 = @customer.kind
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
-      .col-md-8 = @customer.price_in_net
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:has_stock)
-      .col-md-8 = @customer.has_stock
+      .col-md-8 = bool_icon @customer.gets_invoice
     .row
       label.col-md-4 => Customer.human_attribute_name(:invoice_address)
-      .col-md-8 = @customer.invoice_address
+      .col-md-8
+        - if @customer.invoice_address.present?
+          = @customer.invoice_address.split("\n").join('<br>').html_safe
+    .row
+      label.col-md-4 letzte Rechnungen
+      .col-md-8
+  .col-md-6 = panel_box title: 'Bestand' do
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:has_stock)
+      .col-md-8 = bool_icon @customer.has_stock

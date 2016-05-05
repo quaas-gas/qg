@@ -34,8 +34,8 @@ div
         tr data = {url: url_for(customer)}
           td = customer.id
           td = lines_for [customer.salut, customer.name, customer.name2]
-          td = link_to customer.city, gmaps_link(customer), target: '_blank'
-          td = lines_for [customer.phone, customer.email]
+          td = customer.city
+          td = lines_for [customer.phone, customer.mobile, customer.email]
           - if !@filter.own_customer.in?([true, false])
             td = bool_icon customer.own_customer
           td = bool_icon customer.gets_invoice
