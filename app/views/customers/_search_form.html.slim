@@ -16,6 +16,10 @@
         - @filter.kinds.each do |kind, count|
           option selected=(kind == @filter.kind) value=kind  #{kind} (#{count})
     .form-group
+      select.form-control name="archived"
+        option selected=(!@filter.archived) value='no' Aktive
+        option selected=(@filter.archived) value='yes' Archiv
+    .form-group
       => link_to 'Alle', customers_path, class: 'btn btn-info btn-block'
 
 coffee:

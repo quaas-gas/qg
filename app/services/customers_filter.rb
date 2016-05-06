@@ -1,16 +1,20 @@
 class CustomersFilter
-  attr_reader :params, :scope, :own_customer, :city, :kind
+  attr_reader :params, :scope, :own_customer, :city, :kind, :archived
 
   def initialize(params, scope = Customer)
+    yes_no_map    = { 'yes' => true, 'no' => false }
     @params       = params
     @scope        = scope
-    @own_customer = { 'yes' => true, 'no' => false }[params[:own_customer]]
+    @own_customer = yes_no_map[params[:own_customer]]
     @city         = params[:city]
     @kind         = params[:kind]
+    @archived     = yes_no_map[params[:archived]]
+    @archived   ||= false
 
     filter_own_customer
     filter_city
     filter_kind
+    filter_archived
   end
 
   def cities
@@ -37,6 +41,10 @@ class CustomersFilter
 
   def filter_kind
     @scope = scope.where(kind: kind) if kind.present?
+  end
+
+  def filter_archived
+    @scope = scope.where(archived: archived)
   end
 
   def order_options

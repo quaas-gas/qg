@@ -35,6 +35,10 @@
     .row
       label.col-md-4 => Customer.human_attribute_name(:price_in_net)
       .col-md-8 = bool_icon @customer.price_in_net
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:archived)
+      .col-md-8 = bool_icon @customer.archived
+
   .col-md-6 = panel_box title: 'Kontaktdaten' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:street)
@@ -55,6 +59,7 @@
     .row
       label.col-md-4 => Customer.human_attribute_name(:email)
       .col-md-8 = @customer.email
+
 .row
   .col-md-6 = panel_box title: 'Rechnungen' do
     .row
@@ -68,6 +73,7 @@
     .row
       label.col-md-4 letzte Rechnungen
       .col-md-8
+
   .col-md-6 = panel_box title: 'Bestand' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:has_stock)
