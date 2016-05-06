@@ -10,6 +10,7 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'kaminari'
+gem 'pg_search'
 
 group :development, :test do
   gem 'byebug'

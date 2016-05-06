@@ -12,4 +12,6 @@ nav.navbar.navbar-inverse.navbar-fixed-top
       ul.nav.navbar-nav
         li class=('active' if params[:controller] == 'customers')
           = link_to Customer.model_name.human(count: 2), customers_url
-        == render 'layouts/navigation_links'
+      form.navbar-form.navbar-right role="search" action=search_url
+        .form-group
+          input.form-control type="text" placeholder="Suche" name="q" value=@query
