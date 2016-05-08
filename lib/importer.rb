@@ -1,19 +1,18 @@
 module Importer
-  def self.import_customers
-    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','customers.xml')))
-    doc.xpath('//customers').each do |customer_node|
-      customer_hash = customer_node.children.each_with_object({}) do |child_node, hsh|
-        next unless child_node.element?
-        hsh[child_node.name] = child_node.text
-      end
-      customer_hash[:gets_invoice] = customer_hash.delete 'invoice'
-      customer_hash[:price_in_net] = customer_hash.delete 'net'
-      customer_hash[:has_stock]    = customer_hash.delete 'stock'
-      customer_hash.delete 'KDN'
+  def self.import_customers(with_delete: false)
 
-      Customer.create! customer_hash
+    if with_delete
+      Customer.delete_all
+      ActiveRecord::Base.connection.reset_pk_sequence!(Customer.table_name)
     end
 
-    # ActiveRecord::Base.connection.reset_pk_sequence!(Customer.table_name)
+    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','customers.xml')))
+    doc.xpath('//customers').each do |customer_node|
+      data_nodes = customer_node.children.select(&:element?)
+      customer_hash = data_nodes.each_with_object({}) do |child_node, hsh|
+        hsh[child_node.name] = child_node.text
+      end
+      Customer.create! customer_hash
+    end
   end
 end
