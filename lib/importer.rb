@@ -85,4 +85,10 @@ module Importer
     end
   end
 
+  def self.link_deliveries_with_sellers
+    Seller.all.each do |seller|
+      Delivery.where(driver: seller.short).update_all(seller_id: seller.id)
+    end
+  end
+
 end

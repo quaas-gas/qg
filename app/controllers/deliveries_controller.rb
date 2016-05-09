@@ -5,12 +5,9 @@ class DeliveriesController < ApplicationController
 
   def index
     authorize Delivery
-    # @date = Date.parse params[:date]
-    # @deliveries = Delivery.includes(:customer).where(date: @date).order(number: :desc).all
 
     @filter = DeliveriesFilter.new(params)
-    @deliveries = @filter.result.all
-    # @dates = Delivery.where('date > ?', 3.months.ago).order(date: :desc).group(:date).pluck(:date)
+    @deliveries = @filter.result.includes(:customer, :seller).all
   end
 
   def show

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509132110) do
+ActiveRecord::Schema.define(version: 20160509134834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,10 +68,12 @@ ActiveRecord::Schema.define(version: 20160509132110) do
     t.integer  "discount_cents",     default: 0, null: false
     t.datetime "created_at",                     null: false
     t.datetime "updated_at",                     null: false
+    t.integer  "seller_id"
   end
 
   add_index "deliveries", ["customer_id"], name: "index_deliveries_on_customer_id", using: :btree
   add_index "deliveries", ["date"], name: "index_deliveries_on_date", using: :btree
+  add_index "deliveries", ["seller_id"], name: "index_deliveries_on_seller_id", using: :btree
 
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"

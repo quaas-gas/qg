@@ -27,8 +27,8 @@
       label.col-md-4 => Delivery.human_attribute_name(:date)
       .col-md-8 = ldate @delivery.date
     .row
-      label.col-md-4 => Delivery.human_attribute_name(:driver)
-      .col-md-8 = @delivery.driver
+      label.col-md-4 => Delivery.human_attribute_name(:seller)
+      .col-md-8 = link_to @delivery.seller.name, @delivery.seller
     .row
       label.col-md-4 => Delivery.human_attribute_name(:description)
       .col-md-8 = @delivery.description

@@ -70,6 +70,7 @@ de:
         on_account: auf Rechnung
         number: LSN
         number_show: LSN (Anzeige)
+        seller: Verkäufer
       enum:
         value: Name
       price:

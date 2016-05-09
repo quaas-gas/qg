@@ -2,6 +2,7 @@ class Delivery < ActiveRecord::Base
   include PgSearch
 
   belongs_to :customer, inverse_of: :deliveries
+  belongs_to :seller, inverse_of: :deliveries
 
   monetize :discount_net_cents
   monetize :discount_cents

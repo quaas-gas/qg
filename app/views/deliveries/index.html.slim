@@ -23,7 +23,7 @@ div
         th = Delivery.human_attribute_name(:number)
         th = Delivery.human_attribute_name(:customer)
         th = Delivery.human_attribute_name(:date)
-        th = Delivery.human_attribute_name(:driver)
+        th = Delivery.human_attribute_name(:seller)
         /th = Delivery.human_attribute_name(:description)
         th = Delivery.human_attribute_name(:invoice_number)
         /th Quittung / LS, Rechnung
@@ -37,7 +37,7 @@ div
           td = delivery.number_show
           td = delivery.customer.name
           td = ldate delivery.date
-          td = delivery.driver
+          td = delivery.seller&.name
           /td = delivery.description
           td = delivery.invoice_number
           /td = delivery.on_account ? ['LS', delivery.invoice_number].select(&:present?).join(', ') : 'Qu'
