@@ -4,13 +4,14 @@ class CreateDeliveries < ActiveRecord::Migration
       t.string :number, unique: true
       t.string :number_show
       t.references :customer, index: true, foreign_key: true
+      t.references :seller, index: true
       t.date :date, index: true
       t.string :driver
       t.text :description
       t.string :invoice_number
       t.boolean :on_account
-      t.monetize :discount_net
       t.monetize :discount
+      t.jsonb :others
 
       t.timestamps null: false
     end
