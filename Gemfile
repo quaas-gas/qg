@@ -21,6 +21,7 @@ group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
   gem 'bootstrap-generators', '~> 3.3.4'
+  gem 'meta_request'
 end
 
 gem 'bootstrap-sass'
