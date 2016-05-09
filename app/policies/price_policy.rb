@@ -1,0 +1,3 @@
+class PricePolicy < ApplicationPolicy
+
+end

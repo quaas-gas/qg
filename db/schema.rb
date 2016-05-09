@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509095220) do
+ActiveRecord::Schema.define(version: 20160509105602) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -83,6 +83,19 @@ ActiveRecord::Schema.define(version: 20160509095220) do
 
   add_index "pg_search_documents", ["searchable_type", "searchable_id"], name: "index_pg_search_documents_on_searchable_type_and_searchable_id", using: :btree
 
+  create_table "prices", force: :cascade do |t|
+    t.integer  "customer_id"
+    t.integer  "bottle_id"
+    t.date     "valid_from"
+    t.integer  "price_cents",    default: 0, null: false
+    t.integer  "discount_cents", default: 0, null: false
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "prices", ["bottle_id"], name: "index_prices_on_bottle_id", using: :btree
+  add_index "prices", ["customer_id"], name: "index_prices_on_customer_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -105,4 +118,6 @@ ActiveRecord::Schema.define(version: 20160509095220) do
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   add_foreign_key "deliveries", "customers"
+  add_foreign_key "prices", "bottles"
+  add_foreign_key "prices", "customers"
 end

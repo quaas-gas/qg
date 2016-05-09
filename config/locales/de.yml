@@ -19,6 +19,11 @@ de:
       error: Lieferung konnte nicht gespeichert werden.
     new:
       title: "Lieferung anlegen"
+  prices:
+    form:
+      error: Preis konnte nicht gespeichert werden.
+    new:
+      title: "Preis anlegen"
   delete: Löschen
   edit: Bearbeiten
   list: Liste

@@ -44,8 +44,8 @@ module Importer
     reset(Bottle) if with_delete
 
     doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','bottles.xml')))
-    doc.xpath('//bottles').each do |delivery|
-      hash = node_to_hash(delivery)
+    doc.xpath('//bottles').each do |node|
+      hash = node_to_hash(node)
       hash[:number]             = hash.delete 'id'
       hash[:cert_price]         = monetize(hash.delete('cert_price'))
       hash[:cert_price_net]     = monetize(hash.delete('cert_price_net'))
@@ -53,8 +53,22 @@ module Importer
       hash[:deposit_price_net]  = monetize(hash.delete('deposit_price_net'))
       hash[:disposal_price]     = monetize(hash.delete('disposal_price'))
       hash[:disposal_price_net] = monetize(hash.delete('disposal_price_net'))
-      puts hash
       Bottle.create! hash
+    end
+  end
+
+  def self.import_prices(with_delete: false)
+
+    reset(Price) if with_delete
+    exceptions = %w(stock_current_date stock_current stock_invoice stock_invoice_date )
+
+    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','prices.xml')))
+    doc.xpath('//prices').each do |node|
+      hash = node_to_hash(node).except(*exceptions)
+      hash[:bottle]   = Bottle.find_by(number: hash.delete('bottle_id'))
+      hash[:price]    = monetize(hash.delete('price'))
+      hash[:discount] = monetize(hash.delete('discount'))
+      Price.create! hash
     end
   end
 

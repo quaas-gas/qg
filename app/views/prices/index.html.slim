@@ -1,0 +1,33 @@
+.page-header
+  = link_to prices_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_price_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @prices.total_count
+    = Price.model_name.human count: @prices.count
+
+
+div
+  /.pull-left = render 'search_form'
+  .pull-right = paginate @prices
+.clearfix
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Price.human_attribute_name(:customer)
+        th = Price.human_attribute_name(:bottle)
+        th = Price.human_attribute_name(:valid_from)
+        th = Price.human_attribute_name(:price)
+        th = Price.human_attribute_name(:discount)
+    tbody
+      - @prices.each do | price |
+        tr data = {url: edit_price_url(price)}
+          td = price.customer.name
+          td = price.bottle.name
+          td = ldate price.valid_from
+          td = price.price
+          td = price.discount
