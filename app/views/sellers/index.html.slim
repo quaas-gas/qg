@@ -1,0 +1,26 @@
+.page-header
+  /= link_to sellers_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_seller_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @sellers.count
+    = Seller.model_name.human count: @sellers.count
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Seller.human_attribute_name(:short)
+        th = Seller.human_attribute_name(:first_name)
+        th = Seller.human_attribute_name(:last_name)
+        th = Seller.human_attribute_name(:mobile)
+    tbody
+      - @sellers.each do | seller |
+        tr data = {url: edit_seller_url(seller)}
+          td = seller.short
+          td = seller.first_name
+          td = seller.last_name
+          td = seller.mobile

@@ -1,5 +1,11 @@
 module Importer
 
+  def self.xml_data(file_name, node_name = nil)
+    node_name ||= file_name
+    file_name = Rails.root.join('db', 'seeds', "#{file_name}.xml")
+    Nokogiri::XML(File.open(file_name)).xpath("//#{node_name}")
+  end
+
   def self.node_to_hash(node)
     node.children.select(&:element?).each_with_object({}) do |value_node, hsh|
       hsh[value_node.name] = value_node.text
@@ -15,8 +21,7 @@ module Importer
 
     reset(Customer) if with_delete
 
-    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','customers.xml')))
-    doc.xpath('//customers').each { |customer| Customer.create! node_to_hash(customer) }
+    xml_data('customers').each { |customer| Customer.create! node_to_hash(customer) }
   end
 
   def self.import_deliveries(with_delete: false)
@@ -25,9 +30,8 @@ module Importer
 
     exceptions = %w(amount amount_net cert_price deposit_price disposal_price bg tg btg)
 
-    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','deliveries.xml')))
     Delivery.transaction do
-      doc.xpath('//deliveries').each do |delivery|
+      xml_data('deliveries').each do |delivery|
         Delivery.create node_to_hash(delivery).except(*exceptions)
       end
     end
@@ -43,8 +47,7 @@ module Importer
 
     reset(Bottle) if with_delete
 
-    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','bottles.xml')))
-    doc.xpath('//bottles').each do |node|
+    xml_data('bottles').each do |node|
       hash = node_to_hash(node)
       hash[:number]             = hash.delete 'id'
       hash[:cert_price]         = monetize(hash.delete('cert_price'))
@@ -62,13 +65,23 @@ module Importer
     reset(Price) if with_delete
     exceptions = %w(stock_current_date stock_current stock_invoice stock_invoice_date )
 
-    doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','prices.xml')))
-    doc.xpath('//prices').each do |node|
+    xml_data('prices').each do |node|
       hash = node_to_hash(node).except(*exceptions)
       hash[:bottle]   = Bottle.find_by(number: hash.delete('bottle_id'))
       hash[:price]    = monetize(hash.delete('price'))
       hash[:discount] = monetize(hash.delete('discount'))
       Price.create! hash
+    end
+  end
+
+  def self.import_sellers(with_delete: false)
+
+    reset(Seller) if with_delete
+
+    xml_data('driver').each do |node|
+      hash = node_to_hash(node)
+      hash[:short] = hash.delete 'id'
+      Seller.create! hash
     end
   end
 

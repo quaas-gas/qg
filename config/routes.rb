@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   end
   resources :deliveries
   resources :bottles, except: :show
+  resources :sellers, except: :show
 
   get 'dashboard' => 'dashboard#index'
   root to: 'dashboard#index'

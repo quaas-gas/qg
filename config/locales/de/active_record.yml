@@ -37,6 +37,9 @@ de:
       price:
         one: Preis
         other: Preise
+      seller:
+        one: Verkäufer
+        other: Verkäufer
     attributes:
       bottle:
         content: Inhalt (kg)
@@ -74,6 +77,11 @@ de:
         valid_from: gilt ab
         price: Preis
         discount: Provision
+      seller:
+        first_name: Vorname
+        last_name: Nachname
+        mobile: Telefon
+        short: Kürzel
       user:
         login: "Handle"
         email: E-Mail

@@ -18,6 +18,8 @@ nav.navbar.navbar-inverse.navbar-fixed-top
           = link_to Delivery.model_name.human(count: 2), deliveries_url
         li class=('active' if params[:controller] == 'bottles')
           = link_to Bottle.model_name.human(count: 2), bottles_url
+        li class=('active' if params[:controller] == 'sellers')
+          = link_to Seller.model_name.human(count: 2), sellers_url
       form.navbar-form.navbar-right role="search" action=search_url
         .form-group
           input.form-control type="text" placeholder="Suche" name="q" value=@query
