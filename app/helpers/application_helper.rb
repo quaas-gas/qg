@@ -20,6 +20,11 @@ module ApplicationHelper
     end
   end
 
+  def ldate(date, options = nil)
+    return '' unless date.present?
+    l date, options
+  end
+
   def panel_box(title: nil, css_class: '', &block)
     content = capture(&block)
     content_tag(:div, class: "panel panel-default #{css_class}") do
