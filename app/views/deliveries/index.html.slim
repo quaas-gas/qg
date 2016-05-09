@@ -1,0 +1,45 @@
+.page-header
+  /= link_to deliveries_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_delivery_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @deliveries.count
+    => Delivery.model_name.human count: @deliveries.count
+    | vom
+    =< ldate @filter.date
+
+div
+  .pull-left = render 'search_form'
+  /.pull-right = paginate @customers
+.clearfix
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th
+        th = Delivery.human_attribute_name(:number)
+        th = Delivery.human_attribute_name(:customer)
+        th = Delivery.human_attribute_name(:date)
+        th = Delivery.human_attribute_name(:driver)
+        /th = Delivery.human_attribute_name(:description)
+        th = Delivery.human_attribute_name(:invoice_number)
+        /th Quittung / LS, Rechnung
+        /th = Delivery.human_attribute_name(:discount_net)
+        /th = Delivery.human_attribute_name(:discount)
+    tbody
+      - @deliveries.each do | delivery |
+        tr data = {url: url_for(delivery)}
+          td
+            span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+          td = delivery.number_show
+          td = delivery.customer.name
+          td = ldate delivery.date
+          td = delivery.driver
+          /td = delivery.description
+          td = delivery.invoice_number
+          /td = delivery.on_account ? ['LS', delivery.invoice_number].select(&:present?).join(', ') : 'Qu'
+          /td = humanized_money_with_symbol delivery.discount_net
+          /td = humanized_money_with_symbol delivery.discount

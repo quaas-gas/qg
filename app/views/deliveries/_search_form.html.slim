@@ -1,0 +1,21 @@
+.search-form
+  form.form-inline action=deliveries_url
+    .form-group
+      select.form-control name="on_account"
+        option selected=(@filter.on_account.blank?) value='' LS/Q
+        option selected=(@filter.on_account == true) value='yes' Lieferschein
+        option selected=(@filter.on_account == false) value='no' Quittung
+    .form-group
+      select.form-control name="date"
+        - @filter.dates.each do |date, count|
+          option selected=(date == @filter.date) value=date  #{ldate date, format: '%d.%m.%y %a'} (#{count})
+    /.form-group
+      select.form-control name="year"
+        - @filter.years.each do |year, count|
+          option selected=(year == @filter.year) value=year  =year
+    .form-group
+      => link_to 'Alle', deliveries_path, class: 'btn btn-info btn-block'
+
+coffee:
+  $ ->
+    $('.search-form select').change -> $('.search-form form').submit()

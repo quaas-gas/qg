@@ -5,6 +5,7 @@ de:
     city:        Ort
     comments:    Bemerkungen
     created_at:  Angelegt
+    customer:    Kunde
     date:        Datum
     description: Beschreibung
     email:       E-Mail
@@ -24,6 +25,9 @@ de:
       customer:
         one: Kunde
         other: Kunden
+      delivery:
+        one: Lieferung
+        other: Lieferungen
       enum:
         one:   Aufzählung
         other: Aufzählungen
@@ -37,6 +41,15 @@ de:
         kind: Kundenart
         own_customer: Direktkunde
         price_in_net: hat Netto-Preise
+      delivery:
+        date: Datum
+        discount: Rabatt
+        discount_net: Rabatt (Netto)
+        driver: Fahrer
+        invoice_number: Rechnung
+        on_account: auf Rechnung
+        number: LSN
+        number_show: LSN (Anzeige)
       enum:
         value: Name
       user:

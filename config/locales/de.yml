@@ -9,6 +9,11 @@ de:
       error: Kunde konnte nicht gespeichert werden.
     new:
       title: "Kunden anlegen"
+  deliveries:
+    form:
+      error: Lieferung konnte nicht gespeichert werden.
+    new:
+      title: "Lieferung anlegen"
   delete: Löschen
   edit: Bearbeiten
   list: Liste

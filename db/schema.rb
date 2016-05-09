@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160506190528) do
+ActiveRecord::Schema.define(version: 20160508201224) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,6 +38,24 @@ ActiveRecord::Schema.define(version: 20160506190528) do
     t.string   "mobile"
     t.boolean  "archived",        default: false
   end
+
+  create_table "deliveries", force: :cascade do |t|
+    t.string   "number"
+    t.string   "number_show"
+    t.integer  "customer_id"
+    t.date     "date"
+    t.string   "driver"
+    t.text     "description"
+    t.string   "invoice_number"
+    t.boolean  "on_account"
+    t.integer  "discount_net_cents", default: 0, null: false
+    t.integer  "discount_cents",     default: 0, null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "deliveries", ["customer_id"], name: "index_deliveries_on_customer_id", using: :btree
+  add_index "deliveries", ["date"], name: "index_deliveries_on_date", using: :btree
 
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"
@@ -70,4 +88,5 @@ ActiveRecord::Schema.define(version: 20160506190528) do
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
+  add_foreign_key "deliveries", "customers"
 end

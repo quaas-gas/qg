@@ -5,7 +5,6 @@ MoneyRails.configure do |config|
   # To set the default currency
   #
   # config.default_currency = :usd
-  config.default_currency = :eur
 
   # Set default bank object
   #
@@ -43,6 +42,14 @@ MoneyRails.configure do |config|
   #                            null: false,
   #                            default: 'USD'
   #                          }
+  config.currency_column = { prefix: '',
+                             postfix: '_currency',
+                             column_name: nil,
+                             type: :string,
+                             present: false,
+                             null: false,
+                             default: 'USD'
+                           }
 
   # Register a custom currency
   #
@@ -58,6 +65,19 @@ MoneyRails.configure do |config|
   #   :thousands_separator => ".",
   #   :decimal_mark        => ","
   # }
+  config.register_currency = {
+    priority:            1,
+    iso_code:            'EU4',
+    name:                'Euro with subunit of 4 digits',
+    symbol:              '€',
+    symbol_first:        false,
+    subunit:             'cent',
+    subunit_to_unit:     10000,
+    thousands_separator: '.',
+    decimal_mark:        ','
+  }
+
+  config.default_currency = :eu4
 
   # Set default money format globally.
   # Default value is nil meaning "ignore this option".

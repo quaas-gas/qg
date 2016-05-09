@@ -1,0 +1,6 @@
+.page-header
+  h2
+    => @delivery.number
+    small = Delivery.model_name.human
+
+= render 'form'

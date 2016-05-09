@@ -1,0 +1,46 @@
+.page-header
+  = link_to deliveries_path, class: 'btn btn-default' do 
+    span.glyphicon.glyphicon-list-alt
+    =< t(:list)
+  = link_to edit_delivery_path(@delivery), class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-pencil
+    =< t(:edit)
+  => link_to @delivery, method: :delete, data: { confirm: t(:confirm_delete, model: Delivery.model_name.human) }, class: 'btn btn-danger' do
+    span.glyphicon.glyphicon-remove
+    =< t(:delete)
+  h2
+    => @delivery.number
+    small = Delivery.model_name.human
+
+.row
+  .col-md-6 = panel_box title: Delivery.model_name.human do
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:number)
+      .col-md-8 = @delivery.number
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:number_show)
+      .col-md-8 = @delivery.number_show
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:customer)
+      .col-md-8 = link_to @delivery.customer.name, @delivery.customer
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:date)
+      .col-md-8 = ldate @delivery.date
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:driver)
+      .col-md-8 = @delivery.driver
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:description)
+      .col-md-8 = @delivery.description
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:invoice_number)
+      .col-md-8 = @delivery.invoice_number
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:on_account)
+      .col-md-8 = @delivery.on_account
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:discount_net)
+      .col-md-8 = @delivery.discount_net
+    .row
+      label.col-md-4 => Delivery.human_attribute_name(:discount)
+      .col-md-8 = @delivery.discount

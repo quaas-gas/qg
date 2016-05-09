@@ -7,8 +7,8 @@ module Importer
   end
 
   def self.reset(model)
-    model.delete_all
-    ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+    puts model.delete_all
+    puts ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
   end
 
   def self.import_customers(with_delete: false)
@@ -21,11 +21,18 @@ module Importer
 
   def self.import_deliveries(with_delete: false)
 
-    # reset(Delivery) if with_delete
+    reset(Delivery) if with_delete
+
+    exceptions = %w(amount amount_net cert_price deposit_price disposal_price bg tg btg)
+    # count = 0
 
     doc = Nokogiri::XML(File.open(Rails.root.join('db', 'seeds','deliveries.xml')))
-    doc.xpath('//deliveries[1]').each do |delivery|
-      # Delivery.create node_to_hash(delivery)
+    Delivery.transaction do
+      doc.xpath('//deliveries').each do |delivery|
+        # break if count == 100
+        Delivery.create node_to_hash(delivery).except(*exceptions)
+        # count += 1
+      end
     end
   end
 end
