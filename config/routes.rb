@@ -7,7 +7,7 @@ Rails.application.routes.draw do
     resources :prices
   end
   resources :deliveries
-  resources :bottles, except: :show
+  resources :products
   resources :sellers, except: :show
 
   get 'dashboard' => 'dashboard#index'

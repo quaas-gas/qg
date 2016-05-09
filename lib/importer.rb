@@ -24,39 +24,40 @@ module Importer
     xml_data('customers').each { |customer| Customer.create! node_to_hash(customer) }
   end
 
+  def self.monetize(val: nil, currency: 'EU4NET')
+    val ||= 0
+    Money.from_amount val.to_f, currency
+  end
+
   def self.import_deliveries(with_delete: false)
 
     reset(Delivery) if with_delete
 
-    exceptions = %w(amount amount_net cert_price deposit_price disposal_price bg tg btg)
+    exceptions = %w(amount amount_net cert_price deposit_price disposal_price bg tg btg discount_net discount)
 
-    Delivery.transaction do
-      xml_data('deliveries').each do |delivery|
-        Delivery.create node_to_hash(delivery).except(*exceptions)
+    PgSearch.disable_multisearch do
+      Delivery.transaction do
+        xml_data('deliveries').each do |delivery|
+          data = node_to_hash(delivery)
+          hash = data.except(*exceptions)
+          hash[:others] = data.to_json
+          Delivery.create! hash
+        end
       end
     end
   end
 
-  def self.monetize(val = nil)
-    val ||= '0'
-    val = val.to_f * 10000
-    Money.new val, 'Eu4'
-  end
+  def self.import_products(with_delete: false)
 
-  def self.import_bottles(with_delete: false)
-
-    reset(Bottle) if with_delete
+    reset(Product) if with_delete
+    exceptions = %w(gas cert_price cert_price_net deposit_price deposit_price_net disposal_price disposal_price_net)
 
     xml_data('bottles').each do |node|
-      hash = node_to_hash(node)
-      hash[:number]             = hash.delete 'id'
-      hash[:cert_price]         = monetize(hash.delete('cert_price'))
-      hash[:cert_price_net]     = monetize(hash.delete('cert_price_net'))
-      hash[:deposit_price]      = monetize(hash.delete('deposit_price'))
-      hash[:deposit_price_net]  = monetize(hash.delete('deposit_price_net'))
-      hash[:disposal_price]     = monetize(hash.delete('disposal_price'))
-      hash[:disposal_price_net] = monetize(hash.delete('disposal_price_net'))
-      Bottle.create! hash
+      data = node_to_hash(node)
+      hash = data.except(*exceptions)
+      hash[:others] = data.to_json
+      hash[:number] = hash.delete 'id'
+      Product.create! hash
     end
   end
 
@@ -66,10 +67,14 @@ module Importer
     exceptions = %w(stock_current_date stock_current stock_invoice stock_invoice_date )
 
     xml_data('prices').each do |node|
-      hash = node_to_hash(node).except(*exceptions)
-      hash[:bottle]   = Bottle.find_by(number: hash.delete('bottle_id'))
-      hash[:price]    = monetize(hash.delete('price'))
-      hash[:discount] = monetize(hash.delete('discount'))
+      data = node_to_hash(node)
+      hash = data.except(*exceptions)
+      hash[:others] = data.to_json
+      hash[:product] = Product.find_by(number: hash.delete('bottle_id'))
+      customer = Customer.find_by id: hash['customer_id']
+      currency = customer.price_in_net ? 'EU4NET' : 'EU4TAX'
+      hash[:price]     = monetize(val: hash.delete('price'), currency: currency)
+      hash[:discount]  = monetize(val: hash.delete('discount'), currency: currency)
       Price.create! hash
     end
   end

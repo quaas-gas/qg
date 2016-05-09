@@ -28,7 +28,7 @@
       .col-md-8 = ldate @delivery.date
     .row
       label.col-md-4 => Delivery.human_attribute_name(:seller)
-      .col-md-8 = link_to @delivery.seller.name, @delivery.seller
+      .col-md-8 = @delivery.seller.name
     .row
       label.col-md-4 => Delivery.human_attribute_name(:description)
       .col-md-8 = @delivery.description
@@ -39,8 +39,5 @@
       label.col-md-4 => Delivery.human_attribute_name(:on_account)
       .col-md-8 = @delivery.on_account
     .row
-      label.col-md-4 => Delivery.human_attribute_name(:discount_net)
-      .col-md-8 = @delivery.discount_net
-    .row
       label.col-md-4 => Delivery.human_attribute_name(:discount)
-      .col-md-8 = @delivery.discount
+      .col-md-8 = display_price @delivery.discount

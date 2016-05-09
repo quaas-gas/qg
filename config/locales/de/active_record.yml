@@ -1,30 +1,29 @@
 de:
   attributes:
-    active:      aktiv
-    address:     Adresse
-    city:        Ort
-    comments:    Bemerkungen
-    created_at:  Angelegt
-    customer:    Kunde
-    date:        Datum
-    description: Beschreibung
-    email:       E-Mail
-    end_date:    Ende
-    first_name:  Vorname
-    gender:      Geschlecht
-    last_name:   Nachname
-    mobile:      Mobil
-    phone:       Telefon
-    salut:       Anrede
-    start_date:  Beginn
-    street:      Straße/Nr
-    updated_at:  Bearbeitet
-    zip:         PLZ
+    active:         aktiv
+    address:        Adresse
+    city:           Ort
+    comments:       Bemerkungen
+    created_at:     Angelegt
+    customer:       Kunde
+    date:           Datum
+    description:    Beschreibung
+    email:          E-Mail
+    end_date:       Ende
+    first_name:     Vorname
+    gender:         Geschlecht
+    last_name:      Nachname
+    mobile:         Mobil
+    phone:          Telefon
+    price:          Preis
+    price_currency: netto/brutto
+    salut:          Anrede
+    start_date:     Beginn
+    street:         Straße/Nr
+    updated_at:     Bearbeitet
+    zip:            PLZ
   activerecord:
     models:
-      bottle:
-        one: Flasche
-        other: Flaschen
       customer:
         one: Kunde
         other: Kunden
@@ -37,21 +36,11 @@ de:
       price:
         one: Preis
         other: Preise
+      product: Artikel
       seller:
         one: Verkäufer
         other: Verkäufer
     attributes:
-      bottle:
-        content: Inhalt (kg)
-        cert_price: TÜV
-        cert_price_net: TÜV (netto)
-        deposit_price: Pfand
-        deposit_price_net: Pfand (netto)
-        disposal_price: Ensorgungsgebühr
-        disposal_price_net: Ensorgungsgebühr (netto)
-        gas: Gasart
-        number: Typ
-        size: Größe
       customer:
         archived: archiviert
         id: KDN
@@ -74,10 +63,13 @@ de:
       enum:
         value: Name
       price:
-        bottle: Flasche
+        product: Artikel
         valid_from: gilt ab
-        price: Preis
         discount: Provision
+      product:
+        content: Inhalt
+        number: Artikelnummer
+        size: Größe
       seller:
         first_name: Vorname
         last_name: Nachname

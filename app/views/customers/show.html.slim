@@ -64,22 +64,20 @@
 .row
   .col-md-4 = panel_box title: 'Preise' do
     .row
-      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
-      .col-md-8 = bool_icon @customer.price_in_net
+      label.col-md-4 Preise in
+      .col-md-8 = @customer.price_in_net ? 'netto' : 'brutto'
     table.table.table-condensed.table-hover.table-striped.table-clickable
       thead
         tr
-          th Flasche
-          th Preis (netto)
+          th Artikel
           th Preis
           th Provision
       tbody
-        - @customer.prices.joins(:bottle).order('bottles.gas, bottles.size').each do |price|
+        - @customer.prices.joins(:product).order('products.size').each do |price|
           tr data={ url: edit_price_url(price) }
-            td = price.bottle.number
-            td.price = @customer.price_in_net ? price.price : (price.price / 1.19)
-            td.price = @customer.price_in_net ? (price.price * 1.19) : price.price
-            td.price = price.discount
+            td = price.product.number
+            td.price = display_price price.price
+            td.price = display_price price.discount
 
   .col-md-4 = panel_box title: 'Lieferungen' do
     table.table.table-condensed.table-hover.table-striped.table-clickable

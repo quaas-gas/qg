@@ -1,0 +1,31 @@
+.page-header
+  = link_to products_path, class: 'btn btn-default' do 
+    span.glyphicon.glyphicon-list-alt
+    =< t(:list)
+  = link_to edit_product_path(@product), class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-pencil
+    =< t(:edit)
+  => link_to @product, method: :delete, data: { confirm: t(:confirm_delete, model: Product.model_name.human) }, class: 'btn btn-danger' do
+    span.glyphicon.glyphicon-remove
+    =< t(:delete)
+  h2
+    => @product.name
+    small = Product.model_name.human
+
+.row
+  .col-md-6 = panel_box title: Product.model_name.human do
+    .row
+      label.col-md-4 => Product.human_attribute_name(:number)
+      .col-md-8 = @product.number
+    .row
+      label.col-md-4 => Product.human_attribute_name(:size)
+      .col-md-8 = @product.size
+    .row
+      label.col-md-4 => Product.human_attribute_name(:name)
+      .col-md-8 = @product.name
+    .row
+      label.col-md-4 => Product.human_attribute_name(:content)
+      .col-md-8 = @product.content
+    .row
+      label.col-md-4  => Product.human_attribute_name(:price)
+      .col-md-8 = display_price @product.price

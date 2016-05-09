@@ -11,26 +11,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509134834) do
+ActiveRecord::Schema.define(version: 20160509151906) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-
-  create_table "bottles", force: :cascade do |t|
-    t.string   "number",                               null: false
-    t.string   "gas"
-    t.string   "size"
-    t.string   "name"
-    t.string   "content"
-    t.integer  "cert_price_cents",         default: 0, null: false
-    t.integer  "cert_price_net_cents",     default: 0, null: false
-    t.integer  "deposit_price_cents",      default: 0, null: false
-    t.integer  "deposit_price_net_cents",  default: 0, null: false
-    t.integer  "disposal_price_cents",     default: 0, null: false
-    t.integer  "disposal_price_net_cents", default: 0, null: false
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-  end
 
   create_table "customers", force: :cascade do |t|
     t.string   "salut"
@@ -59,16 +43,17 @@ ActiveRecord::Schema.define(version: 20160509134834) do
     t.string   "number"
     t.string   "number_show"
     t.integer  "customer_id"
+    t.integer  "seller_id"
     t.date     "date"
     t.string   "driver"
     t.text     "description"
     t.string   "invoice_number"
     t.boolean  "on_account"
-    t.integer  "discount_net_cents", default: 0, null: false
-    t.integer  "discount_cents",     default: 0, null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
-    t.integer  "seller_id"
+    t.integer  "discount_cents",    default: 0,        null: false
+    t.string   "discount_currency", default: "EU4TAX", null: false
+    t.jsonb    "others"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
   add_index "deliveries", ["customer_id"], name: "index_deliveries_on_customer_id", using: :btree
@@ -87,16 +72,31 @@ ActiveRecord::Schema.define(version: 20160509134834) do
 
   create_table "prices", force: :cascade do |t|
     t.integer  "customer_id"
-    t.integer  "bottle_id"
+    t.integer  "product_id"
     t.date     "valid_from"
-    t.integer  "price_cents",    default: 0, null: false
-    t.integer  "discount_cents", default: 0, null: false
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.integer  "price_cents",       default: 0,        null: false
+    t.string   "price_currency",    default: "EU4TAX", null: false
+    t.integer  "discount_cents",    default: 0,        null: false
+    t.string   "discount_currency", default: "EU4TAX", null: false
+    t.jsonb    "others"
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
   end
 
-  add_index "prices", ["bottle_id"], name: "index_prices_on_bottle_id", using: :btree
   add_index "prices", ["customer_id"], name: "index_prices_on_customer_id", using: :btree
+  add_index "prices", ["product_id"], name: "index_prices_on_product_id", using: :btree
+
+  create_table "products", force: :cascade do |t|
+    t.string   "number"
+    t.string   "name"
+    t.string   "size"
+    t.string   "content"
+    t.integer  "price_cents",    default: 0,        null: false
+    t.string   "price_currency", default: "EU4TAX", null: false
+    t.jsonb    "others"
+    t.datetime "created_at",                        null: false
+    t.datetime "updated_at",                        null: false
+  end
 
   create_table "sellers", force: :cascade do |t|
     t.string   "short",      null: false
@@ -129,6 +129,6 @@ ActiveRecord::Schema.define(version: 20160509134834) do
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   add_foreign_key "deliveries", "customers"
-  add_foreign_key "prices", "bottles"
   add_foreign_key "prices", "customers"
+  add_foreign_key "prices", "products"
 end

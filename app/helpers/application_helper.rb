@@ -47,4 +47,10 @@ module ApplicationHelper
     content_tag(:div, class: 'panel-heading') { content_tag(:h4, title, class: 'panel-title') }
   end
 
+  def display_price(price, separator: '<br>')
+    txt = content_tag(:i, price.exchange_to('EU4NET'), class: 'text-muted')
+    txt += separator.html_safe
+    txt + price.exchange_to('EU4TAX')
+  end
+
 end

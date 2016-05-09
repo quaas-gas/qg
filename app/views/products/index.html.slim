@@ -1,0 +1,28 @@
+.page-header
+  = link_to products_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_product_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @products.count
+    = Product.model_name.human count: @products.count
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Product.human_attribute_name(:number)
+        th = Product.human_attribute_name(:size)
+        th = Product.human_attribute_name(:name)
+        th = Product.human_attribute_name(:content)
+        th = Product.human_attribute_name(:price)
+    tbody
+      - @products.each do |product|
+        tr data = {url: url_for(product)}
+          td = product.number
+          td = product.size
+          td = product.name
+          td = product.content
+          td = display_price product.price

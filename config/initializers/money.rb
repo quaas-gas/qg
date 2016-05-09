@@ -46,9 +46,9 @@ MoneyRails.configure do |config|
                              postfix: '_currency',
                              column_name: nil,
                              type: :string,
-                             present: false,
+                             present: true,
                              null: false,
-                             default: 'USD'
+                             default: 'EU4TAX'
                            }
 
   # Register a custom currency
@@ -67,8 +67,8 @@ MoneyRails.configure do |config|
   # }
   config.register_currency = {
     priority:            1,
-    iso_code:            'EU4',
-    name:                'Euro with subunit of 4 digits',
+    iso_code:            'EU4TAX',
+    name:                'Euro with subunit of 4 digits (with tax)',
     symbol:              '€',
     symbol_first:        false,
     subunit:             'cent',
@@ -77,8 +77,23 @@ MoneyRails.configure do |config|
     decimal_mark:        ',',
     no_cents_if_whole:  false,
   }
+  config.register_currency = {
+    priority:            2,
+    iso_code:            'EU4NET',
+    name:                'Euro with subunit of 4 digits',
+    symbol:              '€(Netto)',
+    symbol_first:        false,
+    subunit:             'cent',
+    subunit_to_unit:     10000,
+    thousands_separator: '.',
+    decimal_mark:        ',',
+    no_cents_if_whole:  false,
+  }
 
-  config.default_currency = :eu4
+  config.add_rate 'EU4TAX', 'EU4NET', (1 / 1.19)
+  config.add_rate 'EU4NET', 'EU4TAX', 1.19
+
+  config.default_currency = :eu4tax
   config.no_cents_if_whole = false
 
   # Set default money format globally.
@@ -102,4 +117,13 @@ MoneyRails.configure do |config|
   #
   # Example:
   # config.raise_error_on_money_parsing = false
+end
+
+class Money
+  def self.currencies
+    {
+      'netto'  => 'EU4NET',
+      'brutto' => 'EU4TAX'
+    }
+  end
 end

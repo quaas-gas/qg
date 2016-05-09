@@ -1,0 +1,6 @@
+.page-header
+  h2
+    => @product.name
+    small = Product.model_name.human
+
+= render 'form'

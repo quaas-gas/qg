@@ -5,7 +5,8 @@ class PricesController < ApplicationController
 
   def index
     authorize Price
-    @prices = Price.includes(:customer, :bottle).page(params[:page]).all
+    @customer = Customer.find_by id: params[:customer_id]
+    @prices = @customer.prices.joins(:product).order('products.number').includes(:product).all
   end
 
   def show
@@ -53,6 +54,6 @@ class PricesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def price_params
-    params.require(:price).permit(:customer_id, :bottle_id, :valid_from, :price, :discount)
+    params.require(:price).permit(:customer_id, :product_id, :valid_from, :price, :discount)
   end
 end
