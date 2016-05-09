@@ -5,6 +5,7 @@ Rails.application.routes.draw do
 
   resources :customers
   resources :deliveries
+  resources :bottles
 
   get 'dashboard' => 'dashboard#index'
   root to: 'dashboard#index'

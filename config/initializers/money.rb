@@ -74,10 +74,12 @@ MoneyRails.configure do |config|
     subunit:             'cent',
     subunit_to_unit:     10000,
     thousands_separator: '.',
-    decimal_mark:        ','
+    decimal_mark:        ',',
+    no_cents_if_whole:  false,
   }
 
   config.default_currency = :eu4
+  config.no_cents_if_whole = false
 
   # Set default money format globally.
   # Default value is nil meaning "ignore this option".
@@ -87,6 +89,11 @@ MoneyRails.configure do |config|
   #   :no_cents_if_whole => nil,
   #   :symbol => nil,
   #   :sign_before_symbol => nil
+  # }
+  # config.default_format = {
+  #   no_cents_if_whole:  false,
+  #   symbol:             nil,
+  #   sign_before_symbol: nil
   # }
 
   # Set default raise_error_on_money_parsing option

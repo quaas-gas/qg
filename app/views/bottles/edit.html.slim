@@ -1,0 +1,6 @@
+.page-header
+  h2
+    => @bottle.name
+    small = Bottle.model_name.human
+
+= render 'form'

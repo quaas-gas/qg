@@ -22,6 +22,9 @@ de:
     zip:         PLZ
   activerecord:
     models:
+      bottle:
+        one: Flasche
+        other: Flaschen
       customer:
         one: Kunde
         other: Kunden
@@ -32,6 +35,17 @@ de:
         one:   Aufzählung
         other: Aufzählungen
     attributes:
+      bottle:
+        content: Inhalt (kg)
+        cert_price: TÜV
+        cert_price_net: TÜV (netto)
+        deposit_price: Pfand
+        deposit_price_net: Pfand (netto)
+        disposal_price: Ensorgungsgebühr
+        disposal_price_net: Ensorgungsgebühr (netto)
+        gas: Gasart
+        number: Typ
+        size: Größe
       customer:
         archived: archiviert
         id: KDN

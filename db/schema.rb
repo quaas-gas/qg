@@ -11,10 +11,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160508201224) do
+ActiveRecord::Schema.define(version: 20160509095220) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "bottles", force: :cascade do |t|
+    t.string   "number",                               null: false
+    t.string   "gas"
+    t.string   "size"
+    t.string   "name"
+    t.string   "content"
+    t.integer  "cert_price_cents",         default: 0, null: false
+    t.integer  "cert_price_net_cents",     default: 0, null: false
+    t.integer  "deposit_price_cents",      default: 0, null: false
+    t.integer  "deposit_price_net_cents",  default: 0, null: false
+    t.integer  "disposal_price_cents",     default: 0, null: false
+    t.integer  "disposal_price_net_cents", default: 0, null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string   "salut"

@@ -1,0 +1,18 @@
+= simple_form_for(@bottle) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :number
+    = f.input :gas
+    = f.input :size
+    = f.input :name
+    = f.input :content
+    = f.input :cert_price
+    = f.input :cert_price_net
+    = f.input :deposit_price
+    = f.input :deposit_price_net
+    = f.input :disposal_price
+    = f.input :disposal_price_net
+
+  .form-actions
+    = f.button :submit

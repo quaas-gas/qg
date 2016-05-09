@@ -3,7 +3,7 @@ require_dependency "<%= namespaced_file_path %>/application_controller"
 <% end -%>
 <% module_namespacing do -%>
 class <%= controller_file_name.camelize %>Controller < ApplicationController
-  before_action :authenticate_login!
+  before_action :authenticate_user!
   after_action :verify_authorized
   before_action :set_<%= file_name %>, only: [:show, :edit, :update, :destroy]
 

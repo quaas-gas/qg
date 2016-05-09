@@ -4,6 +4,11 @@ de:
   updated: "%{model} gespeichert."
   destroyed: "%{model} gelöscht."
   confirm_delete: "%{model} löschen?"
+  bottles:
+    form:
+      error: Flasche konnte nicht gespeichert werden.
+    new:
+      title: "Flaschen anlegen"
   customers:
     form:
       error: Kunde konnte nicht gespeichert werden.
