@@ -13,7 +13,7 @@
     small = Customer.model_name.human
 
 .row
-  .col-md-6 = panel_box title: Customer.model_name.human do
+  .col-md-4 = panel_box title: Customer.model_name.human do
     .row
       label.col-md-4 => Customer.human_attribute_name(:salut)
       .col-md-8 = @customer.salut
@@ -33,13 +33,10 @@
       label.col-md-4 => Customer.human_attribute_name(:kind)
       .col-md-8 = @customer.kind
     .row
-      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
-      .col-md-8 = bool_icon @customer.price_in_net
-    .row
       label.col-md-4 => Customer.human_attribute_name(:archived)
       .col-md-8 = bool_icon @customer.archived
 
-  .col-md-6 = panel_box title: 'Kontaktdaten' do
+  .col-md-4 = panel_box title: 'Kontaktdaten' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:street)
       .col-md-8 = @customer.street
@@ -59,22 +56,55 @@
     .row
       label.col-md-4 => Customer.human_attribute_name(:email)
       .col-md-8 = @customer.email
-
-.row
-  .col-md-6 = panel_box title: 'Rechnungen' do
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:gets_invoice)
-      .col-md-8 = bool_icon @customer.gets_invoice
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:invoice_address)
-      .col-md-8
-        - if @customer.invoice_address.present?
-          = @customer.invoice_address.split("\n").join('<br>').html_safe
-    .row
-      label.col-md-4 letzte Rechnungen
-      .col-md-8
-
-  .col-md-6 = panel_box title: 'Bestand' do
+  .col-md-4 = panel_box title: 'Bestand' do
     .row
       label.col-md-4 => Customer.human_attribute_name(:has_stock)
       .col-md-8 = bool_icon @customer.has_stock
+
+.row
+  .col-md-4 = panel_box title: 'Preise' do
+    .row
+      label.col-md-4 => Customer.human_attribute_name(:price_in_net)
+      .col-md-8 = bool_icon @customer.price_in_net
+    table.table.table-condensed.table-hover.table-striped.table-clickable
+      thead
+        tr
+          th Flasche
+          th Preis (netto)
+          th Preis
+          th Provision
+      tbody
+        - @customer.prices.joins(:bottle).order('bottles.gas, bottles.size').each do |price|
+          tr data={ url: edit_price_url(price) }
+            td = price.bottle.number
+            td.price = @customer.price_in_net ? price.price : (price.price / 1.19)
+            td.price = @customer.price_in_net ? (price.price * 1.19) : price.price
+            td.price = price.discount
+
+  .col-md-4 = panel_box title: 'Lieferungen' do
+    table.table.table-condensed.table-hover.table-striped.table-clickable
+      thead
+        tr
+          th
+          th Datum
+          th LSN
+      tbody
+        - @customer.deliveries.limit(10).order(date: :desc).each do |delivery|
+          tr data={ url: url_for(delivery) }
+            td
+              span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+            td = ldate delivery.date
+            td = delivery.number
+
+  .col-md-4 = panel_box title: 'Rechnungen' do
+    .row
+      label.col-md-6 => Customer.human_attribute_name(:gets_invoice)
+      .col-md-6 = bool_icon @customer.gets_invoice
+    .row
+      label.col-md-6 => Customer.human_attribute_name(:invoice_address)
+      .col-md-6
+        - if @customer.invoice_address.present?
+          = @customer.invoice_address.split("\n").join('<br>').html_safe
+    h4 letzte Rechnungen
+
+

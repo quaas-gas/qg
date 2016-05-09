@@ -12,6 +12,8 @@ nav.navbar.navbar-inverse.navbar-fixed-top
       ul.nav.navbar-nav
         li class=('active' if params[:controller] == 'customers')
           = link_to Customer.model_name.human(count: 2), customers_url
+        /li class=('active' if params[:controller] == 'pices')
+          = link_to Price.model_name.human(count: 2), prices_url
         li class=('active' if params[:controller] == 'deliveries')
           = link_to Delivery.model_name.human(count: 2), deliveries_url
         li class=('active' if params[:controller] == 'bottles')

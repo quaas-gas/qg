@@ -2,6 +2,7 @@ class Customer < ActiveRecord::Base
   include PgSearch
 
   has_many :deliveries, inverse_of: :customer
+  has_many :prices, inverse_of: :customer
 
   multisearchable against: [:salut, :name, :name2, :street, :city, :kind, :invoice_address]
 
