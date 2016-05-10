@@ -12,6 +12,7 @@ gem 'jbuilder', '~> 2.0'
 gem 'kaminari'
 gem 'pg_search'
 gem 'money-rails'
+gem 'rails-settings-cached'
 
 group :development, :test do
   gem 'byebug'
