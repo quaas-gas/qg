@@ -48,9 +48,9 @@ module ApplicationHelper
   end
 
   def display_price(price, separator: '<br>')
-    txt = content_tag(:i, price.exchange_to('EU4NET'), class: 'text-muted')
+    txt = content_tag(:span, price.exchange_to('EU4NET'), class: 'nontax', title: 'netto')
     txt += separator.html_safe
-    txt + price.exchange_to('EU4TAX')
+    txt + content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')
   end
 
 end

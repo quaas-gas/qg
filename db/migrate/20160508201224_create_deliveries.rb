@@ -9,6 +9,7 @@ class CreateDeliveries < ActiveRecord::Migration
       t.string :driver
       t.text :description
       t.string :invoice_number
+      t.boolean :tax, default: true
       t.boolean :on_account
       t.monetize :discount
       t.jsonb :others

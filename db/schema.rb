@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160509151906) do
+ActiveRecord::Schema.define(version: 20160510145027) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,18 +25,19 @@ ActiveRecord::Schema.define(version: 20160509151906) do
     t.string   "city"
     t.string   "zip"
     t.string   "phone"
+    t.string   "mobile"
     t.string   "email"
     t.boolean  "gets_invoice",    default: true
     t.string   "region"
     t.string   "kind"
-    t.boolean  "price_in_net",    default: true
+    t.boolean  "price_in_net",    default: false
+    t.boolean  "tax",             default: true
     t.boolean  "has_stock",       default: false
     t.date     "last_stock_date"
     t.text     "invoice_address"
+    t.boolean  "archived",        default: false
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
-    t.string   "mobile"
-    t.boolean  "archived",        default: false
   end
 
   create_table "deliveries", force: :cascade do |t|
@@ -48,6 +49,7 @@ ActiveRecord::Schema.define(version: 20160509151906) do
     t.string   "driver"
     t.text     "description"
     t.string   "invoice_number"
+    t.boolean  "tax",               default: true
     t.boolean  "on_account"
     t.integer  "discount_cents",    default: 0,        null: false
     t.string   "discount_currency", default: "EU4TAX", null: false
@@ -59,6 +61,35 @@ ActiveRecord::Schema.define(version: 20160509151906) do
   add_index "deliveries", ["customer_id"], name: "index_deliveries_on_customer_id", using: :btree
   add_index "deliveries", ["date"], name: "index_deliveries_on_date", using: :btree
   add_index "deliveries", ["seller_id"], name: "index_deliveries_on_seller_id", using: :btree
+
+  create_table "delivery_items", force: :cascade do |t|
+    t.integer  "delivery_id"
+    t.integer  "product_id"
+    t.string   "name"
+    t.integer  "count"
+    t.integer  "count_back"
+    t.integer  "unit_price_cents",    default: 0,        null: false
+    t.string   "unit_price_currency", default: "EU4TAX", null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.jsonb    "others"
+  end
+
+  add_index "delivery_items", ["delivery_id"], name: "index_delivery_items_on_delivery_id", using: :btree
+  add_index "delivery_items", ["product_id"], name: "index_delivery_items_on_product_id", using: :btree
+
+  create_table "delivery_items_imports", force: :cascade do |t|
+    t.string  "delivery_id"
+    t.string  "bottle_id"
+    t.integer "count_full"
+    t.integer "count_empty"
+    t.integer "stock_new"
+    t.float   "total_kg"
+    t.float   "price"
+    t.float   "price_net"
+    t.float   "price_total"
+    t.float   "price_total_net"
+  end
 
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"
@@ -129,6 +160,7 @@ ActiveRecord::Schema.define(version: 20160509151906) do
   add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
   add_foreign_key "deliveries", "customers"
+  add_foreign_key "delivery_items", "deliveries"
   add_foreign_key "prices", "customers"
   add_foreign_key "prices", "products"
 end

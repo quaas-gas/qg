@@ -9,35 +9,42 @@
     span.glyphicon.glyphicon-remove
     =< t(:delete)
   h2
-    => @delivery.number
-    small = Delivery.model_name.human
+    - if @delivery.on_account
+      span.glyphicon.glyphicon-list-alt>
+      |  Lieferschein
+    - else
+      span.glyphicon.glyphicon-eur
+      |  Quittung
+    =< @delivery.number
+.delivery class=(@delivery.tax ? 'tax' : 'nontax')
+  .row
+    .col-md-6
+      .row
+        .col-md-9
+          h4 = link_to @delivery.customer.name, @delivery.customer
+        .col-md-3
+          p = ldate @delivery.date
+          p = @delivery.seller&.name
 
-.row
-  .col-md-6 = panel_box title: Delivery.model_name.human do
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:number)
-      .col-md-8 = @delivery.number
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:number_show)
-      .col-md-8 = @delivery.number_show
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:customer)
-      .col-md-8 = link_to @delivery.customer.name, @delivery.customer
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:date)
-      .col-md-8 = ldate @delivery.date
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:seller)
-      .col-md-8 = @delivery.seller.name
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:description)
-      .col-md-8 = @delivery.description
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:invoice_number)
-      .col-md-8 = @delivery.invoice_number
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:on_account)
-      .col-md-8 = @delivery.on_account
-    .row
-      label.col-md-4 => Delivery.human_attribute_name(:discount)
-      .col-md-8 = display_price @delivery.discount
+      table.table.table-condensed.table-hover.table-striped.table-bordered
+        thead
+          th Artikel
+          th Anzahl
+          th leer
+          th.price Einzelpreis
+          th.price Gesamtpreis
+        tbody
+          - @delivery.delivery_items.includes(:product).each do |item|
+            tr
+              td = item.product.number
+              td = item.count
+              td = item.count_back
+              td.price = display_price item.unit_price
+              td.price = display_price item.total_price
+          tr
+            td colspan=3 = @delivery.description
+            td.price = Delivery.human_attribute_name(:discount)
+            td.price = display_price @delivery.discount
+          tr
+            th.price colspan=4 Summe
+            th.price = display_price @delivery.total_price

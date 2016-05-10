@@ -50,6 +50,7 @@ de:
         kind: Kundenart
         own_customer: Direktkunde
         price_in_net: hat Netto-Preise
+        tax: Preise mit MwSt
       delivery:
         date: Datum
         discount: Rabatt
@@ -60,6 +61,7 @@ de:
         number: LSN
         number_show: LSN (Anzeige)
         seller: Verkäufer
+        tax: Preise mit MwSt
       enum:
         value: Name
       price:

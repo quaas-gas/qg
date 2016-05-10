@@ -24,22 +24,22 @@ div
         th = Delivery.human_attribute_name(:customer)
         th = Delivery.human_attribute_name(:date)
         th = Delivery.human_attribute_name(:seller)
-        /th = Delivery.human_attribute_name(:description)
         th = Delivery.human_attribute_name(:invoice_number)
-        /th Quittung / LS, Rechnung
-        /th = Delivery.human_attribute_name(:discount_net)
-        /th = Delivery.human_attribute_name(:discount)
+        /th = Delivery.human_attribute_name(:tax)
+        th Gesamt
+
+        /th
     tbody
-      - @deliveries.each do | delivery |
-        tr data = {url: url_for(delivery)}
+      - @deliveries.each do |delivery|
+        tr data = {url: url_for(delivery)} class=(delivery.tax ? 'tax' : 'nontax')
           td
             span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
           td = delivery.number_show
           td = delivery.customer.name
           td = ldate delivery.date
           td = delivery.seller&.name
-          /td = delivery.description
           td = delivery.invoice_number
-          /td = delivery.on_account ? ['LS', delivery.invoice_number].select(&:present?).join(', ') : 'Qu'
-          /td = humanized_money_with_symbol delivery.discount_net
-          /td = humanized_money_with_symbol delivery.discount
+          /td = bool_icon delivery.tax
+          td.price = display_price delivery.total_price
+          /td
+            pre = JSON.pretty_generate(delivery.others)

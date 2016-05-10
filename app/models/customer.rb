@@ -10,4 +10,6 @@ class Customer < ActiveRecord::Base
 
   scope :archived, -> { where(archived: true)  }
   scope :active,   -> { where(archived: false) }
+  scope :tax,      -> { where(tax: true)  }
+  scope :nontax,   -> { where(tax: false) }
 end
