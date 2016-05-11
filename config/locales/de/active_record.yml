@@ -52,6 +52,7 @@ de:
         price_in_net: hat Netto-Preise
         tax: Preise mit MwSt
       delivery:
+        customer: Empfänger
         date: Datum
         discount: Rabatt
         discount_net: Rabatt (Netto)

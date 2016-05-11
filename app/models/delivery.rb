@@ -6,8 +6,6 @@ class Delivery < ActiveRecord::Base
 
   has_many :delivery_items
 
-  monetize :discount_cents, with_model_currency: :discount_currency
-
   validates :number, presence: true #, uniqueness: true
 
   multisearchable against: [:number, :number_show]
@@ -21,10 +19,12 @@ class Delivery < ActiveRecord::Base
     tax ? 'EU4TAX' : 'EU4NET'
   end
 
+  def total_articles
+    delivery_items.map(&:count).sum
+  end
+
   def total_price
-    price = Money.from_amount(0, currency)
-    total = delivery_items.inject(price) {|sum, item| sum += item.total_price }
-    total + discount
+    delivery_items.map(&:total_price).sum
   end
 
 end

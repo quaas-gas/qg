@@ -21,9 +21,9 @@
     .col-md-6
       .row
         .col-md-9
-          h4 = link_to @delivery.customer.name, @delivery.customer
+          p = link_to @delivery.customer.name, @delivery.customer
         .col-md-3
-          p = ldate @delivery.date
+          p.text-right = ldate @delivery.date
           p = @delivery.seller&.name
 
       table.table.table-condensed.table-hover.table-striped.table-bordered
@@ -43,9 +43,6 @@
               td.price = display_price item.total_price
         tfoot
           tr
-            td colspan=3 = @delivery.description
-            td.price = Delivery.human_attribute_name(:discount)
-            td.price = display_price @delivery.discount
-          tr
             th.price colspan=4 Summe
             th.price = display_price @delivery.total_price
+      p = @delivery.description

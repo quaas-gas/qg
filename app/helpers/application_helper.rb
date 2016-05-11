@@ -48,6 +48,7 @@ module ApplicationHelper
   end
 
   def display_price(price, separator: '<br>')
+    price = Money.from_amount price unless price.is_a? Money
     txt = content_tag(:span, price.exchange_to('EU4NET'), class: 'nontax', title: 'netto')
     txt += separator.html_safe
     txt + content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')

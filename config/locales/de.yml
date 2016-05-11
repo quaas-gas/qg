@@ -17,8 +17,11 @@ de:
   deliveries:
     form:
       error: Lieferung konnte nicht gespeichert werden.
+    index:
+      new_tour: Tour eingeben
+      new_delivery: Lieferschein eingeben
     new:
-      title: "Lieferung anlegen"
+      title: "Lieferung eingeben"
   prices:
     form:
       error: Preis konnte nicht gespeichert werden.

@@ -6,20 +6,23 @@
         span.sr-only Close
       h4 = t('.error')
 
-  .form-inputs
-    = f.input :number
-    /= f.input :number_show
-    = f.association :customer
-    = f.input :date
-    = f.association :seller
-    = f.input :description
-    /= f.input :invoice_number
-    = f.input :on_account
-    = f.input :tax
-    = f.input :discount
+  section
+    .col-md-5
+      .form-inputs
+        = f.association :customer, input_html: { autofocus: true }
+        = f.input :date
+        /= f.input :description
+        /= f.input :on_account
+    .col-md-3
+      .form-inputs
+        = f.input :number
+        = f.association :seller
+        /= f.input :description
+        = f.input :on_account
 
-  .form-actions
-    = f.button :submit
+  section.action-buttons
+    .col-md-8
+      .pull-right
+        => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+        = f.submit t(:save), class: 'btn btn-primary'
 
-
-/609169

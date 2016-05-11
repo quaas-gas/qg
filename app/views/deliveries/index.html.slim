@@ -4,11 +4,14 @@
     =< t(:export)
   = link_to new_delivery_path, class: 'btn btn-primary' do 
     span.glyphicon.glyphicon-plus
-    =< t(:new)
+    =< t('.new_delivery')
+  = link_to '#', class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-plus
+    =< t('.new_tour')
   h2
     => @deliveries.count
     => Delivery.model_name.human count: @deliveries.count
-    | vom
+    | am
     =< ldate @filter.date
 
 div
@@ -22,9 +25,10 @@ div
         th
         th = Delivery.human_attribute_name(:number)
         th = Delivery.human_attribute_name(:customer)
-        th = Delivery.human_attribute_name(:date)
+        /th = Delivery.human_attribute_name(:date)
         th = Delivery.human_attribute_name(:seller)
-        th = Delivery.human_attribute_name(:invoice_number)
+        th Artikel
+        /th = Delivery.human_attribute_name(:invoice_number)
         /th = Delivery.human_attribute_name(:tax)
         th Gesamt
 
@@ -39,14 +43,15 @@ div
             span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
           td = delivery.number_show
           td = delivery.customer.name
-          td = ldate delivery.date
+          /td = ldate delivery.date
           td = delivery.seller&.name
-          td = delivery.invoice_number
+          td.price = delivery.total_articles
+          /td = delivery.invoice_number
           /td = bool_icon delivery.tax
           td.price = display_price total_price
           /td
             pre = JSON.pretty_generate(delivery.others)
     tfoot
       tr
-        th.price colspan=6 Summe
+        th.price colspan=5 Summe
         th.price = display_price sum

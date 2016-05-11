@@ -1,1 +1,2 @@
-json.extract! @delivery, :id, :number, :number_show, :customer_id, :date, :driver, :description, :invoice_number, :on_account, :discount_net, :discount, :created_at, :updated_at
+json.extract! @delivery, :id, :number, :customer_id, :date, :seller_id, :description,
+              :invoice_number, :tax, :on_account, :created_at, :updated_at

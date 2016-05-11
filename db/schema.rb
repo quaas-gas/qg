@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160510224456) do
+ActiveRecord::Schema.define(version: 20160511134725) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -49,13 +49,11 @@ ActiveRecord::Schema.define(version: 20160510224456) do
     t.string   "driver"
     t.text     "description"
     t.string   "invoice_number"
-    t.boolean  "tax",               default: true
+    t.boolean  "tax",            default: true
     t.boolean  "on_account"
-    t.integer  "discount_cents",    default: 0,        null: false
-    t.string   "discount_currency", default: "EU4TAX", null: false
     t.jsonb    "others"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   add_index "deliveries", ["customer_id"], name: "index_deliveries_on_customer_id", using: :btree
