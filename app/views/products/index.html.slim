@@ -14,6 +14,7 @@
     thead
       tr
         th = Product.human_attribute_name(:number)
+        th
         th = Product.human_attribute_name(:category)
         th = Product.human_attribute_name(:name)
         th.price = Product.human_attribute_name(:content)
@@ -22,6 +23,7 @@
       - @products.each do |product|
         tr data = {url: edit_product_url(product)}
           td = product.number
+          td = product.delivery_items.count
           td = product.category
           td = product.name
           td.price = product.content

@@ -8,15 +8,18 @@
 
   .form-inputs
     = f.input :number
-    = f.input :number_show
+    /= f.input :number_show
     = f.association :customer
     = f.input :date
     = f.association :seller
     = f.input :description
     /= f.input :invoice_number
     = f.input :on_account
-    = f.input :discount_net
+    = f.input :tax
     = f.input :discount
 
   .form-actions
     = f.button :submit
+
+
+/609169

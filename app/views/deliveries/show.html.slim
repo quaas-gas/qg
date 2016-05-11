@@ -34,13 +34,14 @@
           th.price Einzelpreis
           th.price Gesamtpreis
         tbody
-          - @delivery.delivery_items.includes(:product).each do |item|
+          - @delivery.delivery_items.joins(:product).order('products.category, products.number').includes(:product).each do |item|
             tr
               td = item.product.number
               td = item.count
               td = item.count_back
               td.price = display_price item.unit_price
               td.price = display_price item.total_price
+        tfoot
           tr
             td colspan=3 = @delivery.description
             td.price = Delivery.human_attribute_name(:discount)

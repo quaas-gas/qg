@@ -170,4 +170,52 @@ module Importer
     Setting.product_categories = Product.pluck(:category).uniq.compact.sort
   end
 
+  def self.product_number(category, bottle_id)
+    return 'schrott-bg' if category == 'Schrott'
+    category = ({ 'TÜV' => 'tüv', 'Pfand' => 'pfand' }[category])
+    [category, bottle_id].join('-')
+    # "#{category}-#{bottle_id}"
+  end
+
+  def self.import_other_delivery_items
+    products = {}
+    Product.all.each { |p| products[p.number] = p }
+
+    batch_size = 1000
+    count = 0
+    DeliveryItem.transaction do
+      xml_data('deliveries_other', 'deliveries_other').each_slice(batch_size) do |batch|
+        items = batch.map do |node|
+          hash      = node_to_hash(node)
+          delivery  = Delivery.find_by number: hash.delete('delivery_id')
+          bottle_id = hash.delete 'bottle_id'
+          category  = hash.delete 'product'
+          p_number  = product_number(category, bottle_id)
+          unless products[p_number]
+            if p_number
+              products[p_number] = Product.create!(
+                number: p_number, category: 'Gebühr', name: "Gebühr für #{p_number}"
+              )
+            else
+              puts category, bottle_id
+            end
+          end
+          product        = products[p_number]
+          hash[:product_id] = product.id
+          net                = monetize(val: hash.delete('price_net'), currency: 'EU4NET')
+          tax                = monetize(val: hash.delete('price'), currency: 'EU4TAX')
+          hash[:delivery_id] = delivery.id
+          hash[:unit_price]  = delivery.tax ? tax : net
+          hash.delete 'id'
+          hash.delete 'price_total'
+          hash.delete 'price_total_net'
+          hash
+        end
+        DeliveryItem.create! items
+        puts (count += batch_size)
+      end
+    end
+
+  end
+
 end

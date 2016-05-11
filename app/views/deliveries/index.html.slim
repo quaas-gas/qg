@@ -30,7 +30,10 @@ div
 
         /th
     tbody
+      - sum = Money.new(0, 'EU4TAX')
       - @deliveries.each do |delivery|
+        - total_price = delivery.total_price
+        - sum += total_price
         tr data = {url: url_for(delivery)} class=(delivery.tax ? 'tax' : 'nontax')
           td
             span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
@@ -40,6 +43,10 @@ div
           td = delivery.seller&.name
           td = delivery.invoice_number
           /td = bool_icon delivery.tax
-          td.price = display_price delivery.total_price
+          td.price = display_price total_price
           /td
             pre = JSON.pretty_generate(delivery.others)
+    tfoot
+      tr
+        th.price colspan=6 Summe
+        th.price = display_price sum
