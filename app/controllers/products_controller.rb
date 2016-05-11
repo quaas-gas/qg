@@ -5,7 +5,7 @@ class ProductsController < ApplicationController
 
   def index
     authorize Product
-    @products = Product.order(:number).all
+    @products = Product.order(:category, :number).all
   end
 
   def show
@@ -24,7 +24,7 @@ class ProductsController < ApplicationController
     @product = Product.new product_params
 
     if @product.save
-      redirect_to @product, notice: t(:created, model: Product.model_name.human)
+      redirect_to products_url, notice: t(:created, model: Product.model_name.human)
     else
       render :new
     end
@@ -32,7 +32,7 @@ class ProductsController < ApplicationController
 
   def update
     if @product.update product_params
-      redirect_to @product, notice: t(:updated, model: Product.model_name.human)
+      redirect_to products_url, notice: t(:updated, model: Product.model_name.human)
     else
       render :edit
     end
@@ -53,6 +53,7 @@ class ProductsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def product_params
-    params.require(:product).permit(:number, :size, :name, :content, :price, :price_currency)
+    params.require(:product)
+      .permit(:number, :size, :name, :content, :price, :price_currency, :category)
   end
 end

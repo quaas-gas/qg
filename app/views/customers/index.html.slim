@@ -27,7 +27,7 @@ div
         /th = Customer.human_attribute_name(:region)
         - if @filter.kind.blank?
           th = Customer.human_attribute_name(:kind)
-        th = Customer.human_attribute_name(:price_in_net)
+        th = Customer.human_attribute_name(:tax)
         th = Customer.human_attribute_name(:has_stock)
     tbody
       - @customers.each do | customer |
@@ -42,6 +42,6 @@ div
           /td = customer.region
           - if @filter.kind.blank?
             td = customer.kind
-          td = bool_icon customer.price_in_net
+          td = bool_icon customer.tax
           td = bool_icon customer.has_stock
 .pull-right = paginate @customers

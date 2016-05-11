@@ -5,7 +5,7 @@
     .col-md-6
       .form-inputs
         = f.input :number
-        = f.input :size
+        = f.input :category, collection: Setting.product_categories
         = f.input :name
         = f.input :content
         .row

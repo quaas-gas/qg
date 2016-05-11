@@ -69,6 +69,7 @@ de:
         valid_from: gilt ab
         discount: Provision
       product:
+        category: Kategorie
         content: Inhalt
         number: Artikelnummer
         size: Größe

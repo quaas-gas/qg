@@ -59,13 +59,14 @@ module Importer
 
   def self.import_products(with_delete: false)
     reset(Product) if with_delete
-    exceptions = %w(gas cert_price cert_price_net deposit_price deposit_price_net disposal_price disposal_price_net)
+    exceptions = %w(cert_price cert_price_net deposit_price deposit_price_net disposal_price disposal_price_net)
 
     products = xml_data('bottles').map do |node|
       data = node_to_hash(node)
       hash = data.except(*exceptions)
       hash[:others] = data.to_json
       hash[:number] = hash.delete 'id'
+      hash[:category] = hash.delete 'gas'
       hash
     end
     Product.create! products
@@ -153,6 +154,20 @@ module Importer
       end
     end
     DeliveryItem.count
+  end
+
+  def self.import_other_products
+
+    xml_data('products').map do |node|
+      hash = node_to_hash(node)
+      product = Product.find_by number: hash['number']
+      if product
+        product.update category: hash['category']
+      else
+        Product.create! hash
+      end
+    end
+    Setting.product_categories = Product.pluck(:category).uniq.compact.sort
   end
 
 end
