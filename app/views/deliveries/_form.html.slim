@@ -9,7 +9,7 @@
   section
     .col-md-5
       .form-inputs
-        = f.association :customer, input_html: { autofocus: true }
+        = f.association :customer, collection: Customer.order(:name).active, input_html: { autofocus: true }
         = f.input :date, as: :string, input_html: { class: 'date' }
         /= f.input :description
         /= f.input :on_account

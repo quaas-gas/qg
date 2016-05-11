@@ -22,4 +22,4 @@ nav.navbar.navbar-inverse.navbar-fixed-top
           = link_to Seller.model_name.human(count: 2), sellers_url
       form.navbar-form.navbar-right role="search" action=search_url
         .form-group
-          input.form-control type="text" placeholder="Suche" name="q" value=@query
+          input.form-control type="text" placeholder="Suche" name="q" value=@query autofocus=(params[:controller] == 'search')
