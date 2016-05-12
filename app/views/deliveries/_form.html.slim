@@ -1,3 +1,5 @@
+.page-header = render 'header'
+
 = simple_form_for(@delivery) do |f|
   - if @delivery.errors.any?
     .alert.alert-danger.alert-dismissable@alert

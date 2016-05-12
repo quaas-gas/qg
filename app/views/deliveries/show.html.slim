@@ -8,13 +8,8 @@
   => link_to @delivery, method: :delete, data: { confirm: t(:confirm_delete, model: Delivery.model_name.human) }, class: 'btn btn-danger' do
     span.glyphicon.glyphicon-remove
     =< t(:delete)
-  h2
-    - if @delivery.on_account
-      span.glyphicon.glyphicon-list-alt>
-      |  Lieferschein
-    - else
-      span.glyphicon.glyphicon-eur
-      |  Quittung
+  = render 'header'
+
 .delivery class=(@delivery.tax ? 'tax' : 'nontax')
   .row
     .col-md-9
