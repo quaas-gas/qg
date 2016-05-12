@@ -45,3 +45,4 @@
             th.price colspan=5 Summe
             th.price = display_price @delivery.total_price
       p = @delivery.description
+    .col-md-3 = render 'customer_info', customer: @delivery.customer

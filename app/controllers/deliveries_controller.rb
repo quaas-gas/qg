@@ -16,11 +16,16 @@ class DeliveriesController < ApplicationController
   def new
     authorize Delivery
     @delivery = Delivery.new
-    3.times { @delivery.delivery_items.build }
+    if params[:customer_id].present?
+      @customer = Customer.includes(prices: :product).find params[:customer_id]
+      @delivery.customer = @customer
+      @delivery.on_account = @customer.gets_invoice
+      prepare_items
+    end
   end
 
   def edit
-    3.times { @delivery.delivery_items.build }
+    prepare_items
   end
 
   def create
@@ -30,6 +35,7 @@ class DeliveriesController < ApplicationController
     if @delivery.save
       redirect_to @delivery, notice: t(:created, model: Delivery.model_name.human)
     else
+      prepare_items
       render :new
     end
   end
@@ -38,6 +44,7 @@ class DeliveriesController < ApplicationController
     if @delivery.update delivery_params
       redirect_to @delivery, notice: t(:updated, model: Delivery.model_name.human)
     else
+      prepare_items
       render :edit
     end
   end
@@ -48,6 +55,16 @@ class DeliveriesController < ApplicationController
   end
 
   private
+
+  def prepare_items
+    @delivery.customer.prices.joins(:product).order('products.number').each do |price|
+      if !@delivery.new_record? && @delivery.delivery_items.where(product: price.product).exists?
+        next
+      end
+      @delivery.delivery_items.build product: price.product, unit_price: price.price, name: price.product.name
+    end
+    @delivery.delivery_items.build
+  end
 
   # Use callbacks to share common setup or constraints between actions.
   def set_delivery

@@ -14,9 +14,8 @@
         .col-md-8
           .form-inputs
             = f.association :customer, collection: Customer.order(:name).active,
-                input_html: { autofocus: true, class: 'select2', disabled: !@delivery.new_record? }
+                input_html: { class: 'select2', disabled: !@delivery.new_record? }
             = f.input :number
-            = f.input :description, input_html: { tabindex: 1000 }
         .col-md-4
           .form-inputs
             = f.input :date, as: :string, input_html: { class: 'date' }
@@ -25,35 +24,62 @@
 
       table.table.table-condensed
         thead
-          th Artikel
-          th Anzahl
-          th leer
-          th Bezeichnung
-          th.price Einzelpreis
-          th.price Gesamtpreis
+          tr
+            th Artikel
+            th Anzahl
+            th leer
+            th Bezeichnung
+            th.price Einzelpreis
+            th.price Gesamtpreis
         tbody
           = f.simple_fields_for :delivery_items do |item_form|
             tr
-              td = item_form.association :product, collection: Product.order(:number), label: false, label_method: :number
+              td = item_form.association :product, collection: Product.order(:number),
+                  label: false, label_method: :number, input_html: { tabindex: 1000 }
               td = item_form.input :count, label: false
               td = item_form.input :count_back, label: false
               td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
               td.price
+                p.total-price
+        tfoot
+          tr
+            th.price colspan=5 Summe
+            th.price.total-price
 
+      = f.input :description, input_html: { tabindex: 1000 }
       .action-buttons
         .pull-right
-          => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+          => link_to t(:cancel), 'javascript: window.history.back();',
+              class: 'btn btn-default', tabindex: 1000
           = f.submit t(:save), class: 'btn btn-primary'
-    .col-md-3 = panel_box title: 'Kundeninformation' do
-      .customer-info
+
+    .col-md-3 = render 'customer_info', customer: @delivery.customer
 
 
 coffee:
   $(document).on 'ready page:load', ->
     newForm = $('form.new_delivery')
     customerSelect = newForm.find('select[name="delivery[customer_id]"]')
-    customerSelect.on 'change', (e) ->
-      window.customer = new Customer customerSelect.val()
-      customer.fetch => customer.render('.customer-info')
-    customerSelect.select2('open')
+    customerSelect.on 'change', ->
+      window.location = '/deliveries/new?customer_id=' + customerSelect.val()
+    if customerSelect.val() is ''
+      customerSelect.select2('open')
+    else
+      newForm.find('input[name="delivery[number]"]').focus()
+
+    $('input[name="delivery[on_account]"]').change ->
+      $('.page-header h2 > span').toggleClass('hidden')
+
+    updateSums = ->
+      sum = 0
+      $('.items-table tbody tr').each (index, tr) ->
+        tr = $(tr)
+        count = tr.find('.delivery_delivery_items_count input').val()
+        unitPrice = tr.find('.delivery_delivery_items_unit_price input').val().replace(',', '.')
+        total = count * unitPrice
+        tr.find('p.total-price').text total.toFixed(4).toString().replace('.', ',')
+        sum += total
+      $('table tfoot .total-price').text sum.toFixed(4).toString().replace('.', ',')
+    updateSums()
+    $('.delivery_delivery_items_count input, .delivery_delivery_items_unit_price input').change updateSums

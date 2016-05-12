@@ -1,0 +1,10 @@
+- if customer.present?
+  = panel_box title: 'Kundeninformation' do
+    p
+      = link_to customer.name, customer
+      br
+      = customer.city
+      br
+      = customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
+      br
+      = customer.tax ? 'Bruttopreise' : 'Nettopreise'
