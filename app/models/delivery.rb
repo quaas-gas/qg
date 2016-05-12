@@ -6,7 +6,7 @@ class Delivery < ActiveRecord::Base
 
   has_many :delivery_items
 
-  validates :number, presence: true #, uniqueness: true
+  validates :number, :date, presence: true #, uniqueness: true
 
   multisearchable against: [:number, :number_show]
 
