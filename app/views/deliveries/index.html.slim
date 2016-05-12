@@ -45,12 +45,7 @@ div
           td = delivery.customer.name
           /td = ldate delivery.date
           td = delivery.seller&.name
-          td.price
-            => delivery.delivery_items.count
-            |  |
-            =< delivery.total_articles
-          /td = delivery.invoice_number
-          /td = bool_icon delivery.tax
+          td = delivery.delivery_items.map { |i| "#{i.count}x #{i.product.number}" }.join('<br>').html_safe
           td.price = display_price total_price
           /td
             pre = JSON.pretty_generate(delivery.others)

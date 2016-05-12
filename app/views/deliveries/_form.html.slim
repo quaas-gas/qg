@@ -7,22 +7,20 @@
       h4 = t('.error')
 
   section
-    .col-md-6
-      .form-inputs
-        = f.association :customer, collection: Customer.order(:name).active, input_html: { autofocus: true, class: 'select2' }
-        = f.input :number
-        = f.input :description
-        /= f.input :on_account
-    .col-md-3
-      .form-inputs
-        = f.input :date, as: :string, input_html: { class: 'date' }
-        = f.association :seller
-        /= f.input :description
-        = f.input :on_account
-
-
-  section.action-buttons
     .col-md-9
+      section
+        .col-md-8
+          .form-inputs
+            = f.association :customer, collection: Customer.order(:name).active,
+                input_html: { autofocus: true, class: 'select2', disabled: !@delivery.new_record? }
+            = f.input :number
+            = f.input :description, input_html: { tabindex: 1000 }
+        .col-md-4
+          .form-inputs
+            = f.input :date, as: :string, input_html: { class: 'date' }
+            = f.association :seller
+            = f.input :on_account, input_html: { tabindex: 1000 }
+
       table.table.table-condensed
         thead
           th Artikel
@@ -34,17 +32,26 @@
         tbody
           = f.simple_fields_for :delivery_items do |item_form|
             tr
-              td = item_form.association :product, label: false, label_method: :number
+              td = item_form.association :product, collection: Product.order(:number), label: false, label_method: :number
               td = item_form.input :count, label: false
               td = item_form.input :count_back, label: false
-              td = item_form.input :name, label: false
-              td.price = item_form.input :unit_price, label: false
+              td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
+              td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
               td.price
 
+      .action-buttons
+        .pull-right
+          => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+          = f.submit t(:save), class: 'btn btn-primary'
+    .col-md-3 = panel_box title: 'Kundeninformation' do
+      .customer-info
 
-  section.action-buttons
-    .col-md-9
-      .pull-right
-        => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
-        = f.submit t(:save), class: 'btn btn-primary'
 
+coffee:
+  $(document).on 'ready page:load', ->
+    newForm = $('form.new_delivery')
+    customerSelect = newForm.find('select[name="delivery[customer_id]"]')
+    customerSelect.on 'change', (e) ->
+      window.customer = new Customer customerSelect.val()
+      customer.fetch => customer.render('.customer-info')
+    customerSelect.select2('open')

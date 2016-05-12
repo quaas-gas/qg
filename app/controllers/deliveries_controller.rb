@@ -7,7 +7,7 @@ class DeliveriesController < ApplicationController
     authorize Delivery
 
     @filter = DeliveriesFilter.new(params)
-    @deliveries = @filter.result.includes(:customer, :seller, :delivery_items).all
+    @deliveries = @filter.result.includes(:customer, :seller, delivery_items: :product).all
   end
 
   def show
