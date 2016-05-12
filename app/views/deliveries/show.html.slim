@@ -15,34 +15,38 @@
     - else
       span.glyphicon.glyphicon-eur
       |  Quittung
-    =< @delivery.number
 .delivery class=(@delivery.tax ? 'tax' : 'nontax')
   .row
-    .col-md-6
+    .col-md-9
       .row
         .col-md-9
-          p = link_to @delivery.customer.name, @delivery.customer
+          h3 = link_to @delivery.customer.name, @delivery.customer
+          h4 = @delivery.number
+          - if @delivery.description.present?
+            p = @delivery.description
         .col-md-3
           p.text-right = ldate @delivery.date
-          p = @delivery.seller&.name
+          p.text-right = @delivery.seller&.name
 
       table.table.table-condensed.table-hover.table-striped.table-bordered
         thead
           th Artikel
           th Anzahl
           th leer
+          th Bezeichnung
           th.price Einzelpreis
           th.price Gesamtpreis
         tbody
-          - @delivery.delivery_items.joins(:product).order('products.category, products.number').includes(:product).each do |item|
+          - @delivery.delivery_items.includes(:product).each do |item|
             tr
-              td = item.product.number
+              td = item.product&.number
               td = item.count
               td = item.count_back
+              td = item.name
               td.price = display_price item.unit_price
               td.price = display_price item.total_price
         tfoot
           tr
-            th.price colspan=4 Summe
+            th.price colspan=5 Summe
             th.price = display_price @delivery.total_price
       p = @delivery.description

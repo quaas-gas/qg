@@ -10,6 +10,12 @@ class Delivery < ActiveRecord::Base
 
   multisearchable against: [:number, :number_show]
 
+  accepts_nested_attributes_for :delivery_items,
+                                allow_destroy: true,
+                                reject_if: lambda { |attributes|
+                                  attributes['count'].blank? || attributes['unit_price'].blank?
+                                }
+
   def self.years
     sql = 'SELECT DISTINCT extract(year from date) AS year FROM "deliveries" order by year DESC'
     connection.execute(sql).to_a.map { |year| year['year'] }

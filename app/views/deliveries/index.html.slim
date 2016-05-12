@@ -45,7 +45,10 @@ div
           td = delivery.customer.name
           /td = ldate delivery.date
           td = delivery.seller&.name
-          td.price = delivery.total_articles
+          td.price
+            => delivery.delivery_items.count
+            |  |
+            =< delivery.total_articles
           /td = delivery.invoice_number
           /td = bool_icon delivery.tax
           td.price = display_price total_price

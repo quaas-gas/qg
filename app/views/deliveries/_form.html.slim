@@ -7,21 +7,43 @@
       h4 = t('.error')
 
   section
-    .col-md-5
+    .col-md-6
       .form-inputs
-        = f.association :customer, collection: Customer.order(:name).active, input_html: { autofocus: true }
-        = f.input :date, as: :string, input_html: { class: 'date' }
-        /= f.input :description
+        = f.association :customer, collection: Customer.order(:name).active, input_html: { autofocus: true, class: 'select2' }
+        = f.input :number
+        = f.input :description
         /= f.input :on_account
     .col-md-3
       .form-inputs
-        = f.input :number
+        = f.input :date, as: :string, input_html: { class: 'date' }
         = f.association :seller
         /= f.input :description
         = f.input :on_account
 
+
   section.action-buttons
-    .col-md-8
+    .col-md-9
+      table.table.table-condensed
+        thead
+          th Artikel
+          th Anzahl
+          th leer
+          th Bezeichnung
+          th.price Einzelpreis
+          th.price Gesamtpreis
+        tbody
+          = f.simple_fields_for :delivery_items do |item_form|
+            tr
+              td = item_form.association :product, label: false, label_method: :number
+              td = item_form.input :count, label: false
+              td = item_form.input :count_back, label: false
+              td = item_form.input :name, label: false
+              td.price = item_form.input :unit_price, label: false
+              td.price
+
+
+  section.action-buttons
+    .col-md-9
       .pull-right
         => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
         = f.submit t(:save), class: 'btn btn-primary'

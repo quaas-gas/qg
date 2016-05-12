@@ -16,9 +16,11 @@ class DeliveriesController < ApplicationController
   def new
     authorize Delivery
     @delivery = Delivery.new
+    3.times { @delivery.delivery_items.build }
   end
 
   def edit
+    3.times { @delivery.delivery_items.build }
   end
 
   def create
@@ -56,6 +58,7 @@ class DeliveriesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def delivery_params
     params.require(:delivery)
-      .permit(:number, :customer_id, :date, :seller_id, :description, :on_account)
+      .permit(:number, :customer_id, :date, :seller_id, :description, :on_account,
+              delivery_items_attributes: [:id, :product_id, :count, :count_back, :unit_price, :name])
   end
 end

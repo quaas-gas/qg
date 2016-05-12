@@ -54,6 +54,7 @@ de:
       delivery:
         customer: Empfänger
         date: Datum
+        description: Notizen
         discount: Rabatt
         discount_net: Rabatt (Netto)
         driver: Fahrer
