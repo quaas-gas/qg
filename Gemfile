@@ -25,6 +25,7 @@ group :development do
   gem 'meta_request'
 end
 
+gem 'select2-rails'
 gem 'bootstrap-datepicker-rails'
 gem 'bootstrap-sass'
 gem 'devise'

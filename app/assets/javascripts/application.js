@@ -16,5 +16,7 @@
 //= require bootstrap-sprockets
 //= require bootstrap
 //= require bootstrap-datepicker
+//= require select2
+//= require select2_locale_de
 //= require_tree .
 

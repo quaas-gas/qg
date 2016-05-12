@@ -12,5 +12,10 @@ $(document).on 'ready page:load', ->
       startView: startView
       language: "de"
       todayHighlight: true
+      autoclose: true
+      zIndexOffset: 1151
 
   $('[autofocus]').focus()
+
+  $(".select2").select2
+    theme: "bootstrap"
