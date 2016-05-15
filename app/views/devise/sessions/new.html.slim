@@ -5,5 +5,5 @@
     = f.input :username
     = f.input :password
     = f.submit t('.sign_in'), class: 'button right'
-    - if devise_mapping.recoverable?
+    /- if devise_mapping.recoverable?
       = link_to "Passwort vergessen?", new_password_path(resource_name)
