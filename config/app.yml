@@ -2,6 +2,7 @@
 defaults: &defaults
   foo: "Foo"
   bar: 123
+  devise_secret_key: abc123
 
 development:
   <<: *defaults
