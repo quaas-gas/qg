@@ -11,5 +11,5 @@ Rails.application.routes.draw do
   resources :sellers, except: :show
 
   get 'dashboard' => 'dashboard#index'
-  root to: 'dashboard#index'
+  root to: 'dashboard#show'
 end
