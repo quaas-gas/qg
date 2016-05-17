@@ -1,0 +1,21 @@
+table.table.table-condensed
+  thead
+    tr
+      th Artikel
+      th.price Preis
+      th.price Provision
+      th.price Löschen
+  tbody
+    = f.simple_fields_for :prices do |price_form|
+      tr
+        td
+          - if price_form.object.new_record?
+            = price_form.association :product, collection: (Product.order(:number) - @customer.prices.map(&:product)),
+              label: false, label_method: :number
+          - else
+            = price_form.object.product.number
+        td.price = price_form.input :price, label: false
+        td.price = price_form.input :discount, label: false
+        td.price
+          - unless price_form.object.new_record?
+            = price_form.input :_destroy, as: :boolean, label: false

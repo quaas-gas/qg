@@ -18,6 +18,7 @@ class CustomersController < ApplicationController
   end
 
   def edit
+    3.times { @customer.prices.build } if params[:part] == 'prices'
   end
 
   def create
@@ -56,6 +57,7 @@ class CustomersController < ApplicationController
   def customer_params
     params.require(:customer)
       .permit(:salut, :name, :name2, :own_customer, :street, :city, :zip, :phone, :mobile, :email,
-              :gets_invoice, :region, :kind, :price_in_net, :has_stock, :invoice_address, :archived)
+              :gets_invoice, :region, :kind, :price_in_net, :has_stock, :invoice_address, :archived,
+              prices_attributes: [:id, :product_id, :valid_from, :price, :discount, :_destroy])
   end
 end
