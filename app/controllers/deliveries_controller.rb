@@ -57,7 +57,7 @@ class DeliveriesController < ApplicationController
   private
 
   def prepare_items
-    @delivery.customer.prices.joins(:product).order('products.number').each do |price|
+    @delivery.customer.prices.where(active: true).each do |price|
       if !@delivery.new_record? && @delivery.delivery_items.where(product: price.product).exists?
         next
       end

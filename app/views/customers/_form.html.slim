@@ -6,36 +6,33 @@
         span.sr-only Close
       h4 = t('.error')
 
-  - if params[:part] == 'prices'
-    = render 'customers/form/prices', f: f
-  - else
-    section
-      .col-md-6 = panel_box title: Customer.model_name.human do
-        .form-inputs
-          = f.input :salut, input_html: { autofocus: true }
-          = f.input :name
-          = f.input :name2
-          = f.input :own_customer
-          = f.input :region
-          = f.input :kind
-          = f.input :price_in_net
-          = f.input :archived
-      .col-md-6 = panel_box title: 'Kontaktdaten' do
-        .form-inputs
-          = f.input :street
-          = f.input :city
-          = f.input :zip
-          = f.input :phone
-          = f.input :mobile
-          = f.input :email
-    section
-      .col-md-6 = panel_box title: 'Rechnungen' do
-        .form-inputs
-          = f.input :gets_invoice
-          = f.input :invoice_address, input_html: { rows: 6 }
-      .col-md-6 = panel_box title: 'Bestand' do
-        .form-inputs
-          = f.input :has_stock
+  section
+    .col-md-6 = panel_box title: Customer.model_name.human do
+      .form-inputs
+        = f.input :salut, input_html: { autofocus: true }
+        = f.input :name
+        = f.input :name2
+        = f.input :own_customer
+        = f.input :region
+        = f.input :kind
+        = f.input :price_in_net
+        = f.input :archived
+    .col-md-6 = panel_box title: 'Kontaktdaten' do
+      .form-inputs
+        = f.input :street
+        = f.input :city
+        = f.input :zip
+        = f.input :phone
+        = f.input :mobile
+        = f.input :email
+  section
+    .col-md-6 = panel_box title: 'Rechnungen' do
+      .form-inputs
+        = f.input :gets_invoice
+        = f.input :invoice_address, input_html: { rows: 6 }
+    .col-md-6 = panel_box title: 'Bestand' do
+      .form-inputs
+        = f.input :has_stock
 
   section.action-buttons
     .col-md-12

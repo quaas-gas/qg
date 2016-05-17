@@ -1,21 +1,29 @@
-table.table.table-condensed
-  thead
-    tr
-      th Artikel
-      th.price Preis
-      th.price Provision
-      th.price Löschen
-  tbody
-    = f.simple_fields_for :prices do |price_form|
-      tr
-        td
-          - if price_form.object.new_record?
-            = price_form.association :product, collection: (Product.order(:number) - @customer.prices.map(&:product)),
-              label: false, label_method: :number
-          - else
-            = price_form.object.product.number
-        td.price = price_form.input :price, label: false
-        td.price = price_form.input :discount, label: false
-        td.price
-          - unless price_form.object.new_record?
-            = price_form.input :_destroy, as: :boolean, label: false
+section
+  .col-md-6
+    table.table.table-condensed.table-no-border
+      thead
+        tr
+          th = Price.human_attribute_name :product
+          th = Price.human_attribute_name :active
+          th.price = Price.human_attribute_name :price
+          th.price = Price.human_attribute_name :discount
+          th.price Löschen
+      tbody
+        = f.simple_fields_for :prices do |price_form|
+          tr
+            td
+              - if price_form.object.new_record?
+                = price_form.association :product, collection: (Product.order(:number) - @customer.prices.map(&:product)),
+                  label: false, label_method: :number
+              - else
+                = price_form.object.product.number
+            td = price_form.input :active, label: false
+            td.price = price_form.input :price, label: false
+            td.price = price_form.input :discount, label: false
+            td.price
+              - unless price_form.object.new_record?
+                = price_form.input :_destroy, as: :boolean, label: false
+
+    div.pull-right
+      => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+      = f.submit t(:save), class: 'btn btn-primary'

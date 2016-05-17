@@ -67,6 +67,7 @@ de:
       enum:
         value: Name
       price:
+        active: in Lieferschein
         product: Artikel
         valid_from: gilt ab
         discount: Provision
