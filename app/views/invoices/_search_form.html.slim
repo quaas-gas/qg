@@ -1,0 +1,16 @@
+.search-form
+  form.form-inline action=invoices_url
+    .form-group
+      select.form-control name="year"
+        - @filter.years.each do |year|
+          option selected=(year == @filter.year) value=year  = year
+    .form-group
+      select.form-control name="month"
+        - @filter.months.each do |month, name|
+          option selected=(month == @filter.month) value=month  = name
+    .form-group
+      => link_to 'Alle', deliveries_path, class: 'btn btn-info btn-block'
+
+coffee:
+  $ ->
+    $('.search-form select').change -> $('.search-form form').submit()

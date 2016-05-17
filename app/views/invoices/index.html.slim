@@ -10,7 +10,8 @@
     = Invoice.model_name.human count: @invoices.count
 
 div
-  .pull-right = paginate @invoices
+  .pull-left = render 'search_form'
+  /.pull-right = paginate @invoices
 .clearfix
 
 .table-responsive

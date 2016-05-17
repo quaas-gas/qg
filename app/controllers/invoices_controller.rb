@@ -5,11 +5,11 @@ class InvoicesController < ApplicationController
 
   def index
     authorize Invoice
-    @invoices = Invoice
+
+    @filter = InvoicesFilter.new(params)
+    @invoices = @filter.result
       .where(customer: Customer.active)
-      .order(date: :desc, number: :desc)
-      .includes(:customer)
-      .page(params[:page])
+      .includes(:customer, :items)
       .all
   end
 
