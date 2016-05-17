@@ -75,6 +75,11 @@ de:
         pre_message: Vortext
         printed: gedruckt
         tax: Bruttopreise
+      invoice_item:
+        position: Position
+        count: Anzahl
+        name: Bezeichnung
+        unit_price: Einzelpreis
       price:
         active: in Lieferschein
         product: Artikel

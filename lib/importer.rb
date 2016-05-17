@@ -237,5 +237,33 @@ module Importer
     Invoice.count
   end
 
+  def self.import_invoice_items(with_delete: true)
+    reset(InvoiceItem) if with_delete
+    InvoiceItem.transaction do
+      xml_data('invoices_items').each do |item|
+        hash        = node_to_hash(item)
+        invoice_number = hash.delete('invoice_id')
+        invoice = Invoice.find_by number: invoice_number
+
+        next unless invoice
+        hash[:invoice_id] = invoice.id
+        hash[:name] = hash.delete('description') || '...'
+
+        price = hash.delete('price')
+        net                = monetize(val: price, currency: 'EU4NET')
+        tax                = monetize(val: price, currency: 'EU4TAX')
+        hash[:unit_price]  = invoice.tax ? tax : net
+        hash[:others] = {
+          id: hash.delete('id'),
+          number: invoice_number,
+          kg: hash.delete('kg'),
+          price_total: hash.delete('price_total'),
+        }
+        InvoiceItem.create! hash
+      end
+    end
+    InvoiceItem.count
+  end
 
 end
+

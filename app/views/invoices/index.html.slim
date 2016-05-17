@@ -6,7 +6,7 @@
     span.glyphicon.glyphicon-plus
     =< t(:new)
   h2
-    => @invoices.total_count
+    => @invoices.count
     = Invoice.model_name.human count: @invoices.count
 
 div
@@ -20,13 +20,13 @@ div
         th = Invoice.human_attribute_name(:number)
         th = Invoice.human_attribute_name(:date)
         th = Invoice.human_attribute_name(:customer)
-        th = Invoice.human_attribute_name(:tax)
+        th Gesamt
         th = Invoice.human_attribute_name(:printed)
     tbody
-      - @invoices.each do | invoice |
-        tr data = {url: url_for(invoice)}
+      - @invoices.each do |invoice|
+        tr data = {url: url_for(invoice)} class=(invoice.tax ? 'tax' : 'nontax')
           td = invoice.number
           td = ldate invoice.date
           td = invoice.customer.name
-          td = bool_icon invoice.tax
+          td = display_price invoice.total_price
           td = bool_icon invoice.printed
