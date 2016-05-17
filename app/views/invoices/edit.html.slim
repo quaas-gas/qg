@@ -1,0 +1,6 @@
+.page-header
+  h2
+    => @invoice.number
+    small = Invoice.model_name.human
+
+= render 'form'

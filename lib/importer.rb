@@ -157,7 +157,6 @@ module Importer
   end
 
   def self.import_other_products
-
     xml_data('products').map do |node|
       hash = node_to_hash(node)
       product = Product.find_by number: hash['number']
@@ -215,7 +214,28 @@ module Importer
         puts (count += batch_size)
       end
     end
-
   end
+
+  def self.import_invoices(with_delete: true)
+    reset(Invoice) if with_delete
+    Invoice.transaction do
+      xml_data('invoices').each do |invoice|
+        hash = node_to_hash(invoice)
+        hash[:customer_id] = hash.delete 'customer_number'
+        next if hash[:customer_id].blank? || hash[:customer_id] == '0'
+        hash[:number] = hash.delete 'invoice_number'
+        hash[:tax] = (hash.delete('net') == '0')
+        hash[:others] = {
+          start_date: hash.delete('start_date'),
+          end_date: hash.delete('end_date'),
+          amount_net: hash.delete('amount_net'),
+          amount: hash.delete('amount'),
+        }
+        Invoice.create! hash
+      end
+    end
+    Invoice.count
+  end
+
 
 end

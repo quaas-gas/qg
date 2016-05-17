@@ -1,0 +1,39 @@
+div.pull-right
+  = link_to invoices_path, class: 'btn btn-default' do 
+    span.glyphicon.glyphicon-list-alt
+    =< t(:list)
+  = link_to edit_invoice_path(@invoice), class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-pencil
+    =< t(:edit)
+  => link_to @invoice, method: :delete, data: { confirm: t(:confirm_delete, model: Invoice.model_name.human) }, class: 'btn btn-danger' do
+    span.glyphicon.glyphicon-remove
+    =< t(:delete)
+
+.clearfix
+
+.row
+  .col-md-6
+    p = lines_for @invoice.address.split("\n")
+  .col-md-3
+    .row
+      label.col-md-6 => Invoice.human_attribute_name(:customer)
+      .col-md-6 = link_to @invoice.customer.name, @invoice.customer
+    .row
+      label.col-md-6 => Invoice.human_attribute_name(:date)
+      .col-md-6 = ldate @invoice.date
+    .row
+      label.col-md-6 => Invoice.human_attribute_name(:tax)
+      .col-md-6 = bool_icon @invoice.tax
+    .row
+      label.col-md-6 => Invoice.human_attribute_name(:printed)
+      .col-md-6 = bool_icon @invoice.printed
+
+h2
+  = Invoice.model_name.human
+  =< @invoice.number
+
+
+p = lines_for @invoice.pre_message.split("\n")
+h5 Positionen
+p = lines_for @invoice.post_message.split("\n")
+

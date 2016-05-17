@@ -3,6 +3,7 @@ class Customer < ActiveRecord::Base
 
   has_many :deliveries, inverse_of: :customer
   has_many :prices, -> { includes(:product).order('products.number') }, inverse_of: :customer
+  has_many :invoices, inverse_of: :customer
 
   multisearchable against: [:salut, :name, :name2, :street, :city, :kind, :invoice_address]
 

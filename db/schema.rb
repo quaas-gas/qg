@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160517135705) do
+ActiveRecord::Schema.define(version: 20160517150444) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -88,6 +88,23 @@ ActiveRecord::Schema.define(version: 20160517135705) do
     t.float   "price_total"
     t.float   "price_total_net"
   end
+
+  create_table "invoices", force: :cascade do |t|
+    t.integer  "customer_id"
+    t.string   "number",                       null: false
+    t.date     "date"
+    t.boolean  "tax"
+    t.text     "pre_message"
+    t.text     "post_message"
+    t.text     "address"
+    t.boolean  "printed",      default: false
+    t.jsonb    "others"
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
+  end
+
+  add_index "invoices", ["customer_id"], name: "index_invoices_on_customer_id", using: :btree
+  add_index "invoices", ["date"], name: "index_invoices_on_date", using: :btree
 
   create_table "pg_search_documents", force: :cascade do |t|
     t.text     "content"
@@ -174,6 +191,7 @@ ActiveRecord::Schema.define(version: 20160517135705) do
 
   add_foreign_key "deliveries", "customers"
   add_foreign_key "delivery_items", "deliveries"
+  add_foreign_key "invoices", "customers"
   add_foreign_key "prices", "customers"
   add_foreign_key "prices", "products"
 end

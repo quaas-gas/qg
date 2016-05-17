@@ -1,0 +1,32 @@
+.page-header
+  /= link_to invoices_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_invoice_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @invoices.total_count
+    = Invoice.model_name.human count: @invoices.count
+
+div
+  .pull-right = paginate @invoices
+.clearfix
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Invoice.human_attribute_name(:number)
+        th = Invoice.human_attribute_name(:date)
+        th = Invoice.human_attribute_name(:customer)
+        th = Invoice.human_attribute_name(:tax)
+        th = Invoice.human_attribute_name(:printed)
+    tbody
+      - @invoices.each do | invoice |
+        tr data = {url: url_for(invoice)}
+          td = invoice.number
+          td = ldate invoice.date
+          td = invoice.customer.name
+          td = bool_icon invoice.tax
+          td = bool_icon invoice.printed

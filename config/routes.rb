@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     resources :prices
   end
   resources :deliveries
+  resources :invoices
   resources :products
   resources :sellers, except: :show
 
