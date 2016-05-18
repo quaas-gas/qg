@@ -18,7 +18,7 @@ class InvoicesController < ApplicationController
 
   def new
     authorize Invoice
-    @invoice = Invoice.new
+    @invoice = Invoice.new number: Invoice.next_number
   end
 
   def edit
