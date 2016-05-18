@@ -1,4 +1,11 @@
-.page-header
-  h2 = t(".title")
+- if @invoice
+  /.page-header
+    h2 = t(".title")
 
-= render 'form'
+  = render 'form'
+- else
+  .page-header
+    h2 #{@open_deliveries.count} Offene Lieferscheine
+
+  = render 'open_delivery_list'
+

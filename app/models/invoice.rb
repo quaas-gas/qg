@@ -1,6 +1,7 @@
 class Invoice < ActiveRecord::Base
   belongs_to :customer, inverse_of: :invoices, required: true
   has_many :items, inverse_of: :invoice, class_name: 'InvoiceItem'
+  has_many :deliveries, foreign_key: 'invoice_number'
 
   validates :number, presence: true, uniqueness: true
 
@@ -22,6 +23,22 @@ class Invoice < ActiveRecord::Base
 
   def total_price
     items.map(&:total_price).sum(Money.new 0)
+  end
+
+  def build_items_from_deliveries
+    grouped_items = {}
+    deliveries.each do |delivery|
+      delivery.delivery_items.each do |item|
+        id = [item.product_id, item.name, item.unit_price]
+        grouped_items[id] ||= 0
+        grouped_items[id] += item.count
+      end
+    end
+    grouped_items.each do |id, item_count|
+      product_id, name, unit_price = id
+      name = name.present? ? name : Product.find(product_id).name
+      items.build count: item_count, name: name, unit_price: unit_price
+    end
   end
 
 end

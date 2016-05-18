@@ -22,6 +22,9 @@ de:
       new_delivery: Lieferschein eingeben
     new:
       title: "Lieferung eingeben"
+  invoices:
+    open_delivery_list:
+      create_invoice: "Rechnung erstellen"
   prices:
     form:
       error: Preis konnte nicht gespeichert werden.

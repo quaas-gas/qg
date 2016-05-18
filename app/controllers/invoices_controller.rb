@@ -18,7 +18,13 @@ class InvoicesController < ApplicationController
 
   def new
     authorize Invoice
-    @invoice = Invoice.new number: Invoice.next_number
+    if params[:customer_id].present?
+      customer = Customer.find params[:customer_id]
+      @invoice = customer.generate_next_invoice params[:delivery_ids]
+    else
+      @open_deliveries = Delivery.includes(:customer, :delivery_items).order(customer_id: :asc, date: :asc)
+        .where(customer: Customer.active.own, on_account: true, invoice_number: nil)
+    end
   end
 
   def edit
