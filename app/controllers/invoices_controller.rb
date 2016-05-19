@@ -23,7 +23,7 @@ class InvoicesController < ApplicationController
       @invoice = customer.generate_next_invoice params[:delivery_ids]
     else
       @open_deliveries = Delivery.includes(:customer, :delivery_items).order(customer_id: :asc, date: :asc)
-        .where(customer: Customer.active.own, on_account: true, invoice_number: nil)
+        .where(customer: Customer.active.own, on_account: true, invoice_id: nil)
     end
   end
 
@@ -33,6 +33,8 @@ class InvoicesController < ApplicationController
   def create
     authorize Invoice
     @invoice = Invoice.new invoice_params
+    @invoice.delivery_ids = params[:delivery_ids]
+    @invoice.build_items_from_deliveries
 
     if @invoice.save
       redirect_to @invoice, notice: t(:created, model: Invoice.model_name.human)
@@ -64,6 +66,7 @@ class InvoicesController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def invoice_params
-    params.require(:invoice).permit(:customer_id, :number, :date, :tax, :pre_message, :post_message, :address, :printed)
+    params.require(:invoice).permit(:customer_id, :number, :date, :pre_message, :post_message,
+                                    :address)
   end
 end

@@ -1,11 +1,11 @@
 - grouped_deliveries = @open_deliveries.all.to_a.group_by { |d| d.customer }
 - grouped_deliveries.keys.sort{ |a, b| a.name <=> b.name }.each do |customer|
   - sum = Money.new 0
-  h4 = customer.name
   = simple_form_for :invoice, url: new_invoice_url, method: :get, defaults: { label: false, required: false } do |f|
     input type="hidden" name="customer_id" value=customer.id
     .row
       .col-md-6
+        h4 = customer.name
         table.table.table-hover.table-striped
           tbody
             - grouped_deliveries[customer].each do |delivery|
@@ -18,6 +18,6 @@
                 td = display_price delivery.total_price
       .col-md-2
         label.pull-right class=(customer.tax ? 'tax' : 'nontax') = display_price sum
-        .clearfix
+      .col-md-2
         = f.submit t('.create_invoice'), class: 'btn btn-primary btn-block'
   hr
