@@ -205,6 +205,7 @@ module Importer
           net                = monetize(val: hash.delete('price_net'), currency: 'EU4NET')
           tax                = monetize(val: hash.delete('price'), currency: 'EU4TAX')
           hash[:delivery_id] = delivery.id
+          hash[:count]       = hash.delete('count') || 0
           hash[:unit_price]  = delivery.tax ? tax : net
           hash.delete 'id'
           hash.delete 'price_total'
