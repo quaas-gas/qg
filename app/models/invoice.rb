@@ -1,7 +1,7 @@
 class Invoice < ActiveRecord::Base
   belongs_to :customer, inverse_of: :invoices, required: true
   has_many :items, inverse_of: :invoice, class_name: 'InvoiceItem'
-  has_many :deliveries, foreign_key: 'invoice_number'
+  has_many :deliveries, inverse_of: :invoice #, foreign_key: 'invoice_number'
 
   validates :number, presence: true, uniqueness: true
 

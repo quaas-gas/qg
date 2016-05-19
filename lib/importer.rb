@@ -265,5 +265,14 @@ module Importer
     InvoiceItem.count
   end
 
+  def self.link_deliveries_to_invoices
+    Delivery.transaction do
+      Delivery.on_account.where(customer: Customer.own).where.not(invoice_number: nil).each do |delivery|
+        invoice = Invoice.find_by number: delivery.invoice_number
+        delivery.update invoice_id: invoice.id if invoice
+      end
+    end
+  end
+
 end
 

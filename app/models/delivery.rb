@@ -3,6 +3,7 @@ class Delivery < ActiveRecord::Base
 
   belongs_to :customer, inverse_of: :deliveries, required: true
   belongs_to :seller, inverse_of: :deliveries
+  belongs_to :invoice, inverse_of: :deliveries
 
   has_many :delivery_items
 
@@ -15,6 +16,8 @@ class Delivery < ActiveRecord::Base
                                 reject_if: lambda { |attributes|
                                   attributes['count'].blank? || attributes['unit_price'].blank?
                                 }
+
+  scope :on_account, -> { where on_account: true }
 
   def self.years
     sql = 'SELECT DISTINCT extract(year from date) AS year FROM "deliveries" order by year DESC'
