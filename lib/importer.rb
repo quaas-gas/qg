@@ -16,16 +16,17 @@ module Importer
 
     puts import_sellers
     puts import_products
-    puts
+
     puts import_customers
     puts import_prices
-    puts
+
     puts import_deliveries
     puts import_delivery_items
     puts import_delivery_items2
     puts import_other_delivery_items
     puts link_deliveries_with_sellers
-    puts
+    puts deactivate_old_customers
+
     puts import_invoices
     puts import_invoice_items
     puts link_deliveries_to_invoices
@@ -88,6 +89,12 @@ module Importer
     Delivery.where(customer: Customer.tax).update_all(tax: true)
     Delivery.where(customer: Customer.nontax).update_all(tax: false)
     Delivery.count
+  end
+
+  def self.deactivate_old_customers
+    old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
+    Customer.where(id: old_customers).update_all(archived: true)
+    Customer.active.count
   end
 
   def self.import_products(with_delete: false)
