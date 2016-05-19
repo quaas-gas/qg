@@ -16,3 +16,7 @@ html
         == render 'layouts/messages'
         == yield
       footer style="height: 60px;"
+
+    coffee:
+      $ ->
+        $('.dropdown-toggle').dropdown()
