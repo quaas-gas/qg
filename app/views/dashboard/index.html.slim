@@ -1,2 +1,24 @@
-h1 Dashboard#index
-p Find me in app/views/dashboard/index.html.slim
+h1 Startseite
+
+.row
+  .col-md-4
+    h3 Letzte Lieferscheine
+    - Delivery.includes(:customer).order(date: :desc, number: :desc).limit(10).each do |delivery|
+      p = link_to delivery do
+        => delivery.number
+        = ldate delivery.date
+        br
+        = delivery.customer.name
+  .col-md-4
+    h3 Letzte Rechnungen
+    - Invoice.includes(:customer).order(number: :desc).limit(10).each do |invoice|
+      p = link_to invoice do
+        => invoice.number
+        = ldate invoice.date
+        br
+        = invoice.customer.name
+  .col-md-4
+    h3
+      => Delivery.includes(:customer, :delivery_items).order(customer_id: :asc, date: :asc).where(customer: Customer.active.own, on_account: true, invoice_id: nil).count
+      |  offene Lieferscheine
+    = link_to 'Rechnungen scheiben', new_invoice_url, class: 'btn btn-primary btn-block btn-lg'
