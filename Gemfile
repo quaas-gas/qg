@@ -13,6 +13,8 @@ gem 'kaminari'
 gem 'pg_search'
 gem 'money-rails'
 gem 'rails-settings-cached'
+gem 'prawn'
+gem 'prawn-table'
 
 group :development, :test do
   gem 'byebug'
