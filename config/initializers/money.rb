@@ -81,7 +81,7 @@ MoneyRails.configure do |config|
     priority:            2,
     iso_code:            'EU4NET',
     name:                'Euro with subunit of 4 digits',
-    symbol:              '€(Netto)',
+    symbol:              '€',
     symbol_first:        false,
     subunit:             'cent',
     subunit_to_unit:     10000,
@@ -89,9 +89,49 @@ MoneyRails.configure do |config|
     decimal_mark:        ',',
     no_cents_if_whole:  false,
   }
+  config.register_currency = {
+    priority:            3,
+    iso_code:            'EURTAX',
+    name:                'Euro (with tax)',
+    symbol:              '€',
+    symbol_first:        false,
+    subunit:             'cent',
+    subunit_to_unit:     100,
+    thousands_separator: '.',
+    decimal_mark:        ',',
+    no_cents_if_whole:  false,
+  }
+  config.register_currency = {
+    priority:            4,
+    iso_code:            'EURNET',
+    name:                'Euro (net)',
+    symbol:              '€',
+    symbol_first:        false,
+    subunit:             'cent',
+    subunit_to_unit:     100,
+    thousands_separator: '.',
+    decimal_mark:        ',',
+    no_cents_if_whole:  false,
+  }
+  config.register_currency = {
+    priority:            5,
+    iso_code:            'TAX',
+    name:                'MwSt',
+    symbol:              '€',
+    symbol_first:        false,
+    subunit:             'cent',
+    subunit_to_unit:     100,
+    thousands_separator: '.',
+    decimal_mark:        ',',
+    no_cents_if_whole:  false,
+  }
 
   config.add_rate 'EU4TAX', 'EU4NET', (1 / 1.19)
   config.add_rate 'EU4NET', 'EU4TAX', 1.19
+  config.add_rate 'EU4TAX', 'EURTAX', 1
+  config.add_rate 'EU4NET', 'EURNET', 1
+  config.add_rate 'EU4TAX', 'TAX', (1 / 0.19)
+  config.add_rate 'EU4NET', 'TAX', 0.19
 
   config.default_currency = :eu4tax
   config.no_cents_if_whole = false

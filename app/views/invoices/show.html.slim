@@ -1,5 +1,8 @@
 div.pull-right
-  = link_to invoices_path, class: 'btn btn-default' do 
+  = link_to invoice_path(@invoice, format: :pdf), taget: '_blank', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-file
+    |  PDF
+  = link_to invoices_path, class: 'btn btn-default' do
     span.glyphicon.glyphicon-list-alt
     =< t(:list)
   = link_to edit_invoice_path(@invoice), class: 'btn btn-primary' do

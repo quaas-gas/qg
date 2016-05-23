@@ -14,6 +14,13 @@ class InvoicesController < ApplicationController
   end
 
   def show
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = InvoicePdf.new(@invoice)
+        send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+      end
+    end
   end
 
   def new
