@@ -1,4 +1,11 @@
 de:
+  phone: Telefon
+  fax: Fax
+  email: E-Mail
+  ceo: Geschäftsführer
+  customer_number: "Kunden-Nr."
+  invoice_date: Rechnungsdatum
+
   cancel: Abbrechen
   created: "%{model} gespeichert."
   updated: "%{model} gespeichert."
