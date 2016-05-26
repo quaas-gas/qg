@@ -19,13 +19,11 @@ class Company
   end
 
   def contact_lines
-    name_address = %w(name address).map { |set| send(set).strip }
-    contact = %w(phone fax email).map { |set| I18n.t(set) + ': ' + send(set) }
-    (name_address + contact).join("\n")
+    %w(name address tax_info).map { |set| send(set).strip }.join("\n")
   end
 
   def legal_info_lines
-    items = %w(tax_info legal_info).map { |set| send(set).strip }
+    items = %w(legal_info).map { |set| send(set).strip }
     items << I18n.t(:ceo) + ': ' + ceo.strip
     items.join("\n")
   end

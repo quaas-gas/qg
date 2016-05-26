@@ -1,9 +1,15 @@
+# require 'prawn/measurement_extensions'
+
 class InvoicePdf < ApplicationDocument
 
   attr_reader :invoice, :company
 
   def initialize(invoice)
-    super(margin: [80, 60, 60])
+    @debug = false
+    @margin_top = 28.mm
+    @margin_bottom = 28.mm
+    @margin_side = 20.mm
+    super(page_size: 'A4', margin: [@margin_top, @margin_side, @margin_bottom])
     @invoice = invoice
     @company = Company.current
     @header_text_options = { size: 30, style: :italic, align: :center }
@@ -15,11 +21,11 @@ class InvoicePdf < ApplicationDocument
   end
 
   def generate
+    stroke_bounds if @debug
     write_header
-    move_down 60
+    stroke_horizontal_rule if @debug
     write_address
     write_right_box
-    move_down 25
     write_heading
     move_down 20
     text invoice.pre_message
@@ -37,35 +43,50 @@ class InvoicePdf < ApplicationDocument
 
   def write_header
     repeat(:all) do
-      bounding_box [0, bounds.top + 30], width: bounds.right, height: 40 do
+      height = @margin_top / 2
+      bounding_box [0, bounds.top + height], width: bounds.right, height: height do
         text company.name, @header_text_options
+        # stroke_bounds if @debug
       end
     end
   end
 
   def write_address
-    bounding_box([0, cursor], width: 250, height: 100) do
+    y = bounds.top - (50.mm - @margin_top)
+    bounding_box([0, y], width: 85.mm, height: 45.mm) do
       text company.full_address.join(' • '), size: 8, style: :italic
       stroke_horizontal_rule
       move_down 10
       text invoice.address
+      stroke_bounds if @debug
     end
   end
 
   def write_right_box
-    y = cursor + 50
-    box1_width = 100
-    box2_width = 70
-    x = bounds.right - (box1_width + box2_width)
-    bounding_box([x, y], width: box1_width, height: 100) do
-      text I18n.t(:customer_number) + ':'
-      text I18n.t(:invoice_date) + ':'
-    end
+    font_size 10 do
+      y      = bounds.top - (50.mm - @margin_top)
+      height = 50.mm
+      width  = 35.mm
+      box_options = { width: width, height: height }
 
-    x += box1_width
-    bounding_box([x, y], width: box2_width, height: 100) do
-      text invoice.customer_id.to_s
-      text ldate(invoice.date)
+      x = bounds.right - ( 2 * width)
+      bounding_box [x, y], box_options do
+        %i(phone fax email).each { |attr| text I18n.t(attr) + ':' }
+        move_down 20
+        %i(customer_number invoice_date).each { |attr| text I18n.t(attr) + ':' }
+        stroke_bounds if @debug
+      end
+
+      x += width
+      bounding_box [x, y], box_options do
+        text company.phone
+        text company.fax
+        text company.email
+        move_down 20
+        text invoice.customer_id.to_s
+        text ldate(invoice.date)
+        stroke_bounds if @debug
+      end
     end
   end
 
@@ -82,8 +103,10 @@ class InvoicePdf < ApplicationDocument
   end
 
   def write_positions
-    table positions_array, positions_table_options do |t|
-      t.cells.style { |c| c.align = :right unless c.column == 1 }
+    font_size 11 do
+      table positions_array, positions_table_options do |t|
+        t.cells.style { |c| c.align = :right unless c.column == 1 }
+      end
     end
   end
 
@@ -105,9 +128,11 @@ class InvoicePdf < ApplicationDocument
   end
 
   def write_positions_sum
-    table sum_rows, positions_sum_options do |t|
-      t.row(invoice.tax ? 0 : 2).font_style = :bold
-      t.cells.style { |c| c.align = :right }
+    font_size 11 do
+      table sum_rows, positions_sum_options do |t|
+        t.row(invoice.tax ? 0 : 2).font_style = :bold
+        t.cells.style { |c| c.align = :right }
+      end
     end
   end
 
@@ -137,21 +162,17 @@ class InvoicePdf < ApplicationDocument
 
   def write_footer
     repeat(:all) do
-      footer_height = 65
+      font font.name, size: 9, style: :italic
       box_width = bounds.right / 3
-      text_options = { size: 9, style: :italic }
-      bounding_box([0, 20], width: bounds.right, height: footer_height) do
-        # stroke_horizontal_rule
-        bounding_box [0, footer_height], width: box_width - 30, height: footer_height do
-          text company.contact_lines, text_options
-        end
-        bounding_box [box_width - 30, footer_height], width: box_width + 15, height: footer_height do
-          text company.legal_info_lines, text_options
-        end
-        bounding_box [box_width * 2 - 15, footer_height], width: box_width + 15, height: footer_height do
-          text company.bank_info_lines, text_options
-        end
-      end
+      small_box_options = { width: box_width - 10, height: @margin_bottom }
+      wide_box_options = { width: box_width + 5, height: @margin_bottom }
+      box1_position = 0
+      box2_position = box1_position + small_box_options[:width]
+      box3_position = box2_position + wide_box_options[:width]
+
+      bounding_box([box1_position, 0], small_box_options) { text company.contact_lines }
+      bounding_box([box2_position, 0], wide_box_options)  { text company.legal_info_lines }
+      bounding_box([box3_position, 0], wide_box_options)  { text company.bank_info_lines }
     end
   end
 
