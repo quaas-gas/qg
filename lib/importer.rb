@@ -14,6 +14,8 @@ module Importer
       reset Seller
     end
 
+    ActiveRecord::Base.logger.level = 1
+
     puts import_sellers
     puts import_products
 
@@ -67,7 +69,6 @@ module Importer
     puts __method__
     reset(Delivery) if with_delete
     exceptions = %w(amount amount_net cert_price deposit_price disposal_price bg tg btg discount_net discount)
-    ActiveRecord::Base.logger.level = 1
 
     batch_size = 1000
     count = 0
