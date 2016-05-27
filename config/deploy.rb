@@ -8,7 +8,7 @@ set :chruby_ruby, 'ruby-2.3.0'
 # set :deploy_to, '/var/www/my_app'
 set :scm, :git
 
-set :format, :pretty
+set :format, :airbrussh
 set :log_level, :debug
 # set :pty, true
 
