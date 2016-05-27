@@ -8,6 +8,7 @@ class Delivery < ActiveRecord::Base
   has_many :items, class_name: 'DeliveryItem', inverse_of: :delivery
 
   validates :number, :date, presence: true #, uniqueness: true
+  validate :validate_items
 
   multisearchable against: [:number, :number_show]
 
@@ -34,6 +35,12 @@ class Delivery < ActiveRecord::Base
 
   def total_price
     items.map(&:total_price).sum
+  end
+
+  private
+
+  def validate_items
+    errors.add(:items, :too_few) if items.empty?
   end
 
 end

@@ -7,6 +7,9 @@
         span aria-hidden="true" &times;
         span.sr-only Close
       h4 = t('.error')
+      - if @delivery.errors[:items].present?
+        p =< @delivery.errors[:items].first
+
 
   section
     .col-md-9

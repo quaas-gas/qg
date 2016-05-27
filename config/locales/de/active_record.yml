@@ -62,6 +62,7 @@ de:
         discount_net: Rabatt (Netto)
         driver: Fahrer
         invoice_number: Rechnung
+        items: Positionen
         on_account: auf Rechnung
         number: LSN
         number_show: LSN (Anzeige)
@@ -112,3 +113,9 @@ de:
         confirmed_at: Bestätigt am
         confirmation_sent_at: Bestätigung gesendet am
         unconfirmed_email: Unbestätigte Email
+    errors:
+      models:
+        delivery:
+          attributes:
+            items:
+              too_few: Mindestens eine Lieferposition muss eingetragen werden.
