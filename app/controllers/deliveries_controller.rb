@@ -33,7 +33,8 @@ class DeliveriesController < ApplicationController
     @delivery = Delivery.new delivery_params
 
     if @delivery.save
-      redirect_to @delivery, notice: t(:created, model: Delivery.model_name.human)
+      url = params[:commit] == t(:save_and_next) ? new_delivery_url : @delivery
+      redirect_to url, notice: t(:created, model: Delivery.model_name.human)
     else
       prepare_items
       render :new

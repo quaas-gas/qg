@@ -29,6 +29,8 @@ de:
       new_delivery: Lieferschein eingeben
     new:
       title: "Lieferung eingeben"
+    show:
+      new_delivery: Lieferschein eingeben
   invoices:
     open_delivery_list:
       create_invoice: "Rechnung erstellen"
@@ -42,3 +44,4 @@ de:
   list: Liste
   new: Neu
   save: Speichern
+  save_and_next: Speichern und Neu
