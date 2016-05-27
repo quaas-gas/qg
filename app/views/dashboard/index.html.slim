@@ -19,6 +19,6 @@ h1 Startseite
         = invoice.customer.name
   .col-md-4
     h3
-      => Delivery.includes(:customer, :delivery_items).order(customer_id: :asc, date: :asc).where(customer: Customer.active.own, on_account: true, invoice_id: nil).count
+      => Delivery.includes(:customer, :items).order(customer_id: :asc, date: :asc).where(customer: Customer.active.own, on_account: true, invoice_id: nil).count
       |  offene Lieferscheine
     = link_to 'Rechnungen scheiben', new_invoice_url, class: 'btn btn-primary btn-block btn-lg'

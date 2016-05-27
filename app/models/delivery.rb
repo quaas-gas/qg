@@ -5,13 +5,13 @@ class Delivery < ActiveRecord::Base
   belongs_to :seller, inverse_of: :deliveries
   belongs_to :invoice, inverse_of: :deliveries
 
-  has_many :delivery_items
+  has_many :items, class_name: 'DeliveryItem', inverse_of: :delivery
 
   validates :number, :date, presence: true #, uniqueness: true
 
   multisearchable against: [:number, :number_show]
 
-  accepts_nested_attributes_for :delivery_items,
+  accepts_nested_attributes_for :items,
                                 allow_destroy: true,
                                 reject_if: lambda { |attributes|
                                   attributes['count'].blank? || attributes['unit_price'].blank?
@@ -29,11 +29,11 @@ class Delivery < ActiveRecord::Base
   end
 
   def total_articles
-    delivery_items.map(&:count).sum
+    items.map(&:count).sum
   end
 
   def total_price
-    delivery_items.map(&:total_price).sum
+    items.map(&:total_price).sum
   end
 
 end

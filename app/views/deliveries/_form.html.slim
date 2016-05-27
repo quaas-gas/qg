@@ -32,7 +32,7 @@
             th.price Einzelpreis
             th.price Gesamtpreis
         tbody
-          = f.simple_fields_for :delivery_items do |item_form|
+          = f.simple_fields_for :items do |item_form|
             tr
               td = item_form.association :product, collection: Product.order(:number),
                   label: false, label_method: :number, input_html: { tabindex: 1000 }

@@ -108,7 +108,7 @@
               th LSN
               th Betrag
           tbody
-            - @customer.deliveries.includes(:delivery_items).limit(10).order(date: :desc).each do |delivery|
+            - @customer.deliveries.includes(:items).limit(10).order(date: :desc).each do |delivery|
               tr data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax')
                 td
                   span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')

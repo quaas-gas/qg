@@ -28,7 +28,7 @@ class Invoice < ActiveRecord::Base
   def build_items_from_deliveries
     grouped_items = {}
     deliveries.each do |delivery|
-      delivery.delivery_items.each do |item|
+      delivery.items.each do |item|
         id = [item.product_id, item.name, item.unit_price]
         grouped_items[id] ||= 0
         grouped_items[id] += item.count

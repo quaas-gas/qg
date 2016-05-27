@@ -1,5 +1,5 @@
 class DeliveryItem < ActiveRecord::Base
-  belongs_to :delivery
+  belongs_to :delivery, inverse_of: :items
   belongs_to :product
 
   validates :unit_price, :count, presence: true

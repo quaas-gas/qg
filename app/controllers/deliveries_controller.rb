@@ -7,7 +7,7 @@ class DeliveriesController < ApplicationController
     authorize Delivery
 
     @filter = DeliveriesFilter.new(params)
-    @deliveries = @filter.result.includes(:customer, :seller, delivery_items: :product).all
+    @deliveries = @filter.result.includes(:customer, :seller, items: :product).all
   end
 
   def show
@@ -58,12 +58,12 @@ class DeliveriesController < ApplicationController
 
   def prepare_items
     @delivery.customer.prices.where(active: true).each do |price|
-      if !@delivery.new_record? && @delivery.delivery_items.where(product: price.product).exists?
+      if !@delivery.new_record? && @delivery.items.where(product: price.product).exists?
         next
       end
-      @delivery.delivery_items.build product: price.product, unit_price: price.price, name: price.product.name
-    end
-    @delivery.delivery_items.build
+      @delivery.items.build product: price.product, unit_price: price.price, name: price.product.name
+    end if @delivery.customer
+    @delivery.items.build
   end
 
   # Use callbacks to share common setup or constraints between actions.
@@ -76,6 +76,6 @@ class DeliveriesController < ApplicationController
   def delivery_params
     params.require(:delivery)
       .permit(:number, :customer_id, :date, :seller_id, :description, :on_account,
-              delivery_items_attributes: [:id, :product_id, :count, :count_back, :unit_price, :name])
+              items_attributes: [:id, :product_id, :count, :count_back, :unit_price, :name])
   end
 end
