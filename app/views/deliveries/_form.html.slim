@@ -14,7 +14,7 @@
         .col-md-8
           .form-inputs
             = f.association :customer, collection: Customer.order(:name).active,
-                input_html: { class: 'select2', disabled: @delivery.customer.present? }
+                input_html: { class: 'select2', disabled: !@delivery.new_record? }
             = f.input :number
         .col-md-4
           .form-inputs
