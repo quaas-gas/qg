@@ -1,6 +1,5 @@
 class window.DeliveryForm
   constructor: ->
-
     newForm = $('form.new_delivery')
     customerSelect = newForm.find('select[name="delivery[customer_id]"]')
     customerSelect.on 'change', ->
@@ -14,6 +13,7 @@ class window.DeliveryForm
 
     @renderSums()
     $('.delivery_delivery_items_count input, .delivery_delivery_items_unit_price input').change @renderSums
+    $('.delivery_delivery_items_count input').change @setCountBack
 
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
@@ -31,3 +31,9 @@ class window.DeliveryForm
       sum += total
 
     $('table tfoot .total-price').text @parsePriceOutput(sum)
+
+  setCountBack: (event) =>
+    countInput = $(event.currentTarget)
+    countBackInput = countInput.parents('tr').find('.delivery_delivery_items_count_back input')
+    countBackInput.val(countInput.val()) if countBackInput.val() is ''
+
