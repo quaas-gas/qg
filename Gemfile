@@ -40,7 +40,7 @@ gem 'slim-rails'
 
 group :development do
   gem 'better_errors'
-  gem 'capistrano', '~> 3.4'
+  gem 'capistrano', '~> 3.5'
   gem 'capistrano-bundler'
   gem 'capistrano-rails', '~> 1.1'
   gem 'capistrano-rails-console'

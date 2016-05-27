@@ -372,7 +372,7 @@ DEPENDENCIES
   bootstrap-generators (~> 3.3.4)
   bootstrap-sass
   byebug
-  capistrano (~> 3.4)
+  capistrano (~> 3.5)
   capistrano-bundler
   capistrano-chruby
   capistrano-rails (~> 1.1)
