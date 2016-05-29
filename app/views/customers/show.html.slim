@@ -125,6 +125,16 @@
       .col-md-6
         - if @customer.invoice_address.present?
           = @customer.invoice_address.split("\n").join('<br>').html_safe
-    h4 letzte Rechnungen
 
-
+    table.table.table-condensed.table-hover.table-striped.table-clickable
+      thead
+        tr
+          th = Invoice.human_attribute_name :number
+          th = Invoice.human_attribute_name :date
+          th.price = Invoice.human_attribute_name :total_price
+      tbody
+        - @customer.invoices.order(date: :desc).limit(10).each do |invoice|
+          tr data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
+            td = invoice.number
+            td = ldate invoice.date
+            td.price = display_price invoice.total_price
