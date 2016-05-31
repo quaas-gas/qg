@@ -73,7 +73,7 @@
               | Bearbeiten
       .panel-body
         table.table.table-condensed.table-hover.table-striped.table-clickable
-          thead
+          /thead
             tr
               th = Price.human_attribute_name :product
               th = Price.human_attribute_name :active
@@ -101,7 +101,7 @@
               | Neu
       .panel-body
         table.table.table-condensed.table-hover.table-striped.table-clickable
-          thead
+          /thead
             tr
               th
               th Datum
@@ -109,7 +109,7 @@
               th Betrag
           tbody
             - @customer.deliveries.includes(:items).limit(10).order(date: :desc).each do |delivery|
-              tr data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax')
+              tr data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'danger' : '')
                 td
                   span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
                 td = ldate delivery.date
@@ -127,7 +127,7 @@
           = @customer.invoice_address.split("\n").join('<br>').html_safe
 
     table.table.table-condensed.table-hover.table-striped.table-clickable
-      thead
+      /thead
         tr
           th = Invoice.human_attribute_name :number
           th = Invoice.human_attribute_name :date

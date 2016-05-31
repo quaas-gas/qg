@@ -38,7 +38,7 @@ div
       - @deliveries.each do |delivery|
         - total_price = delivery.total_price
         - sum += total_price
-        tr data = {url: url_for(delivery)} class=(delivery.tax ? 'tax' : 'nontax')
+        tr data = {url: url_for(delivery)} class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'danger' : '')
           td
             span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
           td = delivery.number_show

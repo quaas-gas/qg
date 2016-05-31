@@ -37,6 +37,10 @@ class Delivery < ActiveRecord::Base
     items.map(&:total_price).sum
   end
 
+  def pending?
+    on_account && invoice_id.blank?
+  end
+
   private
 
   def validate_items
