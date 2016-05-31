@@ -89,6 +89,7 @@ de:
       product:
         category: Kategorie
         content: Inhalt
+        in_stock: Bestandsartikel
         number: Artikelnummer
         size: Größe
       seller:

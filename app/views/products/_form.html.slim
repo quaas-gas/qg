@@ -8,9 +8,10 @@
         = f.input :category, collection: Setting.product_categories
         = f.input :name
         = f.input :content
-        .row
+        /.row
           .col-md-8 = f.input :price
           .col-md-4 = f.input :price_currency, collection: Money.currencies, include_blank: false
+        = f.input :in_stock
 
   section.action-buttons
     .col-md-12
