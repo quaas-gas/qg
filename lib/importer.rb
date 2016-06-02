@@ -113,7 +113,11 @@ module Importer
     # end
     # Product.create! products
     #
-    xml_data('products').each { |node| Product.create! node_to_hash(node) }
+    xml_data('products').each do |node|
+      hash             = node_to_hash(node)
+      hash['in_stock'] = hash.has_key?('in_stock')
+      Product.create! hash
+    end
     Setting.product_categories = Product.pluck(:category).uniq.compact.sort
     Product.count
   end
