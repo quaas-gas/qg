@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160531191146) do
+ActiveRecord::Schema.define(version: 20160602124938) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -101,9 +101,11 @@ ActiveRecord::Schema.define(version: 20160531191146) do
     t.jsonb    "others"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
+    t.integer  "product_id"
   end
 
   add_index "invoice_items", ["invoice_id"], name: "index_invoice_items_on_invoice_id", using: :btree
+  add_index "invoice_items", ["product_id"], name: "index_invoice_items_on_product_id", using: :btree
 
   create_table "invoices", force: :cascade do |t|
     t.integer  "customer_id"

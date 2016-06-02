@@ -37,7 +37,9 @@ class Invoice < ActiveRecord::Base
     grouped_items.each do |id, item_count|
       product_id, name, unit_price = id
       name = name.present? ? name : Product.find(product_id).name
-      items.build count: item_count, name: name, unit_price: unit_price
+      item = { count: item_count, name: name, unit_price: unit_price }
+      item[:product_id] = product_id if product_id.present?
+      items.build item
     end
   end
 

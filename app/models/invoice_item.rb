@@ -1,5 +1,6 @@
 class InvoiceItem < ActiveRecord::Base
   belongs_to :invoice, inverse_of: :items
+  belongs_to :product
 
   monetize :unit_price_cents, with_model_currency: :unit_price_currency
 

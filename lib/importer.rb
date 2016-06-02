@@ -32,6 +32,7 @@ module Importer
     puts import_invoices
     puts import_invoice_items
     puts link_deliveries_to_invoices
+    puts link_invoice_items_to_products
   end
 
   def self.xml_data(file_name, node_name = nil)
@@ -326,6 +327,15 @@ module Importer
         invoice = Invoice.find_by number: delivery.invoice_number
         delivery.update invoice_id: invoice.id if invoice
       end
+    end
+    nil
+  end
+
+  def self.link_invoice_items_to_products
+    products = Product.all.each_with_object({}) { |p, products| products[p.name] = p }
+
+    InvoiceItem.all.each do |item|
+      item.update product: products[item.name] if products[item.name]
     end
     nil
   end

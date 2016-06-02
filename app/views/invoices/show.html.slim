@@ -54,7 +54,7 @@ div.pull-right
                   tr
                     td = item.position
                     td = item.count
-                    td = item.name
+                    td = link_to_if item.product_id.present?, item.name, item.product
                     td.price = display_price item.unit_price
                     td.price = display_price item.total_price
               tfoot
