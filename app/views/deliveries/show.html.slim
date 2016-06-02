@@ -28,12 +28,13 @@
 
       table.table.table-condensed.table-hover.table-striped.table-bordered
         thead
-          th Artikel
-          th Anzahl
-          th leer
-          th Bezeichnung
-          th.price Einzelpreis
-          th.price Gesamtpreis
+          tr
+            th Artikel
+            th Anzahl
+            th leer
+            th Bezeichnung
+            th.price Einzelpreis
+            th.price Gesamtpreis
         tbody
           - @delivery.items.includes(:product).each do |item|
             tr

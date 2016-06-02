@@ -25,22 +25,22 @@
         table.table.table-striped.table-hover.table-bordered
           thead
             tr
-              /th = InvoiceItem.human_attribute_name :position
+              th = InvoiceItem.human_attribute_name :position
               th = InvoiceItem.human_attribute_name :count
               th = InvoiceItem.human_attribute_name :name
               th.price = InvoiceItem.human_attribute_name :unit_price
               th.price Gesamtpreis
           tbody
-            - @invoice.items.each do |item|
+            - @invoice.items.sort.each do |item|
               tr
-                /td = item.position
+                td = item.position
                 td = item.count
-                td = item.name
+                td = link_to_if item.product_id.present?, item.name, item.product
                 td.price = display_price item.unit_price
                 td.price = display_price item.total_price
           tfoot
             tr
-              th.price colspan=3 Summe
+              th.price colspan=4 Summe
               th.price = display_price @invoice.total_price
 
       = f.input :post_message, label: false, input_html: { rows: 4 }

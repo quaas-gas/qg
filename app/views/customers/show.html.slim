@@ -1,5 +1,5 @@
 .page-header
-  = link_to customers_path, class: 'btn btn-default' do 
+  = link_to customers_path, class: 'btn btn-default' do
     span.glyphicon.glyphicon-list-alt
     =< t(:list)
   = link_to edit_customer_path(@customer), class: 'btn btn-primary' do
@@ -8,6 +8,9 @@
   => link_to @customer, method: :delete, data: { confirm: t(:confirm_delete, model: Customer.model_name.human) }, class: 'btn btn-danger' do
     span.glyphicon.glyphicon-remove
     =< t(:delete)
+  = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default' do
+    span.glyphicon.glyphicon-plus>
+    | Neue Lieferung
   h2
     => @customer.name
     small = Customer.model_name.human
@@ -56,12 +59,7 @@
             td.price = display_price price.price
             td.price = display_price price.discount
 
-h3
-  |  Verlauf
-  span.pull-right
-    = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default' do
-      span.glyphicon.glyphicon-plus>
-      | Neue Lieferung
+h3 Verlauf
 
 - products_in_stock = @customer.prices.in_stock.includes(:product).map(&:product)
 - products_ids = products_in_stock.map(&:id)
@@ -69,36 +67,38 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
   thead
     tr
       th
-      th Datum
-      th Nummer
+      th
+      th
       - products_in_stock.each do |product|
-        th = product.number
-      th.price Betrag
+        th.price = product.number
+      th
   tbody
     - deliveries = @customer.deliveries.includes(:items).limit(30).order(date: :desc).to_a
     - invoices = @customer.invoices.includes(:items).limit(10).order(date: :desc).to_a
     - count = 0
     - (deliveries + invoices).sort { |a, b| b.date <=> a.date}.each do |delivery|
       - count += 1
-      - break if count > 9 && delivery.is_a?(Invoice)
+      - break if count > 15 && delivery.is_a?(Invoice)
       - if delivery.is_a? Delivery
-        tr data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
+        tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
           td
             span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
           td = delivery.number
           td = ldate delivery.date
           - products_in_stock.each do |product|
-            td = format_delivery_item_count delivery.items.to_a.find { |i| i.product_id == product.id }
+            td.price = format_delivery_item_count delivery.items.to_a.find { |i| i.product_id == product.id }
           td.price = display_price delivery.total_price
       - if delivery.is_a? Invoice
         - invoice = delivery
-        tr.success data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
+        tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
           td
             span.glyphicon.glyphicon-eur
           td = invoice.number
           td = ldate invoice.date
           - products_in_stock.each do |product|
-            td
+            td.price
+              - if item = invoice.items.to_a.find { |i| i.product_id == product.id }
+                = item.count
           td.price = display_price invoice.total_price
 
 

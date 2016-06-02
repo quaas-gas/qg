@@ -50,7 +50,7 @@ div.pull-right
                   th.price = InvoiceItem.human_attribute_name :unit_price
                   th.price Gesamtpreis
               tbody
-                - @invoice.items.each do |item|
+                - @invoice.items.order(:position).each do |item|
                   tr
                     td = item.position
                     td = item.count

@@ -34,13 +34,14 @@ class Invoice < ActiveRecord::Base
         grouped_items[id] += item.count
       end
     end
-    grouped_items.each do |id, item_count|
-      product_id, name, unit_price = id
+    grouped_items.each do |(product_id, name, unit_price), item_count|
       name = name.present? ? name : Product.find(product_id).name
       item = { count: item_count, name: name, unit_price: unit_price }
       item[:product_id] = product_id if product_id.present?
       items.build item
     end
+    position = 0
+    items.sort.each { |item| item.position = (position += 1) }
   end
 
 end

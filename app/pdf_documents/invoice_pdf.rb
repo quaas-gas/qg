@@ -112,7 +112,7 @@ class InvoicePdf < ApplicationDocument
 
   def positions_array
     [%w(Menge Bezeichnung Einzelpreis Gesamtpreis)] +
-      invoice.items.map do |item|
+      invoice.items.order(:position).map do |item|
         [item.count.to_s, item.name, display_price(item.unit_price), display_price(item.total_price)]
       end
   end
