@@ -58,6 +58,7 @@ class CustomersController < ApplicationController
     params.require(:customer)
       .permit(:salut, :name, :name2, :own_customer, :street, :city, :zip, :phone, :mobile, :email,
               :gets_invoice, :region, :kind, :price_in_net, :has_stock, :invoice_address, :archived,
-              prices_attributes: [:id, :product_id, :valid_from, :price, :discount, :active, :_destroy])
+              prices_attributes: [:id, :product_id, :valid_from, :price, :discount, :active,
+                                  :in_stock, :_destroy])
   end
 end

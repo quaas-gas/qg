@@ -83,6 +83,7 @@ de:
         unit_price: Einzelpreis
       price:
         active: in Lieferschein
+        in_stock: Bestandsführung
         product: Artikel
         valid_from: gilt ab
         discount: Provision

@@ -4,6 +4,8 @@ class Product < ActiveRecord::Base
 
   validates :number, presence: true, uniqueness: true
 
+  scope :in_stock, -> { where in_stock: true }
+
   monetize :price_cents, with_model_currency: :price_currency
 
 end

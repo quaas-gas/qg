@@ -7,6 +7,7 @@ section
           th = Price.human_attribute_name :active
           th.price = Price.human_attribute_name :price
           th.price = Price.human_attribute_name :discount
+          th.price = Price.human_attribute_name :in_stock
           th.price Löschen
       tbody
         = f.simple_fields_for :prices do |price_form|
@@ -20,6 +21,7 @@ section
             td = price_form.input :active, label: false
             td.price = price_form.input :price, label: false
             td.price = price_form.input :discount, label: false
+            td.price = price_form.input :in_stock, label: false
             td.price
               - unless price_form.object.new_record?
                 = price_form.input :_destroy, as: :boolean, label: false
