@@ -14,61 +14,29 @@
 
 .row
   .col-md-4
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:salut)
-      .col-md-8 = @customer.salut
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:name)
-      .col-md-8 = @customer.name
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:name2)
-      .col-md-8 = @customer.name2
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:own_customer)
-      .col-md-8 = bool_icon @customer.own_customer
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:region)
-      .col-md-8 = @customer.region
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:kind)
-      .col-md-8 = @customer.kind
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:archived)
-      .col-md-8 = bool_icon @customer.archived
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:has_stock)
-      .col-md-8 = bool_icon @customer.has_stock
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:gets_invoice)
-      .col-md-8 = bool_icon @customer.gets_invoice
-    /.row
-      label.col-md-6 => Customer.human_attribute_name(:invoice_address)
-      .col-md-6
-        - if @customer.invoice_address.present?
-          = @customer.invoice_address.split("\n").join('<br>').html_safe
+    p = @customer.salut
+    p = @customer.name
+    p = @customer.name2
+    p = @customer.region
+    p = @customer.kind
+    p = @customer.own_customer ? 'QG' : 'PG'
+    - if @customer.has_stock
+      p Bestandsführung
+    p = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
+    - if @customer.archived
+      p = Customer.human_attribute_name(:archived)
 
   .col-md-4
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:street)
-      .col-md-8 = @customer.street
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:city)
-      .col-md-8 = @customer.city
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:zip)
-      .col-md-8 = @customer.zip
+    p = @customer.street
+    p
+      => @customer.zip
+      = @customer.city
     p = link_to 'Karte', gmaps_link(@customer), target: '_blank'
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:phone)
-      .col-md-8 = @customer.phone
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:mobile)
-      .col-md-8 = @customer.mobile
-    .row
-      label.col-md-4 => Customer.human_attribute_name(:email)
-      .col-md-8 = @customer.email
+    p = @customer.phone
+    p = @customer.mobile
+    p = @customer.email
 
-  .col-md-4
+  .col-md-4 style="overflow-y: scroll; height: 250px;"
     h4
       = @customer.tax ? 'Bruttopreise' : 'Nettopreise'
       spn.pull-right
@@ -76,12 +44,6 @@
           span.glyphicon.glyphicon-cog>
           | Bearbeiten
     table.table.table-condensed.table-hover.table-striped
-      /thead
-        tr
-          th = Price.human_attribute_name :product
-          th = Price.human_attribute_name :active
-          th.price = Price.human_attribute_name :price
-          th.price = Price.human_attribute_name :discount
       tbody class=(@customer.tax ? 'tax' : 'nontax')
         - @customer.prices.joins(:product).order('products.size').each do |price|
           tr
@@ -94,10 +56,10 @@
             td.price = display_price price.price
             td.price = display_price price.discount
 
-h4
+h3
   |  Verlauf
   span.pull-right
-    = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default btn-xs' do
+    = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default' do
       span.glyphicon.glyphicon-plus>
       | Neue Lieferung
 
@@ -126,11 +88,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
           td = delivery.number
           td = ldate delivery.date
           - products_in_stock.each do |product|
-            td
-              - product_item = delivery.items.where(product_id: product.id).first
-              - if product_item
-                | #{product_item.count} / #{product_item.count_back}
-                |  (#{product_item.count - product_item.count_back})
+            td = format_delivery_item_count delivery.items.to_a.find { |i| i.product_id == product.id }
           td.price = display_price delivery.total_price
       - if delivery.is_a? Invoice
         - invoice = delivery
