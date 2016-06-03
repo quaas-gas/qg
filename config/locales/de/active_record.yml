@@ -71,6 +71,7 @@ de:
       enum:
         value: Name
       invoice:
+        date: Rechnungsdatum
         number: Rechnungsnummer
         post_message: Dankesnachricht
         pre_message: Vortext

@@ -1,67 +1,65 @@
-div.pull-right
-  = link_to invoice_path(@invoice, format: :pdf), taget: '_blank', class: 'btn btn-default' do
+ul.list-inline.pull-right
+  li = link_to invoice_path(@invoice, format: :pdf), taget: '_blank', class: 'btn btn-default' do
     span.glyphicon.glyphicon-file
     |  PDF
-  = link_to invoices_path, class: 'btn btn-default' do
+  li = link_to invoices_path, class: 'btn btn-default' do
     span.glyphicon.glyphicon-list-alt
     =< t(:list)
-  = link_to edit_invoice_path(@invoice), class: 'btn btn-primary' do
+  li = link_to edit_invoice_path(@invoice), class: 'btn btn-primary' do
     span.glyphicon.glyphicon-pencil
     =< t(:edit)
-  => link_to @invoice, method: :delete, data: { confirm: t(:confirm_delete, model: Invoice.model_name.human) }, class: 'btn btn-danger' do
+  li => link_to @invoice, method: :delete, data: { confirm: t(:confirm_delete, model: Invoice.model_name.human) }, class: 'btn btn-danger' do
     span.glyphicon.glyphicon-remove
     =< t(:delete)
 
 .clearfix
 .row
-  .col-md-9
+  .col-md-8
     .invoice class=(@invoice.tax ? 'tax' : 'nontax')
       .row
-        .col-md-6
-          p = lines_for @invoice.address.split("\n")
-        .col-md-3
-          .row
+        .col-md-8
+          p = link_to lines_for(@invoice.address.split("\n")), @invoice.customer
+        .col-md-4
+          /.row
             label.col-md-6 => Invoice.human_attribute_name(:customer)
             .col-md-6 = link_to @invoice.customer.name, @invoice.customer
           .row
             label.col-md-6 => Invoice.human_attribute_name(:date)
             .col-md-6 = ldate @invoice.date
-          .row
+          /.row
             label.col-md-6 => Invoice.human_attribute_name(:tax)
             .col-md-6 = bool_icon @invoice.tax
-          .row
+          /.row
             label.col-md-6 => Invoice.human_attribute_name(:printed)
             .col-md-6 = bool_icon @invoice.printed
-      .row
-        .col-md-9
-          h2
-            = Invoice.model_name.human
-            =< @invoice.number
+      h2
+        = Invoice.model_name.human
+        =< @invoice.number
 
-          p = lines_for @invoice.pre_message.split("\n")
+      p = lines_for @invoice.pre_message.split("\n")
 
-          .table-responsive
-            table.table.table-striped.table-hover.table-bordered
-              thead
-                tr
-                  th = InvoiceItem.human_attribute_name :position
-                  th = InvoiceItem.human_attribute_name :count
-                  th = InvoiceItem.human_attribute_name :name
-                  th.price = InvoiceItem.human_attribute_name :unit_price
-                  th.price Gesamtpreis
-              tbody
-                - @invoice.items.order(:position).each do |item|
-                  tr
-                    td = item.position
-                    td = item.count
-                    td = link_to_if item.product_id.present?, item.name, item.product
-                    td.price = display_price item.unit_price
-                    td.price = display_price item.total_price
-              tfoot
-                tr
-                  th.price colspan=4 Summe
-                  th.price = display_price @invoice.total_price
+      .table-responsive
+        table.table.table-striped.table-hover.table-bordered
+          thead
+            tr
+              th = InvoiceItem.human_attribute_name :position
+              th = InvoiceItem.human_attribute_name :count
+              th = InvoiceItem.human_attribute_name :name
+              th.price = InvoiceItem.human_attribute_name :unit_price
+              th.price Gesamtpreis
+          tbody
+            - @invoice.items.order(:position).each do |item|
+              tr
+                td = item.position
+                td = item.count
+                td = link_to_if item.product_id.present?, item.name, item.product
+                td.price = display_price item.unit_price
+                td.price = display_price item.total_price
+          tfoot
+            tr
+              th.price colspan=4 Summe
+              th.price = display_price @invoice.total_price
 
-          p = lines_for @invoice.post_message.split("\n")
+      p = lines_for @invoice.post_message.split("\n")
 
-  .col-md-3  = render 'deliveries_info', deliveries: @invoice.deliveries, tax: @invoice.tax
+  .col-md-4  = render 'deliveries_info', deliveries: @invoice.deliveries, tax: @invoice.tax
