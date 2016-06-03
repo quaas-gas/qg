@@ -2,23 +2,37 @@ h1 Startseite
 
 .row
   .col-md-4
-    h3 Letzte Lieferscheine
-    - Delivery.includes(:customer).order(date: :desc, number: :desc).limit(10).each do |delivery|
-      p = link_to delivery do
-        => delivery.number
-        = ldate delivery.date
-        br
-        = delivery.customer.name
+    h3 Letzte Lieferungen
+    table.table.table-hover.table-condensed.table-clickable
+      tbody
+        - Delivery.includes(:customer).order(date: :desc, number: :desc).limit(15).each do |delivery|
+          tr data = {url: url_for(delivery)} class=(delivery.pending? ? 'danger' : '')
+            td
+              span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+            td = delivery.number
+            td = ldate delivery.date
+            td = delivery.customer.name
   .col-md-4
     h3 Letzte Rechnungen
-    - Invoice.includes(:customer).order(number: :desc).limit(10).each do |invoice|
-      p = link_to invoice do
-        => invoice.number
-        = ldate invoice.date
-        br
-        = invoice.customer.name
+    table.table.table-hover.table-condensed.table-clickable
+      tbody
+        - Invoice.includes(:customer).order(number: :desc).limit(15).each do |invoice|
+          tr data = {url: url_for(invoice)}
+            td = invoice.number
+            td = ldate invoice.date
+            td = invoice.customer.name
   .col-md-4
+    - open_deliveries = Delivery.pending
     h3
-      => Delivery.includes(:customer, :items).order(customer_id: :asc, date: :asc).where(customer: Customer.active.own, on_account: true, invoice_id: nil).count
+      => open_deliveries.count
       |  offene Lieferscheine
+
+    table.table.table-hover.table-condensed.table-clickable
+      tbody
+        - open_deliveries.each do |delivery|
+          tr data = {url: url_for(delivery)}
+          td = delivery.number
+          td = ldate delivery.date
+          td = delivery.customer.name
+
     = link_to 'Rechnungen scheiben', new_invoice_url, class: 'btn btn-primary btn-block btn-lg'
