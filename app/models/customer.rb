@@ -44,8 +44,8 @@ class Customer < ActiveRecord::Base
     invoices.build(invoice_hash) { |invoice| invoice.build_items_from_deliveries }
   end
 
-  def history
-    date        = 4.month.ago.to_date.at_end_of_month
+  def history(months = 4)
+    date        = months.month.ago.to_date.at_end_of_month
     _deliveries = deliveries.includes(:items).where('date > ?', date).order(date: :desc).to_a
     _invoices   = invoices.  includes(:items).where('date > ?', date).order(date: :desc).to_a
     _stocks     = stocks.    includes(:items).where('date > ?', date).order(date: :desc).to_a

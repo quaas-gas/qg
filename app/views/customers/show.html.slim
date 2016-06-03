@@ -88,7 +88,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
           - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
             = item.count
       td
-    - @customer.history.each do |delivery|
+    - @customer.history(24).each do |delivery|
       - if delivery.is_a? Delivery
         tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
           td
@@ -96,7 +96,18 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
           td = delivery.number
           td = ldate delivery.date
           - products_in_stock.each do |product|
-            td.price = format_delivery_item_count delivery.items.to_a.find { |i| i.product_id == product.id }
+            - item = delivery.items.to_a.find { |i| i.product_id == product.id }
+            - if item
+              - stock_diff = item.stock_diff
+              td.price class=('danger' if stock_diff < 0) class=('success' if stock_diff > 0)
+                => item.count_back
+                | |
+                =<> item.count
+                | |
+                =< stock_diff
+            - else
+              td
+
           td.price = display_price delivery.total_price
       - if delivery.is_a? Invoice
         - invoice = delivery
