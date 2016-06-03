@@ -354,7 +354,7 @@ module Importer
   def self.generate_stocks_for_invoices
     puts __method__
     Stock.transaction do
-      Customer.where(id: 643).all.each do |customer|
+      Customer.all.each do |customer|
         customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
           customer.calculate_new_stock(invoice_date).save
         end
