@@ -48,7 +48,10 @@ class Customer < ActiveRecord::Base
     _deliveries = deliveries.includes(:items).where('date > ?', date).order(date: :desc).to_a
     _invoices   = invoices.  includes(:items).where('date > ?', date).order(date: :desc).to_a
     _stocks     = stocks.    includes(:items).where('date > ?', date).order(date: :desc).to_a
-    (_stocks + _deliveries + _invoices).sort { |a, b| b.date <=> a.date}
+    (_stocks + _deliveries + _invoices).sort do |a, b|
+      res = b.date <=> a.date
+      (res == 0) ? b.class.name <=> a.class.name : res
+    end
   end
 
   def calculate_new_stock(date)

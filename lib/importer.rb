@@ -334,6 +334,7 @@ module Importer
   end
 
   def self.link_invoice_items_to_products
+    puts __method__
     products = Product.all.each_with_object({}) { |p, products| products[p.name] = p }
 
     InvoiceItem.all.each do |item|
@@ -343,6 +344,7 @@ module Importer
   end
 
   def self.generate_initial_stocks
+    puts __method__
     Stock.transaction do
       Customer.all.each { |customer| customer.initialize_stock(20.years.ago).save }
     end
@@ -350,6 +352,7 @@ module Importer
   end
 
   def self.generate_stocks_for_invoices
+    puts __method__
     Stock.transaction do
       Customer.where(id: 643).all.each do |customer|
         customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
