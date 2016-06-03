@@ -29,8 +29,7 @@ class InvoicesController < ApplicationController
       customer = Customer.find params[:customer_id]
       @invoice = customer.generate_next_invoice params[:delivery_ids]
     else
-      @open_deliveries = Delivery.includes(:customer, :items).order(customer_id: :asc, date: :asc)
-        .where(customer: Customer.active.own, on_account: true, invoice_id: nil)
+      @open_deliveries = Delivery.pending
     end
   end
 

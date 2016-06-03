@@ -19,6 +19,7 @@ class Delivery < ActiveRecord::Base
                                 }
 
   scope :on_account, -> { where on_account: true }
+  scope :pending, -> { includes(:customer, :items).order(date: :desc, number: :desc).where(customer: Customer.active.own, on_account: true, invoice_id: nil) }
 
   def self.years
     sql = 'SELECT DISTINCT extract(year from date) AS year FROM "deliveries" order by year DESC'
