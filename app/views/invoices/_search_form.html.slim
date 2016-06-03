@@ -8,8 +8,6 @@
       select.form-control name="month"
         - @filter.months.each do |month, name|
           option selected=(month == @filter.month) value=month  = name
-    .form-group
-      => link_to 'Alle', deliveries_path, class: 'btn btn-info btn-block'
 
 coffee:
   $ ->
