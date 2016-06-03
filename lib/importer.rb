@@ -33,6 +33,8 @@ module Importer
     puts import_invoice_items
     puts link_deliveries_to_invoices
     puts link_invoice_items_to_products
+    puts generate_initial_stocks
+    puts generate_stocks_for_invoices
   end
 
   def self.xml_data(file_name, node_name = nil)
@@ -336,6 +338,24 @@ module Importer
 
     InvoiceItem.all.each do |item|
       item.update product: products[item.name] if products[item.name]
+    end
+    nil
+  end
+
+  def self.generate_initial_stocks
+    Stock.transaction do
+      Customer.all.each { |customer| customer.initialize_stock(20.years.ago).save }
+    end
+    nil
+  end
+
+  def self.generate_stocks_for_invoices
+    Stock.transaction do
+      Customer.where(id: 643).all.each do |customer|
+        customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
+          customer.calculate_new_stock(invoice_date).save
+        end
+      end
     end
     nil
   end

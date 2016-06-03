@@ -2,9 +2,11 @@ class Customer < ActiveRecord::Base
   include PgSearch
 
   has_many :deliveries, inverse_of: :customer
+  # has_many :delivery_items, through: :deliveries, source: :items
   has_many :prices, -> { includes(:product).order('products.number') }, inverse_of: :customer
   has_many :invoices, inverse_of: :customer
-  has_many :open_deliveries, -> { where(on_account: true, invoice_number: nil) }, class_name: 'Delivery'
+  has_many :open_deliveries, -> { where(on_account: true, invoice_id: nil) }, class_name: 'Delivery'
+  has_many :stocks, inverse_of: :customer
 
   multisearchable against: [:salut, :name, :name2, :street, :city, :kind, :invoice_address]
 
@@ -35,13 +37,40 @@ class Customer < ActiveRecord::Base
       date: Date.current,
       deliveries: open_deliveries.where(id: delivery_ids)
     }
-    last_invoice = invoices.order(number: :desc).first
-    if last_invoice
-      invoice_hash[:pre_message] = last_invoice.pre_message
-      invoice_hash[:post_message] = last_invoice.post_message
+    if (last_invoice = invoices.order(number: :desc).first)
+      invoice_hash.merge last_invoice.attributes.slice('pre_message', 'post_message')
     end
-    invoices.build invoice_hash do |invoice|
-      invoice.build_items_from_deliveries
-    end
+    invoices.build(invoice_hash) { |invoice| invoice.build_items_from_deliveries }
+  end
+
+  def history
+    date        = 4.month.ago.to_date.at_end_of_month
+    _deliveries = deliveries.includes(:items).where('date > ?', date).order(date: :desc).to_a
+    _invoices   = invoices.  includes(:items).where('date > ?', date).order(date: :desc).to_a
+    _stocks     = stocks.    includes(:items).where('date > ?', date).order(date: :desc).to_a
+    (_stocks + _deliveries + _invoices).sort { |a, b| b.date <=> a.date}
+  end
+
+  def calculate_new_stock(date)
+    l_stock = last_stock
+    raise "date #{date} must be greater than last stock date (#{l_stock.date})" if date < l_stock.date
+
+    initialize_stock(date, last_stock: l_stock).tap { |stock| stock.calculate_items }
+  end
+
+  def initialize_stock(date, last_stock: nil)
+    stocks.build(date: date).tap { |stock| stock.initialize_items last_stock: last_stock }
+  end
+
+  def current_stock
+    calculate_new_stock Date.current
+  end
+
+  def last_stock
+    stocks.includes(:items).order(date: :desc).first
+  end
+
+  def initial_stock
+    stocks.includes(:items).order(date: :asc).first
   end
 end

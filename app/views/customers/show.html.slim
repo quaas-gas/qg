@@ -20,14 +20,15 @@
     p = @customer.salut
     p = @customer.name
     p = @customer.name2
-    p = @customer.region
-    p = @customer.kind
-    p = @customer.own_customer ? 'QG' : 'PG'
-    - if @customer.has_stock
-      p Bestandsführung
-    p = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
-    - if @customer.archived
-      p = Customer.human_attribute_name(:archived)
+    p
+      span.label.label-default> = @customer.region
+      span.label.label-default> = @customer.kind
+      span.label.label-default> = @customer.own_customer ? 'QG' : 'PG'
+      - if @customer.has_stock
+        span.label.label-default>  Bestandsführung
+      span.label.label-default> = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
+      - if @customer.archived
+        span.label.label-danger>  = Customer.human_attribute_name(:archived)
 
   .col-md-4
     p = @customer.street
@@ -39,7 +40,7 @@
     p = @customer.mobile
     p = @customer.email
 
-  .col-md-4 style="overflow-y: scroll; height: 250px;"
+  .col-md-4 style="overflow-y: scroll; height: 175px;"
     h4
       = @customer.tax ? 'Bruttopreise' : 'Nettopreise'
       spn.pull-right
@@ -73,12 +74,18 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
         th.price = product.number
       th
   tbody
-    - deliveries = @customer.deliveries.includes(:items).limit(30).order(date: :desc).to_a
-    - invoices = @customer.invoices.includes(:items).limit(10).order(date: :desc).to_a
-    - count = 0
-    - (deliveries + invoices).sort { |a, b| b.date <=> a.date}.each do |delivery|
-      - count += 1
-      - break if count > 15 && delivery.is_a?(Invoice)
+    tr.stock
+      - stock = @customer.current_stock
+      td
+        /span.glyphicon.glyphicon-eur
+      td Aktueller Bestand
+      td = ldate stock.date
+      - products_in_stock.each do |product|
+        td.price
+          - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
+            = item.count
+      td
+    - @customer.history.each do |delivery|
       - if delivery.is_a? Delivery
         tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
           td
@@ -97,9 +104,21 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
           td = ldate invoice.date
           - products_in_stock.each do |product|
             td.price
-              - if item = invoice.items.to_a.find { |i| i.product_id == product.id }
+              - if (item = invoice.items.to_a.find { |i| i.product_id == product.id })
                 = item.count
           td.price = display_price invoice.total_price
+      - if delivery.is_a? Stock
+        - stock = delivery
+        tr.stock
+          td
+            /span.glyphicon.glyphicon-eur
+          td Bestand
+          td = ldate stock.date
+          - products_in_stock.each do |product|
+            td.price
+              - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
+                = item.count
+          td
 
 
 /.row

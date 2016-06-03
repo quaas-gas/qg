@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160602124938) do
+ActiveRecord::Schema.define(version: 20160602201553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -188,6 +188,27 @@ ActiveRecord::Schema.define(version: 20160602124938) do
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
+  create_table "stock_items", force: :cascade do |t|
+    t.integer  "stock_id"
+    t.integer  "product_id"
+    t.integer  "count",      default: 0, null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "stock_items", ["product_id"], name: "index_stock_items_on_product_id", using: :btree
+  add_index "stock_items", ["stock_id"], name: "index_stock_items_on_stock_id", using: :btree
+
+  create_table "stocks", force: :cascade do |t|
+    t.integer  "customer_id"
+    t.date     "date",        null: false
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "stocks", ["customer_id", "date"], name: "index_stocks_on_customer_id_and_date", unique: true, using: :btree
+  add_index "stocks", ["customer_id"], name: "index_stocks_on_customer_id", using: :btree
+
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -215,4 +236,7 @@ ActiveRecord::Schema.define(version: 20160602124938) do
   add_foreign_key "invoices", "customers"
   add_foreign_key "prices", "customers"
   add_foreign_key "prices", "products"
+  add_foreign_key "stock_items", "products"
+  add_foreign_key "stock_items", "stocks"
+  add_foreign_key "stocks", "customers"
 end
