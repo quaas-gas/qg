@@ -56,10 +56,13 @@
       = f.input :description, input_html: { tabindex: 1000 }
       .action-buttons
         .pull-right
-          - cancel_url = @delivery.new_record? ? deliveries_url : @delivery
-          => link_to t(:cancel), cancel_url, class: 'btn btn-default', tabindex: 1000
-          => f.submit t(:save), class: 'btn btn-default'
-          = f.submit t(:save_and_next), class: 'btn btn-primary'
+          - if @delivery.new_record?
+            => link_to t(:cancel), deliveries_url, class: 'btn btn-default', tabindex: 1000
+            => f.submit t(:save), class: 'btn btn-default', tabindex: 1000
+            = f.submit t(:save_and_next), class: 'btn btn-primary'
+          - else
+            => link_to t(:cancel), @delivery, class: 'btn btn-default', tabindex: 1000
+            = f.submit t(:save), class: 'btn btn-primary'
 
     .col-md-3 = render 'customer_info', customer: @delivery.customer
 
