@@ -13,7 +13,7 @@ class window.DeliveryForm
 
     @renderSums()
     $('.delivery_items_count input, .delivery_items_unit_price input').change @renderSums
-    $('.delivery_items_count input').change @setCountBack
+    $('.delivery_items_count_back input').change @setCount
 
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
@@ -32,8 +32,8 @@ class window.DeliveryForm
 
     $('table tfoot .total-price').text @parsePriceOutput(sum)
 
-  setCountBack: (event) =>
-    countInput = $(event.currentTarget)
-    countBackInput = countInput.parents('tr').find('.delivery_items_count_back input')
-    countBackInput.val(countInput.val()) if countBackInput.val() is ''
+  setCount: (event) =>
+    countBackInput = $(event.currentTarget)
+    countInput = countBackInput.parents('tr').find('.delivery_items_count input')
+    countInput.val(countBackInput.val()) if countInput.val() is ''
 

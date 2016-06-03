@@ -38,8 +38,8 @@
         thead
           tr
             th Artikel
-            th Anzahl
             th leer
+            th Anzahl / voll
             th Bezeichnung
             th.price Einzelpreis
             th.price Gesamtpreis
@@ -47,8 +47,8 @@
           - @delivery.items.includes(:product).each do |item|
             tr
               td = item.product&.number
-              td = item.count
               td = item.count_back
+              td = item.count
               td = item.name
               td.price = display_price item.unit_price
               td.price = display_price item.total_price
