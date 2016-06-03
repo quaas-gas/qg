@@ -28,6 +28,9 @@ class Customer < ActiveRecord::Base
   scope :nontax,   -> { where(tax: false) }
   scope :own,      -> { where(own_customer: true) }
 
+  def last_invoice
+    @last_invoice ||= invoices.order(number: :desc).first
+  end
 
   def generate_next_invoice(delivery_ids)
     invoice_hash = {
@@ -37,9 +40,7 @@ class Customer < ActiveRecord::Base
       date: Date.current,
       deliveries: open_deliveries.where(id: delivery_ids)
     }
-    if (last_invoice = invoices.order(number: :desc).first)
-      invoice_hash.merge last_invoice.attributes.slice('pre_message', 'post_message')
-    end
+    invoice_hash.merge! last_invoice.attributes.slice('pre_message', 'post_message') if last_invoice
     invoices.build(invoice_hash) { |invoice| invoice.build_items_from_deliveries }
   end
 
