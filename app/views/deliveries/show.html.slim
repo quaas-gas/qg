@@ -1,10 +1,16 @@
+- invoice = @delivery.invoice
 .page-header
   => link_to deliveries_path, class: 'btn btn-default' do
     span.glyphicon.glyphicon-list-alt
     =< t(:list)
-  => link_to edit_delivery_path(@delivery), class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-pencil
-    =< t(:edit)
+  - if invoice
+    => link_to invoice, class: 'btn btn-primary', data: {confirm: t('.edit_confirm')} do
+      span.glyphicon.glyphicon-ban-circle
+      =< t(:edit)
+  - else
+    => link_to edit_delivery_path(@delivery), class: 'btn btn-primary' do
+      span.glyphicon.glyphicon-pencil
+      =< t(:edit)
   => link_to @delivery, method: :delete, data: { confirm: t(:confirm_delete, model: Delivery.model_name.human) }, class: 'btn btn-danger' do
     span.glyphicon.glyphicon-remove
     =< t(:delete)
@@ -25,6 +31,8 @@
         .col-md-3
           p.text-right = ldate @delivery.date
           p.text-right = @delivery.seller&.name
+          - if invoice
+            p.text-right = link_to "Rechnung: #{invoice.number}", invoice
 
       table.table.table-condensed.table-hover.table-striped.table-bordered
         thead

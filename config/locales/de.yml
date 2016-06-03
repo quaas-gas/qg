@@ -30,6 +30,7 @@ de:
     new:
       title: "Lieferung eingeben"
     show:
+      edit_confirm: "Dieser Lieferschein kann nicht bearbeitet werden, da er schon abgerechnet wurde. Wollen Sie stattdessen  die Rechnung ansehen?"
       new_delivery: Lieferschein eingeben
   invoices:
     open_delivery_list:
