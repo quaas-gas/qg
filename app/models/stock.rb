@@ -14,8 +14,9 @@ class Stock < ActiveRecord::Base
   end
 
   def calculate_items
-    customer.deliveries.includes(:items)
-      .where('date > ?', customer.last_stock.date).where('date <= ?', date).each do |delivery|
+    deliveries = customer.deliveries.includes(:items)
+      .where('date > ?', customer.last_stock.date).where('date <= ?', date)
+    deliveries.each do |delivery|
       items.each do |item|
         dev_item   = delivery.items.find { |i| i.product_id == item.product_id }
         item.count = item.count + dev_item.count - dev_item.count_back if dev_item
