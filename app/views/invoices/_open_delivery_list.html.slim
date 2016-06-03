@@ -5,7 +5,7 @@
     input type="hidden" name="customer_id" value=customer.id
     .row
       .col-md-6
-        h4 = customer.name
+        h4 = link_to customer.name, customer
         table.table.table-hover.table-striped
           tbody
             - grouped_deliveries[customer].each do |delivery|
