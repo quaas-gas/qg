@@ -16,11 +16,8 @@
     small = Customer.model_name.human
 
 .row
-  .col-md-4
-    p = @customer.salut
-    p = @customer.name
-    p = @customer.name2
-    p
+  .col-md-8
+    .well.well-sm
       span.label.label-default> = @customer.region
       span.label.label-default> = @customer.kind
       span.label.label-default> = @customer.own_customer ? 'QG' : 'PG'
@@ -29,16 +26,22 @@
       span.label.label-default> = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
       - if @customer.archived
         span.label.label-danger>  = Customer.human_attribute_name(:archived)
+    .row
+      .col-md-6
+        p = @customer.salut
+        p = @customer.name
+        p = @customer.name2
+        p = @customer.notes
 
-  .col-md-4
-    p = @customer.street
-    p
-      => @customer.zip
-      = @customer.city
-    p = link_to 'Karte', gmaps_link(@customer), target: '_blank'
-    p = @customer.phone
-    p = @customer.mobile
-    p = @customer.email
+      .col-md-6
+        p = @customer.street
+        p
+          => @customer.zip
+          = @customer.city
+        p = link_to 'Karte', gmaps_link(@customer), target: '_blank'
+        p = @customer.phone
+        p = @customer.mobile
+        p = @customer.email
 
   .col-md-4 style="overflow-y: scroll; height: 175px;"
     h4
