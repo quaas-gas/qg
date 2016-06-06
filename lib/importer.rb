@@ -2,6 +2,7 @@ module Importer
 
   def self.import_all(with_delete: false)
     if with_delete
+      reset Stock
       reset InvoiceItem
       reset Invoice
       reset DeliveryItem
@@ -51,7 +52,12 @@ module Importer
 
   def self.reset(model)
     puts model.delete_all
-    puts ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+    ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+    reset_pk model
+  end
+
+  def self.reset_pk(model)
+    ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
   end
 
   def self.import_customers(with_delete: false)
@@ -60,6 +66,7 @@ module Importer
     xml_data('customers').each { |customer| Customer.create! node_to_hash(customer) }
     Customer.where(price_in_net: true).update_all(tax: false)
     Customer.where(price_in_net: false).update_all(tax: true)
+    reset_pk Customer
     Customer.count
   end
 
