@@ -37,6 +37,7 @@ gem 'puma'
 gem 'pundit'
 gem 'simple_form'
 gem 'slim-rails'
+gem 'react-rails'
 
 group :development do
   gem 'better_errors'

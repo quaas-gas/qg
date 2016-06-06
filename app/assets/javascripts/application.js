@@ -18,5 +18,12 @@
 //= require bootstrap-datepicker
 //= require select2
 //= require select2_locale_de
-//= require_tree .
+//= require react
+//= require react_ujs
+//= require components
+//  require_tree .
+//= require delivery-form
+//= require form_init
+//= require table
+
 
