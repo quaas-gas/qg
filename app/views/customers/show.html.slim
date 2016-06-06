@@ -77,17 +77,17 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
         th.price = product.number
       th
   tbody
-    tr.stock
-      - stock = @customer.current_stock
-      td
-        /span.glyphicon.glyphicon-eur
-      td Aktueller Bestand
-      td = ldate stock.date
-      - products_in_stock.each do |product|
-        td.price
-          - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
-            = item.count
-      td
+    - if (stock = @customer.current_stock)
+      tr.stock
+        td
+          /span.glyphicon.glyphicon-eur
+        td Aktueller Bestand
+        td = ldate stock.date
+        - products_in_stock.each do |product|
+          td.price
+            - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
+              = item.count
+        td
     - @customer.history(24).each do |delivery|
       - if delivery.is_a? Delivery
         tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')

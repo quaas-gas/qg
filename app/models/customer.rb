@@ -67,6 +67,7 @@ class Customer < ActiveRecord::Base
   end
 
   def current_stock
+    return nil if stocks.empty?
     calculate_new_stock Date.current
   end
 
