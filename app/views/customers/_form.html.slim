@@ -9,10 +9,10 @@
   section
     .col-md-6 = panel_box title: Customer.model_name.human do
       .form-inputs
+        = f.input :contractor, collection: Setting.contractors, include_blank: false
         = f.input :salut, input_html: { autofocus: true }
         = f.input :name
         = f.input :name2
-        = f.input :own_customer
         = f.input :region
         = f.input :kind
         = f.input :price_in_net

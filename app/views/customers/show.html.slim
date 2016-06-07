@@ -20,7 +20,7 @@
     .well.well-sm
       span.label.label-default> = @customer.region
       span.label.label-default> = @customer.kind
-      span.label.label-default> = @customer.own_customer ? 'QG' : 'PG'
+      span.label.label-default> = @customer.contractor
       - if @customer.has_stock
         span.label.label-default>  Bestandsführung
       span.label.label-default> = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'

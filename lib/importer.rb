@@ -36,6 +36,7 @@ module Importer
     puts link_invoice_items_to_products
     puts generate_initial_stocks
     puts generate_stocks_for_invoices
+    puts set_contractor_for_customers
   end
 
   def self.xml_data(file_name, node_name = nil)
@@ -368,6 +369,13 @@ module Importer
       end
     end
     nil
+  end
+
+  def self.set_contractor_for_customers
+    puts __method__
+    contractor_own, contractor_not_own = Setting.contractors
+    Customer.where(own_customer: true) .update_all(contractor: contractor_own)
+    Customer.where(own_customer: false).update_all(contractor: contractor_not_own)
   end
 
 end

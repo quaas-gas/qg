@@ -26,7 +26,6 @@ class Customer < ActiveRecord::Base
   scope :active,   -> { where(archived: false) }
   scope :tax,      -> { where(tax: true)  }
   scope :nontax,   -> { where(tax: false) }
-  scope :own,      -> { where(own_customer: true) }
 
   def last_invoice
     @last_invoice ||= invoices.order(number: :desc).first

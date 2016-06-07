@@ -3,7 +3,7 @@ FactoryGirl.define do
     salut "MyString"
     name "MyString"
     name2 "MyString"
-    own_customer false
+    contractor 'Contractor1'
     street "MyString"
     city "MyString"
     zip "MyString"
