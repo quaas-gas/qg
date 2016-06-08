@@ -21,12 +21,13 @@ div
         th = Customer.human_attribute_name(:name)
         th = Customer.human_attribute_name(:city)
         th = Customer.human_attribute_name(:phone)
-        th = Customer.human_attribute_name(:gets_invoice)
-        /th = Customer.human_attribute_name(:region)
-        - if @filter.kind.blank?
+        /th = Customer.human_attribute_name(:gets_invoice)
+        /th Q / LS
+        /- if @filter.kind.blank?
           th = Customer.human_attribute_name(:kind)
-        th = Customer.human_attribute_name(:tax)
-        th = Customer.human_attribute_name(:has_stock)
+        /th = Customer.human_attribute_name(:tax)
+        /th = Customer.human_attribute_name(:has_stock)
+        th
     tbody
       - @customers.each do | customer |
         tr data = {url: url_for(customer)}
@@ -34,10 +35,20 @@ div
           td = lines_for [customer.salut, customer.name, customer.name2]
           td = customer.city
           td = lines_for [customer.phone, customer.mobile, customer.email]
-          td = bool_icon customer.gets_invoice
-          /td = customer.region
-          - if @filter.kind.blank?
+          /td
+            /= bool_icon customer.gets_invoice
+            span.glyphicon class=(customer.gets_invoice ? 'glyphicon-list-alt' : 'glyphicon-eur')
+          /- if @filter.kind.blank?
             td = customer.kind
-          td = bool_icon customer.tax
-          td = bool_icon customer.has_stock
+          /td = bool_icon customer.tax
+          /td = bool_icon customer.has_stock
+          td
+            span.label.label-default>
+              span.glyphicon class=(customer.gets_invoice ? 'glyphicon-list-alt' : 'glyphicon-eur')
+            /span.label.label-default> = customer.region
+            span.label.label-default> = customer.kind
+            - if customer.has_stock
+              span.label.label-default>  Bestandsführung
+            - if customer.archived
+              span.label.label-danger>  = Customer.human_attribute_name(:archived)
 .pull-right = paginate @customers
