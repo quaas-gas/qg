@@ -5,6 +5,12 @@ class Invoice < ActiveRecord::Base
 
   validates :number, presence: true, uniqueness: true
 
+  accepts_nested_attributes_for :items,
+                                reject_if: lambda { |attributes|
+                                  attributes['count'].blank? || attributes['unit_price'].blank?
+                                }
+  validate :validate_items
+
   NUMBER_SEPARATOR = '/'
 
   def self.next_number
@@ -44,4 +50,9 @@ class Invoice < ActiveRecord::Base
     items.sort.each { |item| item.position = (position += 1) }
   end
 
+  private
+
+  def validate_items
+    errors.add(:items, :too_few) if items.empty?
+  end
 end

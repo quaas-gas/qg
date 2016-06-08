@@ -45,7 +45,7 @@ class Delivery < ActiveRecord::Base
   private
 
   def validate_items
-    # errors.add(:items, :too_few) if items.empty?
+    errors.add(:items, :too_few) if items.empty?
   end
 
 end
