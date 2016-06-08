@@ -61,8 +61,9 @@ module Importer
   class DeliveryNode < XmlNode
     def to_h
       {
-        number:           attr('number'),
-        number_show:      attr('number_show'),
+        number:           attr('number_show'),
+        # number:           attr('number'),
+        # number_show:      attr('number_show'),
         seller_id:        Setting.seller_map[attr('seller')],
         date:             Date.strptime(attr('date'), '%m/%d/%Y'),
         invoice_number:   attr('invoive_number'),
@@ -230,6 +231,7 @@ module Importer
     puts __method__
     PgSearch::Multisearch.rebuild(Customer)
     PgSearch::Multisearch.rebuild(Delivery)
+    PgSearch::Multisearch.rebuild(Invoice)
     nil
   end
 
