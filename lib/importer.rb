@@ -1,3 +1,5 @@
+require 'benchmark'
+
 module Importer
 
   class XmlNode
@@ -62,11 +64,9 @@ module Importer
     def to_h
       {
         number:           attr('number_show'),
-        # number:           attr('number'),
-        # number_show:      attr('number_show'),
         seller_id:        Setting.seller_map[attr('seller')],
         date:             Date.strptime(attr('date'), '%m/%d/%Y'),
-        invoice_number:   attr('invoive_number'),
+        invoice_number:   attr('invoice_number'),
         tax:              @tax,
         on_account:       bool('on_account'),
         items_attributes: elements('Item').map { |item| DeliveryItemNode.new(item, @tax).to_h }
@@ -126,13 +126,16 @@ module Importer
 
     ActiveRecord::Base.logger.level = 1
 
-    import_xml
-    deactivate_old_customers
-    link_deliveries_to_invoices
-    link_invoice_items_to_products
-    generate_initial_stocks
-    generate_stocks_for_invoices
-    rebuild_search_index
+    time = Benchmark.measure do
+      import_xml
+      deactivate_old_customers
+      link_deliveries_to_invoices
+      link_invoice_items_to_products
+      generate_initial_stocks
+      generate_stocks_for_invoices
+      rebuild_search_index
+    end
+    puts time.real
   end
 
   def self.import_xml
@@ -145,18 +148,18 @@ module Importer
     Setting.seller_map  = Seller.all.map { |s| [s.short, s.id] }.to_h
     Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
 
-    # count = 0
-    PgSearch.disable_multisearch do
-      xml_data('customers', 'Customer').each do |customer_xml|
-        # break if count > 10
-        customer_node = CustomerNode.new customer_xml
-        customer = Customer.create! customer_node.to_h
-        customer_node.prices.each     { |price|    create_price    customer, price }
-        customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
-        customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
-        # count += 1
+    time = Benchmark.measure do
+      PgSearch.disable_multisearch do
+        xml_data('qg-customers-since-2016', 'Customer').each do |customer_xml|
+          customer_node = CustomerNode.new customer_xml
+          customer = Customer.create! customer_node.to_h
+          customer_node.prices.each     { |price|    create_price    customer, price }
+          customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
+          customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
+        end
       end
     end
+    puts time.real
 
     reset_pk Customer
     puts "   customers: #{Customer.count}, deliveries: #{Delivery.count}, invoices: #{Invoice.count}"
