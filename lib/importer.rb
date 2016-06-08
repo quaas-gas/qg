@@ -99,146 +99,126 @@ module Importer
     end
   end
 
-  def self.reset_all
-    reset Stock
-    reset Invoice
-    reset Delivery
-    reset Price
-    reset Customer
-    reset Product
-    reset Seller
-  end
-
-  def self.import_all(with_delete: true)
-    reset_all if with_delete
-
-    ActiveRecord::Base.logger.level = 1
-
-    puts import_sellers
-    puts import_products
-
-    puts import_customers_all
-    puts deactivate_old_customers
-
-    puts link_deliveries_to_invoices
-    puts link_invoice_items_to_products
-    puts generate_initial_stocks
-    puts generate_stocks_for_invoices
-  end
-
-  def self.import_sellers
-    puts __method__
-
-    Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
-    Seller.count
-  end
-
-  def self.import_products
-    puts __method__
-
-    Product.create! xml_data('products', 'Product').map(&:to_h)
-    Setting.product_categories = Product.pluck(:category).uniq.compact.sort
-    Product.count
-  end
-
-  def self.import_customers_all(with_delete: true)
-    puts __method__
-    if with_delete
-      reset Stock
-      reset Invoice
-      reset Delivery
-      reset Price
-      reset Customer
-    end
-
-    Setting.seller_map = Seller.all.map { |s| [s.short, s.id] }.to_h
-    Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
-
-    file_name = Rails.root.join('db', 'seeds', 'customers.xml')
-    doc = Nokogiri::XML(File.open(file_name)).xpath('//Customer')
-
-    doc.each do |customer_xml|
-      customer_node = CustomerNode.new customer_xml
-      customer = Customer.create! customer_node.to_h
-      customer_node.prices.each do |price|
-        begin
-          customer.prices.create! price
-        rescue ActiveRecord::RecordInvalid => e
-          puts "#{e.message}: #{customer.name} #{e.record}"
-        end
-      end
-      customer_node.deliveries.each do |delivery|
-        begin
-          customer.deliveries.create! delivery
-        rescue ActiveRecord::RecordInvalid => e
-          puts "#{e.message}: LSN #{e.record.number}"
-        end
-      end
-      customer_node.invoices.each do |invoice|
-        begin
-          customer.invoices.create! invoice
-        rescue ActiveRecord::RecordInvalid => e
-          puts "#{e.message}: RN #{e.record.number}"
-        end
-      end
-    end
-
-    reset_pk Customer
-    Customer.count
-  end
-
-  def self.deactivate_old_customers
-    old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
-    Customer.where(id: old_customers).update_all(archived: true)
-    Customer.active.count
-  end
-
   def self.xml_data(file_name, node_name = nil)
     node_name ||= file_name
     file_name = Rails.root.join('db', 'seeds', "#{file_name}.xml")
     Nokogiri::XML(File.open(file_name)).xpath("//#{node_name}")
   end
 
-  def self.reset(model)
-    model.delete_all
-    reset_pk model
+  def self.reset(*models)
+    models.each { |model| model.delete_all }
+    reset_pk *models
   end
 
-  def self.reset_pk(model)
-    ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name)
+  def self.reset_pk(*models)
+    models.each { |model| ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name) }
+  end
+
+  def self.import_all(with_delete: true)
+    reset Stock, Invoice, Delivery, Price, Customer, Product, Seller if with_delete
+
+    ActiveRecord::Base.logger.level = 1
+
+    import_sellers
+    import_products
+    import_customers
+
+    deactivate_old_customers
+    link_deliveries_to_invoices
+    link_invoice_items_to_products
+    generate_initial_stocks
+    generate_stocks_for_invoices
+  end
+
+  def self.import_sellers
+    print __method__, '  '
+
+    Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
+    puts Seller.count
+  end
+
+  def self.import_products
+    print __method__, '  '
+
+    Product.create! xml_data('products', 'Product').map(&:to_h)
+    Setting.product_categories = Product.pluck(:category).uniq.compact.sort
+    puts Product.count
+  end
+
+  def self.import_customers
+    print __method__, '  '
+
+    Setting.seller_map  = Seller.all.map { |s| [s.short, s.id] }.to_h
+    Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
+
+    xml_data('customers', 'Customer').each do |customer_xml|
+      customer_node = CustomerNode.new customer_xml
+      customer = Customer.create! customer_node.to_h
+      customer_node.prices.each     { |price|    create_price    customer, price }
+      customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
+      customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
+    end
+
+    reset_pk Customer
+    puts Customer.count
+  end
+
+  def self.create_price(customer, price)
+    customer.prices.create! price
+  rescue ActiveRecord::RecordInvalid => e
+    puts "#{e.message}: #{customer.name} #{e.record}"
+  end
+
+  def self.create_delivery(customer, delivery)
+    customer.deliveries.create! delivery
+  rescue ActiveRecord::RecordInvalid => e
+    puts "#{e.message}: LSN #{e.record.number}"
+  end
+
+  def self.create_invoice(customer, invoice)
+    customer.invoices.create! invoice
+  rescue ActiveRecord::RecordInvalid => e
+    puts "#{e.message}: RN #{e.record.number}"
+  end
+
+  def self.deactivate_old_customers
+    print __method__, '  '
+    old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
+    Customer.where(id: old_customers).update_all(archived: true)
+    puts Customer.active.count
   end
 
   def self.link_deliveries_to_invoices
-    puts __method__
+    print __method__, '  '
     Delivery.transaction do
       Delivery.on_account.where.not(invoice_number: nil).each do |delivery|
         invoice = Invoice.find_by number: delivery.invoice_number
         delivery.update invoice_id: invoice.id if invoice
       end
     end
-    nil
+    puts
   end
 
   def self.link_invoice_items_to_products
-    puts __method__
+    print __method__, '  '
     products = Product.all.each_with_object({}) { |p, products| products[p.name] = p }
 
     InvoiceItem.all.each do |item|
       item.update product: products[item.name] if products[item.name]
     end
-    nil
+    puts
   end
 
   def self.generate_initial_stocks
-    puts __method__
+    print __method__, '  '
     Stock.transaction do
       Customer.all.each { |customer| customer.initialize_stock(20.years.ago).save }
     end
-    nil
+    puts
   end
 
   def self.generate_stocks_for_invoices
-    puts __method__
+    print __method__, '  '
     Stock.transaction do
       Customer.all.each do |customer|
         customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
@@ -246,7 +226,7 @@ module Importer
         end
       end
     end
-    nil
+    puts
   end
 
 end
