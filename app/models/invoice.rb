@@ -1,15 +1,19 @@
 class Invoice < ActiveRecord::Base
+  include PgSearch
+
   belongs_to :customer, inverse_of: :invoices, required: true
   has_many :items, inverse_of: :invoice, class_name: 'InvoiceItem'
   has_many :deliveries, inverse_of: :invoice, dependent: :nullify #, foreign_key: 'invoice_number'
 
   validates :number, presence: true, uniqueness: true
+  validate :validate_items
+
+  multisearchable against: [:number, :pre_message, :post_message]
 
   accepts_nested_attributes_for :items,
                                 reject_if: lambda { |attributes|
                                   attributes['count'].blank? || attributes['unit_price'].blank?
                                 }
-  validate :validate_items
 
   NUMBER_SEPARATOR = '/'
 
