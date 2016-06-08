@@ -46,14 +46,12 @@ de:
     attributes:
       customer:
         archived: archiviert
-        contractor: Vertragspartner
         id: KDN
         gets_invoice: Rechnungskunde
         has_stock: Bestandsführung
         invoice_address: Rechnungsadresse
         kind: Kundenart
         notes: Notizen
-        own_customer: Direktkunde
         price_in_net: hat Netto-Preise
         tax: Preise mit MwSt
       delivery:

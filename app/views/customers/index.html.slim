@@ -21,8 +21,6 @@ div
         th = Customer.human_attribute_name(:name)
         th = Customer.human_attribute_name(:city)
         th = Customer.human_attribute_name(:phone)
-        - if @filter.contractor.blank?
-          th = Customer.human_attribute_name(:contractor)
         th = Customer.human_attribute_name(:gets_invoice)
         /th = Customer.human_attribute_name(:region)
         - if @filter.kind.blank?
@@ -36,8 +34,6 @@ div
           td = lines_for [customer.salut, customer.name, customer.name2]
           td = customer.city
           td = lines_for [customer.phone, customer.mobile, customer.email]
-          - if @filter.contractor.blank?
-            td = customer.contractor
           td = bool_icon customer.gets_invoice
           /td = customer.region
           - if @filter.kind.blank?

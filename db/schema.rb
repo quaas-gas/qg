@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160607091602) do
+ActiveRecord::Schema.define(version: 20160607112039) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -20,7 +20,6 @@ ActiveRecord::Schema.define(version: 20160607091602) do
     t.string   "salut"
     t.string   "name",                            null: false
     t.string   "name2"
-    t.boolean  "own_customer",    default: true
     t.string   "street"
     t.string   "city"
     t.string   "zip"
@@ -30,7 +29,6 @@ ActiveRecord::Schema.define(version: 20160607091602) do
     t.boolean  "gets_invoice",    default: true
     t.string   "region"
     t.string   "kind"
-    t.boolean  "price_in_net",    default: false
     t.boolean  "tax",             default: true
     t.boolean  "has_stock",       default: false
     t.date     "last_stock_date"
@@ -39,10 +37,7 @@ ActiveRecord::Schema.define(version: 20160607091602) do
     t.datetime "created_at",                      null: false
     t.datetime "updated_at",                      null: false
     t.text     "notes"
-    t.string   "contractor"
   end
-
-  add_index "customers", ["contractor"], name: "index_customers_on_contractor", using: :btree
 
   create_table "deliveries", force: :cascade do |t|
     t.string   "number"

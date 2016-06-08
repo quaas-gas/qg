@@ -1,11 +1,6 @@
 .search-form
   form.form-inline action=customers_url
     .form-group
-      select.form-control name="contractor"
-        option selected=(@filter.contractor.blank?) value='' Vertragspartner
-        - @filter.contractors.each do |contractor|
-          option selected=(@filter.contractor == contractor) value=contractor = contractor
-    .form-group
       select.form-control name="city"
         option selected=(@filter.city.blank?) value='' Ort
         - @filter.cities.each do |city, count|
