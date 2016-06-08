@@ -3,7 +3,7 @@ module Importer
   class XmlNode
     def initialize(node, tax = nil)
       @node = node
-      @tax = tax.nil? ? (attr('tax') == '1') : tax
+      @tax = tax.nil? ? bool('tax') : tax
     end
 
     def attr(name)
@@ -21,6 +21,10 @@ module Importer
     def monetize(field)
       val = attr(field) || 0
       Money.from_amount val.to_f, (@tax ? 'EU4TAX' : 'EU4NET')
+    end
+
+    def bool(field)
+      attr(field) == '1'
     end
   end
 
@@ -59,9 +63,11 @@ module Importer
       {
         number:           attr('number'),
         number_show:      attr('number_show'),
-        tax:              @tax,
         seller_id:        Setting.seller_map[attr('seller')],
         date:             Date.strptime(attr('date'), '%m/%d/%Y'),
+        invoice_number:   attr('invoive_number'),
+        tax:              @tax,
+        on_account:       bool('on_account'),
         items_attributes: elements('Item').map { |item| DeliveryItemNode.new(item, @tax).to_h }
       }
     end
@@ -119,48 +125,40 @@ module Importer
 
     ActiveRecord::Base.logger.level = 1
 
-    import_sellers
-    import_products
-    import_customers
-
+    import_xml
     deactivate_old_customers
     link_deliveries_to_invoices
     link_invoice_items_to_products
     generate_initial_stocks
     generate_stocks_for_invoices
+    rebuild_search_index
   end
 
-  def self.import_sellers
-    print __method__, '  '
+  def self.import_xml
+    puts __method__
 
     Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
-    puts Seller.count
-  end
-
-  def self.import_products
-    print __method__, '  '
-
     Product.create! xml_data('products', 'Product').map(&:to_h)
     Setting.product_categories = Product.pluck(:category).uniq.compact.sort
-    puts Product.count
-  end
-
-  def self.import_customers
-    print __method__, '  '
 
     Setting.seller_map  = Seller.all.map { |s| [s.short, s.id] }.to_h
     Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
 
-    xml_data('customers', 'Customer').each do |customer_xml|
-      customer_node = CustomerNode.new customer_xml
-      customer = Customer.create! customer_node.to_h
-      customer_node.prices.each     { |price|    create_price    customer, price }
-      customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
-      customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
+    # count = 0
+    PgSearch.disable_multisearch do
+      xml_data('customers', 'Customer').each do |customer_xml|
+        # break if count > 10
+        customer_node = CustomerNode.new customer_xml
+        customer = Customer.create! customer_node.to_h
+        customer_node.prices.each     { |price|    create_price    customer, price }
+        customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
+        customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
+        # count += 1
+      end
     end
 
     reset_pk Customer
-    puts Customer.count
+    puts "   customers: #{Customer.count}, deliveries: #{Delivery.count}, invoices: #{Invoice.count}"
   end
 
   def self.create_price(customer, price)
@@ -182,43 +180,43 @@ module Importer
   end
 
   def self.deactivate_old_customers
-    print __method__, '  '
+    print __method__, ' '
     old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
     Customer.where(id: old_customers).update_all(archived: true)
     puts Customer.active.count
   end
 
   def self.link_deliveries_to_invoices
-    print __method__, '  '
+    puts __method__
     Delivery.transaction do
       Delivery.on_account.where.not(invoice_number: nil).each do |delivery|
-        invoice = Invoice.find_by number: delivery.invoice_number
-        delivery.update invoice_id: invoice.id if invoice
+        next if delivery.invoice_number.blank?
+        if (invoice = Invoice.find_by number: delivery.invoice_number)
+          delivery.update invoice_id: invoice.id
+        else
+          puts "No invoice with number #{delivery.invoice_number}, delivery #{delivery.number}"
+        end
       end
     end
-    puts
   end
 
   def self.link_invoice_items_to_products
-    print __method__, '  '
+    puts __method__
     products = Product.all.each_with_object({}) { |p, products| products[p.name] = p }
-
     InvoiceItem.all.each do |item|
       item.update product: products[item.name] if products[item.name]
     end
-    puts
   end
 
   def self.generate_initial_stocks
-    print __method__, '  '
+    puts __method__
     Stock.transaction do
       Customer.all.each { |customer| customer.initialize_stock(20.years.ago).save }
     end
-    puts
   end
 
   def self.generate_stocks_for_invoices
-    print __method__, '  '
+    puts __method__
     Stock.transaction do
       Customer.all.each do |customer|
         customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
@@ -226,8 +224,13 @@ module Importer
         end
       end
     end
-    puts
+  end
+
+  def self.rebuild_search_index
+    puts __method__
+    PgSearch::Multisearch.rebuild(Customer)
+    PgSearch::Multisearch.rebuild(Delivery)
+    nil
   end
 
 end
-
