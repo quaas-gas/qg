@@ -2,6 +2,7 @@ class DeliveriesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
   before_action :set_delivery, only: [:show, :edit, :update, :destroy]
+  after_action :set_last_delivery, only: :create
 
   def index
     authorize Delivery
@@ -16,6 +17,11 @@ class DeliveriesController < ApplicationController
   def new
     authorize Delivery
     @delivery = Delivery.new
+    if session[:last_delivery_id] && (last = Delivery.find session[:last_delivery_id])
+      @delivery.date = last.date
+      @delivery.number = last.number.next
+      @delivery.seller_id = last. seller_id
+    end
     if params[:customer_id].present?
       @customer = Customer.includes(prices: :product).find params[:customer_id]
       @delivery.customer = @customer
@@ -33,7 +39,7 @@ class DeliveriesController < ApplicationController
     @delivery = Delivery.new delivery_params
 
     if @delivery.save
-      url = params[:commit] == t(:save_and_next) ? new_delivery_url : @delivery
+      url = save_and_next? ? new_delivery_url : @delivery
       redirect_to url, notice: t(:created, model: Delivery.model_name.human)
     else
       prepare_items
@@ -78,5 +84,17 @@ class DeliveriesController < ApplicationController
     params.require(:delivery)
       .permit(:number, :customer_id, :date, :seller_id, :description, :on_account,
               items_attributes: [:id, :product_id, :count, :count_back, :unit_price, :name])
+  end
+
+  def save_and_next?
+    params[:commit] == t(:save_and_next)
+  end
+
+  def set_last_delivery
+    if save_and_next?
+      session[:last_delivery_id] = @delivery.id
+    else
+      session.delete :last_delivery_id
+    end
   end
 end

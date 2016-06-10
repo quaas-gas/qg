@@ -7,7 +7,7 @@ class window.DeliveryForm
     if customerSelect.val() is ''
       customerSelect.select2('open')
     else
-      newForm.find('input[name="delivery[number]"]').focus()
+      $('tbody tr:first-child .delivery_items_count_back input').focus()
 
     $('input[name="delivery[on_account]"]').change -> @toggleHeader
 
