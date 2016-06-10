@@ -13,7 +13,9 @@ module Importer
     end
 
     def text_element(name)
-      @node.elements.find { |el| el.name == name }&.text
+      text = @node.elements.find { |el| el.name == name }&.text
+      text = text.split("\n").map(&:strip).join("\n") if text.present?
+      text
     end
 
     def elements(name)
