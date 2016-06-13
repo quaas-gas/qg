@@ -1,0 +1,40 @@
+namespace :import do
+
+  desc 'Upload all XML files'
+  task :upload_xml_all do
+    on primary fetch(:migration_role) do
+      within release_path do
+        xml_files =  File.expand_path('../../../../db/seeds/*.xml', __FILE__)
+        Dir[xml_files].each do |xml_file|
+          upload! xml_file, shared_path.join('db', 'seeds', xml_file.split('/').last)
+        end
+      end
+    end
+  end
+
+  desc 'Upload test XML files'
+  task :upload_xml_test do
+    on primary fetch(:migration_role) do
+      within release_path do
+        base_path =  File.expand_path('../../../../db/seeds/', __FILE__)
+        %w(products sellers qg-customers-since-2016).each do |xml_file|
+          xml_file = "#{xml_file}.xml"
+          upload! [base_path, xml_file].join('/'), shared_path.join('db', 'seeds', xml_file)
+        end
+      end
+    end
+  end
+
+  desc 'Import all data from XML files'
+  task :run do
+    on primary fetch(:migration_role) do
+      within release_path do
+        base_path =  File.expand_path('../../../../db/seeds/', __FILE__)
+        %w(products sellers qg-customers-since-2016).each do |xml_file|
+          xml_file = "#{xml_file}.xml"
+          upload! [base_path, xml_file].join('/'), shared_path.join('db', 'seeds', xml_file)
+        end
+      end
+    end
+  end
+end
