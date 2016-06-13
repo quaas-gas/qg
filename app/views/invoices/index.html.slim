@@ -22,7 +22,6 @@ div
         th = Invoice.human_attribute_name(:date)
         th = Invoice.human_attribute_name(:customer)
         th Gesamt
-        th = Invoice.human_attribute_name(:printed)
     tbody
       - @invoices.each do |invoice|
         tr data = {url: url_for(invoice)} class=(invoice.tax ? 'tax' : 'nontax')
@@ -30,4 +29,3 @@ div
           td = ldate invoice.date
           td = invoice.customer.name
           td = display_price invoice.total_price
-          td = bool_icon invoice.printed
