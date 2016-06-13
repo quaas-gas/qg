@@ -4,8 +4,8 @@
   = list_link Customer
   = new_link new_delivery_url(customer_id: @customer.id), primary: false, label: 'Neue Lieferung'
   h2
-    => fa_icon 'user'
-    => fa_icon @customer.gets_invoice ? 'list-alt' : 'eur'
+    => customer_icon
+    => customer_type_icon @customer
     => @customer.name
     small = Customer.model_name.human
 
@@ -82,7 +82,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
     - @customer.history(24).each do |delivery|
       - if delivery.is_a? Delivery
         tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
-          td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
+          td = delivery_type_icon delivery
           td = delivery.number
           td = ldate delivery.date
           - products_in_stock.each do |product|
@@ -102,7 +102,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
       - if delivery.is_a? Invoice
         - invoice = delivery
         tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
-          td = fa_icon 'file'
+          td = invoice_icon
           td = invoice.number
           td = ldate invoice.date
           - products_in_stock.each do |product|
@@ -113,7 +113,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
       - if delivery.is_a? Stock
         - stock = delivery
         tr.stock
-          td = fa_icon 'bar-chart'
+          td = stock_icon
           td Bestand
           td = ldate stock.date
           - products_in_stock.each do |product|

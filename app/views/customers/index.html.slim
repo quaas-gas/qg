@@ -1,6 +1,6 @@
 .page-header
   = new_link Customer
-  h2 = fa_icon 'users', text: "#{@customers.total_count} #{Customer.model_name.human count: @customers.count}"
+  h2 = customers_icon "#{@customers.total_count} #{Customer.model_name.human count: @customers.count}"
 
 div
   .pull-left = render 'search_form'
@@ -19,7 +19,7 @@ div
     tbody
       - @customers.each do | customer |
         tr data = {url: url_for(customer)}
-          td = fa_icon customer.gets_invoice ? 'list-alt' : 'eur'
+          td = customer_type_icon customer
           td = customer.id
           td = lines_for [customer.salut, customer.name, customer.name2]
           td = customer.city

@@ -1,7 +1,7 @@
 .page-header
-  = new_link Delivery, label: t('.new_delivery')
+  = new_link new_delivery_url, label: t('.new_delivery')
   h2
-    => fa_icon 'truck'
+    => delivery_icon
     => @deliveries.count
     => Delivery.model_name.human count: @deliveries.count
     | am

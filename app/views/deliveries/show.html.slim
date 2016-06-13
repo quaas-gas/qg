@@ -6,9 +6,9 @@
   - else
     = edit_link edit_delivery_path(@delivery)
   = list_link Delivery
-  = new_link Delivery, label: t('.new_delivery')
+  = new_link new_delivery_url, label: t('.new_delivery')
 
-  = render 'header'
+  h2 = delivery_icon delivery_type_icon(@delivery, @delivery.on_account ? 'Lieferschein' :  'Quittung')
 
 .delivery class=(@delivery.tax ? 'tax' : 'nontax')
   .row

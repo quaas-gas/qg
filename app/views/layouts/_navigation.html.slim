@@ -13,11 +13,11 @@
       .collapse.navbar-collapse
         ul.nav.navbar-nav
           li class=('active' if params[:controller] == 'customers')
-            = link_to fa_icon('users', text: Customer.model_name.human(count: 2)), customers_url
+            = link_to customers_icon( Customer.model_name.human(count: 2)), customers_url
           li class=('active' if params[:controller] == 'deliveries')
-            = link_to fa_icon('truck', text: Delivery.model_name.human(count: 2)), deliveries_url
+            = link_to delivery_icon(Delivery.model_name.human(count: 2)), deliveries_url
           li class=('active' if params[:controller] == 'invoices')
-            = link_to fa_icon('file', text: Invoice.model_name.human(count: 2)), invoices_url
+            = link_to invoice_icon(Invoice.model_name.human(count: 2)), invoices_url
           li class=('active' if params[:controller] == 'products')
             = link_to Product.model_name.human(count: 2), products_url
           li class=('active' if params[:controller] == 'sellers')

@@ -1,4 +1,5 @@
-.page-header = render 'header'
+.page-header
+  h2 = delivery_icon delivery_type_icon(@delivery, @delivery.on_account ? 'Lieferschein' :  'Quittung')
 
 = simple_form_for(@delivery) do |f|
   - if @delivery.errors.any?
