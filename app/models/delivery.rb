@@ -5,7 +5,7 @@ class Delivery < ActiveRecord::Base
   belongs_to :seller, inverse_of: :deliveries
   belongs_to :invoice, inverse_of: :deliveries
 
-  has_many :items, class_name: 'DeliveryItem', inverse_of: :delivery
+  has_many :items, -> { order :product_id }, class_name: 'DeliveryItem', inverse_of: :delivery
 
   validates :number, :date, presence: true #, uniqueness: true
   validate :validate_items

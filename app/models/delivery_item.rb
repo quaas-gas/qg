@@ -4,8 +4,6 @@ class DeliveryItem < ActiveRecord::Base
 
   validates :unit_price, :count, presence: true
 
-  default_scope { order(:product_id) }
-
   monetize :unit_price_cents, with_model_currency: :unit_price_currency
 
   def stock_diff
