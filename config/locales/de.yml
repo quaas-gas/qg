@@ -21,6 +21,9 @@ de:
       error: Kunde konnte nicht gespeichert werden.
     new:
       title: "Kunden anlegen"
+  dashboard:
+    index:
+      write_invoices: Rechnungen schreiben
   deliveries:
     form:
       error: Lieferung konnte nicht gespeichert werden.
@@ -34,18 +37,20 @@ de:
       new_delivery: Lieferschein eingeben
   invoices:
     open_delivery_list:
-      create_invoice: "Rechnung erstellen"
+      create_invoice: "Rechnung schreiben"
+    index:
+      write_invoice: "Rechnungen schreiben"
   prices:
     form:
       error: Preis konnte nicht gespeichert werden.
     new:
       title: "Preis anlegen"
+  products:
+    new:
+      title: "Neuen Artikel anlegen"
   delete: Löschen
   edit: Bearbeiten
   list: Liste
   new: Neu
   save: Speichern
-  products:
-    new:
-      title: "Neuen Artikel anlegen"
   save_and_next: Speichern und Neu
