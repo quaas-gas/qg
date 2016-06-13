@@ -163,6 +163,8 @@ module Importer
     end
     puts time.real
 
+    Setting.customer_categories = Customer.uniq.pluck(:kind).sort
+
     reset_pk Customer
     puts "   customers: #{Customer.count}, deliveries: #{Delivery.count}, invoices: #{Invoice.count}"
   end
