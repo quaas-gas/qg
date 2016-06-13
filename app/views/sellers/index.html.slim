@@ -1,10 +1,5 @@
 .page-header
-  /= link_to sellers_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
-    span.glyphicon.glyphicon-export
-    =< t(:export)
-  = link_to new_seller_path, class: 'btn btn-primary' do 
-    span.glyphicon.glyphicon-plus
-    =< t(:new)
+  = new_link new_seller_url
   h2
     => @sellers.count
     = Seller.model_name.human count: @sellers.count

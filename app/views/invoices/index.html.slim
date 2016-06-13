@@ -1,10 +1,5 @@
 .page-header
-  /= link_to invoices_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
-    span.glyphicon.glyphicon-export
-    =< t(:export)
-  = link_to new_invoice_path, class: 'btn btn-primary' do 
-    span.glyphicon.glyphicon-plus
-    =< t('.write_invoice')
+  = new_link new_invoice_path, label: t('.write_invoice')
   h2
     => @invoices.count
     = Invoice.model_name.human count: @invoices.count

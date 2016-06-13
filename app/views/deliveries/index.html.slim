@@ -1,13 +1,5 @@
 .page-header
-  /= link_to deliveries_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
-    span.glyphicon.glyphicon-export
-    =< t(:export)
-  = link_to new_delivery_path, class: 'btn btn-primary' do 
-    span.glyphicon.glyphicon-plus
-    =< t('.new_delivery')
-  /= link_to '#', class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-plus
-    =< t('.new_tour')
+  = new_link Delivery, label: t('.new_delivery')
   h2
     => @deliveries.count
     => Delivery.model_name.human count: @deliveries.count

@@ -1,10 +1,5 @@
 .page-header
-  /= link_to customers_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
-    span.glyphicon.glyphicon-export
-    =< t(:export)
-  = link_to new_customer_path, class: 'btn btn-primary' do 
-    span.glyphicon.glyphicon-plus
-    =< t(:new)
+  = new_link Customer
   h2
     => @customers.total_count
     = Customer.model_name.human count: @customers.count

@@ -54,4 +54,28 @@ module ApplicationHelper
     txt + content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')
   end
 
+  def list_link(url)
+    link_to fa_icon('chevron-left', text: t(:list)), url, class: 'btn btn-default'
+  end
+
+  def new_link(url, primary: true, label: t(:new))
+    css = primary ? 'btn btn-primary' : 'btn btn-default'
+    link_to fa_icon('plus', text: label), url, class: css
+  end
+
+  def edit_link(url)
+    link_to fa_icon('pencil', text: t(:edit)), url, class: 'btn btn-primary'
+  end
+
+  def pdf_link(url)
+    link_to fa_icon('file-pdf-o', text: 'PDF'), url, class: 'btn btn-default', target: '_blank'
+  end
+
+  def delete_link(record)
+    label = fa_icon 'trash', text: t(:delete)
+    confirm = t(:confirm_delete, model: record.class.model_name.human)
+    link_to label, record, method: :delete, data: { confirm: confirm }, class: 'btn btn-danger'
+  end
+
+
 end

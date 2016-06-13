@@ -1,16 +1,8 @@
 .page-header
-  = link_to customers_path, class: 'btn btn-default' do
-    span.glyphicon.glyphicon-list-alt
-    =< t(:list)
-  = link_to edit_customer_path(@customer), class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-pencil
-    =< t(:edit)
-  => link_to @customer, method: :delete, data: { confirm: t(:confirm_delete, model: Customer.model_name.human) }, class: 'btn btn-danger' do
-    span.glyphicon.glyphicon-remove
-    =< t(:delete)
-  = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default' do
-    span.glyphicon.glyphicon-plus>
-    | Neue Lieferung
+  = delete_link @customer
+  = edit_link edit_customer_path(@customer)
+  = list_link Customer
+  = new_link new_delivery_url(customer_id: @customer.id), primary: false, label: 'Neue Lieferung'
   h2
     => @customer.name
     small = Customer.model_name.human
@@ -112,7 +104,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
         - invoice = delivery
         tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
           td
-            span.glyphicon.glyphicon-eur
+            span.glyphicon.glyphicon-file
           td = invoice.number
           td = ldate invoice.date
           - products_in_stock.each do |product|

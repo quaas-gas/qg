@@ -1,16 +1,8 @@
 ul.list-inline.pull-right
-  li = link_to invoice_path(@invoice, format: :pdf), target: '_blank', class: 'btn btn-default' do
-    span.glyphicon.glyphicon-file
-    |  PDF
-  li = link_to invoices_path, class: 'btn btn-default' do
-    span.glyphicon.glyphicon-list-alt
-    =< t(:list)
-  li = link_to edit_invoice_path(@invoice), class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-pencil
-    =< t(:edit)
-  li => link_to @invoice, method: :delete, data: { confirm: t(:confirm_delete, model: Invoice.model_name.human) }, class: 'btn btn-danger' do
-    span.glyphicon.glyphicon-remove
-    =< t(:delete)
+  li = pdf_link invoice_path(@invoice, format: :pdf)
+  li = list_link invoices_url
+  li = edit_link edit_invoice_path(@invoice)
+  li = delete_link @invoice
 
 .clearfix
 .row
