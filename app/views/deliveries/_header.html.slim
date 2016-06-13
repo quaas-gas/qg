@@ -1,7 +1,6 @@
 h2
+  => fa_icon 'truck'
   - if @delivery.on_account
-    span.glyphicon.glyphicon-list-alt>
-    |  Lieferschein
+    = fa_icon 'list-alt', text: 'Lieferschein'
   - else
-    span.glyphicon.glyphicon-eur
-    |  Quittung
+    = fa_icon 'eur', text: 'Quittung'

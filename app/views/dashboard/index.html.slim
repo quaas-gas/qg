@@ -8,8 +8,7 @@ h1 Startseite
       tbody
         - Delivery.includes(:customer).order(date: :desc, number: :desc).limit(15).each do |delivery|
           tr data = {url: url_for(delivery)} class=(delivery.pending? ? 'danger' : '')
-            td
-              span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+            td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
             td = delivery.number
             td = ldate delivery.date
             td = delivery.customer.name

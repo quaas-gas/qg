@@ -23,7 +23,7 @@
           p.text-right = ldate @delivery.date
           p.text-right = @delivery.seller&.name
           - if invoice
-            p.text-right = link_to "Rechnung: #{invoice.number}", invoice
+            p.text-right = link_to fa_icon('file', text: invoice.number), invoice
 
       table.table.table-condensed.table-hover.table-striped.table-bordered
         thead

@@ -4,6 +4,8 @@
   = list_link Customer
   = new_link new_delivery_url(customer_id: @customer.id), primary: false, label: 'Neue Lieferung'
   h2
+    => fa_icon 'user'
+    => fa_icon @customer.gets_invoice ? 'list-alt' : 'eur'
     => @customer.name
     small = Customer.model_name.human
 
@@ -39,8 +41,7 @@
       = @customer.tax ? 'Bruttopreise' : 'Nettopreise'
       spn.pull-right
         = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
-          span.glyphicon.glyphicon-cog>
-          | Bearbeiten
+          = fa_icon 'cog', text: t(:edit)
     table.table.table-condensed.table-hover.table-striped
       tbody class=(@customer.tax ? 'tax' : 'nontax')
         - @customer.prices.joins(:product).order('products.size').each do |price|
@@ -71,7 +72,6 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
     - if (stock = @customer.current_stock)
       tr.stock
         td
-          /span.glyphicon.glyphicon-eur
         td Aktueller Bestand
         td = ldate stock.date
         - products_in_stock.each do |product|
@@ -82,8 +82,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
     - @customer.history(24).each do |delivery|
       - if delivery.is_a? Delivery
         tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
-          td
-            span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+          td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
           td = delivery.number
           td = ldate delivery.date
           - products_in_stock.each do |product|
@@ -103,8 +102,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
       - if delivery.is_a? Invoice
         - invoice = delivery
         tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
-          td
-            span.glyphicon.glyphicon-file
+          td = fa_icon 'file'
           td = invoice.number
           td = ldate invoice.date
           - products_in_stock.each do |product|
@@ -115,8 +113,7 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
       - if delivery.is_a? Stock
         - stock = delivery
         tr.stock
-          td
-            /span.glyphicon.glyphicon-eur
+          td = fa_icon 'bar-chart'
           td Bestand
           td = ldate stock.date
           - products_in_stock.each do |product|
@@ -124,70 +121,3 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
               - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
                 = item.count
           td
-
-
-/.row
-
-  .col-md-4
-    - if @customer.has_stock
-      - products_in_stock = @customer.prices.in_stock.includes(:product).map(&:product)
-      - products_ids = products_in_stock.map(&:id)
-      table.table.table-condensed.table-striped.table-hover
-        thead
-          tr
-            th
-            - products_in_stock.each do |product|
-              th = product.number
-        tbody
-          /- @customer.delivery_items.includes(:product).where(product_id: products_ids).group(:product_id).select('product.id, sum(count) - sum(count_back) as stock').to_a.each do |item|
-          - @customer.deliveries.limit(10).order(date: :desc).joins(:items).group('deliveries.id').where('delivery_items.product_id IN (?)', products_ids).each do |delivery|
-            tr
-              td = link_to ldate(delivery.date), delivery
-              /td = delivery.number
-              - products_in_stock.each do |product|
-                td
-                  - product_item = delivery.items.where(product_id: product.id).first
-                  - if product_item
-                    = product_item.count - product_item.count_back
-
-
-  .col-md-4
-    .panel.panel-default.prices
-      .panel-heading
-        h4.panel-title
-          |  Lieferungen
-          ul.list-inline.pull-right
-            li = link_to new_delivery_url(customer_id: @customer.id), class: 'btn btn-default btn-xs' do
-              span.glyphicon.glyphicon-cog>
-              | Neu
-      .panel-body
-        table.table.table-condensed.table-hover.table-striped.table-clickable
-          /thead
-            tr
-              th
-              th Datum
-              th LSN
-              th Betrag
-          tbody
-            - @customer.deliveries.includes(:items).limit(10).order(date: :desc).each do |delivery|
-              tr data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'danger' : '')
-                td
-                  span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
-                td = ldate delivery.date
-                td = delivery.number
-                td = display_price delivery.total_price
-
-  .col-md-4 = panel_box title: 'Rechnungen' do
-
-    table.table.table-condensed.table-hover.table-striped.table-clickable
-      /thead
-        tr
-          th = Invoice.human_attribute_name :number
-          th = Invoice.human_attribute_name :date
-          th.price = Invoice.human_attribute_name :total_price
-      tbody
-        - @customer.invoices.order(date: :desc).limit(10).each do |invoice|
-          tr data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
-            td = invoice.number
-            td = ldate invoice.date
-            td.price = display_price invoice.total_price

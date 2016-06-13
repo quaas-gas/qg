@@ -1,6 +1,7 @@
 .page-header
   = new_link new_invoice_path, label: t('.write_invoice')
   h2
+    => fa_icon 'file'
     => @invoices.count
     = Invoice.model_name.human count: @invoices.count
 

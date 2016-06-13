@@ -1,6 +1,7 @@
 .page-header
   = new_link Delivery, label: t('.new_delivery')
   h2
+    => fa_icon 'truck'
     => @deliveries.count
     => Delivery.model_name.human count: @deliveries.count
     | am
@@ -31,8 +32,7 @@ div
         - total_price = delivery.total_price
         - sum += total_price
         tr data = {url: url_for(delivery)} class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'danger' : '')
-          td
-            span.glyphicon class=(delivery.on_account ? 'glyphicon-list-alt' : 'glyphicon-eur')
+          td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
           td = delivery.number
           td = delivery.customer.name
           /td = ldate delivery.date
