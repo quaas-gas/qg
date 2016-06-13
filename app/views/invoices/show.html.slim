@@ -1,5 +1,5 @@
 ul.list-inline.pull-right
-  li = link_to invoice_path(@invoice, format: :pdf), taget: '_blank', class: 'btn btn-default' do
+  li = link_to invoice_path(@invoice, format: :pdf), target: '_blank', class: 'btn btn-default' do
     span.glyphicon.glyphicon-file
     |  PDF
   li = link_to invoices_path, class: 'btn btn-default' do
