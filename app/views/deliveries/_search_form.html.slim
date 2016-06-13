@@ -14,7 +14,7 @@
         - @filter.years.each do |year, count|
           option selected=(year == @filter.year) value=year  =year
     .form-group
-      => link_to 'Alle', deliveries_path, class: 'btn btn-info btn-block'
+      => link_to 'Zurücksetzen', deliveries_path, class: 'btn btn-info btn-block'
 
 coffee:
   $ ->
