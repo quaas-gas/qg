@@ -38,6 +38,7 @@ gem 'pundit'
 gem 'simple_form'
 gem 'slim-rails'
 gem 'react-rails'
+gem 'font-awesome-rails'
 
 group :development do
   gem 'better_errors'
