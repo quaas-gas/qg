@@ -31,7 +31,7 @@
         p
           => @customer.zip
           = @customer.city
-        p = link_to 'Karte', gmaps_link(@customer), target: '_blank'
+        p = link_to fa_icon('map-o', text: 'Karte'), gmaps_link(@customer), target: '_blank'
         p = @customer.phone
         p = @customer.mobile
         p = @customer.email
