@@ -1,6 +1,6 @@
 section
-  .col-md-6
-    table.table.table-condensed.table-no-border
+  .col-md-9
+    table.table.table-condensed.table-no-border.table-striped.table-hover
       thead
         tr
           th = Price.human_attribute_name :product
@@ -8,24 +8,36 @@ section
           th.price = Price.human_attribute_name :price
           th.price = Price.human_attribute_name :discount
           th.price = Price.human_attribute_name :in_stock
-          th.price Löschen
+          th
       tbody
         = f.simple_fields_for :prices do |price_form|
+          - price = price_form.object
           tr
             td
-              - if price_form.object.new_record?
+              - if price.new_record?
                 = price_form.association :product, collection: (Product.order(:number) - @customer.prices.map(&:product)),
                   label: false, label_method: :number
               - else
-                = price_form.object.product.number
+                = price_form.association :product, collection: Product.order(:number),
+                                  label: false, label_method: :number, disabled: true
+                /p = price_form.object.product.number
             td = price_form.input :active, label: false
             td.price = price_form.input :price, label: false
             td.price = price_form.input :discount, label: false
             td.price = price_form.input :in_stock, label: false
-            td.price
-              - unless price_form.object.new_record?
-                = price_form.input :_destroy, as: :boolean, label: false
+            td.delete-price
+              - unless price.new_record?
+                = link_to fa_icon('trash', text: t(:delete)), '#', class: 'btn btn-danger btn-xs'
+                = price_form.input :_destroy, as: :hidden
 
     div.pull-right
       => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
       = f.submit t(:save), class: 'btn btn-primary'
+
+coffee:
+  $(document).on 'ready page:load', ->
+    $('td.delete-price a').click (event) =>
+      event.preventDefault()
+      row = $(event.currentTarget).parents('tr')
+      row.find('td.delete-price input[type=hidden]').attr('value', '1')
+      row.fadeOut(1000)
