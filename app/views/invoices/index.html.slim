@@ -4,7 +4,7 @@
     =< t(:export)
   = link_to new_invoice_path, class: 'btn btn-primary' do 
     span.glyphicon.glyphicon-plus
-    =< t(:new)
+    =< t('.write_invoice')
   h2
     => @invoices.count
     = Invoice.model_name.human count: @invoices.count

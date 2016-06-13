@@ -28,12 +28,13 @@ h1 Startseite
       => open_deliveries.count
       |  offene Lieferscheine
 
-    table.table.table-hover.table-condensed.table-clickable
-      tbody
-        - open_deliveries.each do |delivery|
-          tr data = {url: url_for(delivery)}
-          td = delivery.number
-          td = ldate delivery.date
-          td = delivery.customer.name
+    - if open_deliveries.any?
+      = link_to t('.write_invoices'), new_invoice_url, class: 'btn btn-primary btn-block btn-lg'
+      table.table.table-hover.table-condensed.table-clickable
+        tbody
+          - open_deliveries.each do |delivery|
+            tr data = {url: url_for(delivery)}
+            td = delivery.number
+            td = ldate delivery.date
+            td = delivery.customer.name
 
-    = link_to 'Rechnungen scheiben', new_invoice_url, class: 'btn btn-primary btn-block btn-lg'
