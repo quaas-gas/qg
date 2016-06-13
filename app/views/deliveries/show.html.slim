@@ -57,4 +57,13 @@
             th.price colspan=5 Summe
             th.price = display_price @delivery.total_price
       p = @delivery.description
-    .col-md-3 = render 'customer_info', customer: @delivery.customer
+    .col-md-3
+      = render 'customer_info', customer: @delivery.customer
+      - if @other_with_same_number.any?
+        .existing-deliveries-list.alert.alert-warning
+          h5 LSN schon mal vergeben
+          ul.list-unstyled
+            - @other_with_same_number.each do |delivery|
+              li = link_to delivery do
+                => ldate delivery.date
+                = delivery.customer.name

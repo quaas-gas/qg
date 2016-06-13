@@ -66,8 +66,11 @@
             => link_to t(:cancel), @delivery, class: 'btn btn-default', tabindex: 1000
             = f.submit t(:save), class: 'btn btn-primary'
 
-    .col-md-3 = render 'customer_info', customer: @delivery.customer
-
+    .col-md-3
+      = render 'customer_info', customer: @delivery.customer
+      .existing-deliveries-list.alert.alert-warning.hidden
+        h5 LSN schon mal vergeben
+        ul.list-unstyled
 
 coffee:
   $(document).on 'ready page:load', -> new DeliveryForm()

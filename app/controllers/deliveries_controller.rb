@@ -2,16 +2,28 @@ class DeliveriesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
   before_action :set_delivery, only: [:show, :edit, :update, :destroy]
+  before_action :reset_last_delivery
   after_action :set_last_delivery, only: :create
 
   def index
     authorize Delivery
 
-    @filter = DeliveriesFilter.new(params)
-    @deliveries = @filter.result.includes(:customer, :seller, items: :product).all
+    respond_to do |format|
+      format.html do
+        params[:date] = params[:date] ? Date.parse(params[:date]) : Delivery.order(date: :desc).first.date
+        @filter = DeliveriesFilter.new(params)
+        @deliveries = @filter.result.includes(:customer, :seller, items: :product).all
+      end
+      format.json do
+        @filter = DeliveriesFilter.new(params)
+        @deliveries = @filter.result.includes(:customer, :seller).all
+      end
+    end
+
   end
 
   def show
+    @other_with_same_number = Delivery.where(number: @delivery.number).where.not(id: @delivery.id)
   end
 
   def new
@@ -90,11 +102,11 @@ class DeliveriesController < ApplicationController
     params[:commit] == t(:save_and_next)
   end
 
+  def reset_last_delivery
+    session.delete :last_delivery_id
+  end
+
   def set_last_delivery
-    if save_and_next?
-      session[:last_delivery_id] = @delivery.id
-    else
-      session.delete :last_delivery_id
-    end
+    session[:last_delivery_id] = @delivery.id if save_and_next?
   end
 end

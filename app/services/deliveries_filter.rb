@@ -1,15 +1,15 @@
 class DeliveriesFilter
-  attr_reader :params, :scope, :date, :year, :on_account
+  attr_reader :params, :scope, :number, :date, :on_account
 
   def initialize(params, scope = Delivery)
     yes_no_map  = { 'yes' => true, 'no' => false }
     @params     = params
     @scope      = scope
-    # @year       = params[:year] || Date.current.year.to_s
-    # filter_year
-    @date       = params[:date] ? Date.parse(params[:date]) : scope.order(date: :desc).first.date
+    @number     = params[:number]
+    @date       = params[:date]
     @on_account = yes_no_map[params[:on_account]]
 
+    filter_number
     filter_date
     filter_on_account
   end
@@ -18,23 +18,19 @@ class DeliveriesFilter
     Delivery.group(:date).order(date: :desc).count
   end
 
-  # def years
-  #   Delivery.years
-  # end
-
   def result
     @scope.order(order_options)
   end
 
   private
 
-  def filter_date
-    @scope = scope.where(date: date)
+  def filter_number
+    @scope = scope.where(number: number) if number.present?
   end
 
-  # def filter_year
-  #   @scope = scope.where('extract(year from date) = ?', year)
-  # end
+  def filter_date
+    @scope = scope.where(date: date) if date.present?
+  end
 
   def filter_on_account
     @scope = scope.where(on_account: on_account) if on_account.in?([true, false])
