@@ -19,7 +19,7 @@ de:
     price_currency: netto/brutto
     salut:          Anrede
     start_date:     Beginn
-    street:         Straße/Nr
+    street:         Straße/Nr.
     updated_at:     Bearbeitet
     zip:            PLZ
   activerecord:
