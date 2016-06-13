@@ -45,4 +45,7 @@ de:
   list: Liste
   new: Neu
   save: Speichern
+  products:
+    new:
+      title: "Neuen Artikel anlegen"
   save_and_next: Speichern und Neu

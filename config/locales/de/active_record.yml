@@ -90,7 +90,7 @@ de:
         discount: Provision
       product:
         category: Kategorie
-        content: Inhalt
+        content: Inhalt (kg)
         in_stock: Bestandsartikel
         number: Artikelnummer
         size: Größe
