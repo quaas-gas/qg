@@ -45,16 +45,20 @@ class window.DeliveryForm
     number = $('input[name="delivery[number]"]').val()
     if number isnt ''
       $.getJSON '/deliveries.json?number=' + number, {}, (deliveries) =>
-        warningBox = $('.existing-deliveries-list')
+        inputWrapper = $('.delivery_number')
+        inputWrapper.find('span.help-block').remove()
         if deliveries.length > 0
+          span = $("<span class='help-block'>LSN schon vergeben: </span>")
+          ul = $('<ul class="list-inline">')
           for delivery in deliveries
             date = new Date(delivery.date)
             date = date.toLocaleDateString('de-DE', {day: '2-digit', month: '2-digit', year: 'numeric'})
             url = delivery.url.replace '.json', ''
             link = $("<a href='#{url}'>").append "#{date} #{delivery.customer}"
             li = $('<li>').append link
-            warningBox.find('ul').append li
-          warningBox.removeClass 'hidden'
+            ul.append li
+          span.append ul
+          inputWrapper.addClass('has-warning').append span
         else
-          warningBox.addClass 'hidden'
+          inputWrapper.removeClass('has-warning')
 
