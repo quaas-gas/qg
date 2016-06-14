@@ -2,7 +2,7 @@ class DeliveriesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
   before_action :set_delivery, only: [:show, :edit, :update, :destroy]
-  before_action :reset_last_delivery
+  before_action :reset_last_delivery, except: :new
   after_action :set_last_delivery, only: :create
 
   def index
