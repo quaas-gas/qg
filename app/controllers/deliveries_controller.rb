@@ -2,7 +2,6 @@ class DeliveriesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
   before_action :set_delivery, only: [:show, :edit, :update, :destroy]
-  before_action :reset_last_delivery, except: :new
   after_action :set_last_delivery, only: :create
 
   def index
@@ -29,17 +28,9 @@ class DeliveriesController < ApplicationController
   def new
     authorize Delivery
     @delivery = Delivery.new
-    if session[:last_delivery_id] && (last = Delivery.find session[:last_delivery_id])
-      @delivery.date = last.date
-      @delivery.number = last.number.next
-      @delivery.seller_id = last. seller_id
-    end
-    if params[:customer_id].present?
-      @customer = Customer.includes(prices: :product).find params[:customer_id]
-      @delivery.customer = @customer
-      @delivery.on_account = @customer.gets_invoice
-      prepare_items
-    end
+    pre_fill_from_last
+    pre_fill_customer
+    prepare_items
   end
 
   def edit
@@ -74,17 +65,6 @@ class DeliveriesController < ApplicationController
   end
 
   private
-
-  def prepare_items
-    @delivery.customer.prices.where(active: true).each do |price|
-      if !@delivery.new_record? && @delivery.items.where(product: price.product).exists?
-        next
-      end
-      @delivery.items.build product: price.product, unit_price: price.price, name: price.product.name
-    end if @delivery.customer
-    @delivery.items.build
-  end
-
   # Use callbacks to share common setup or constraints between actions.
   def set_delivery
     @delivery = Delivery.find params[:id]
@@ -102,11 +82,37 @@ class DeliveriesController < ApplicationController
     params[:commit] == t(:save_and_next)
   end
 
-  def reset_last_delivery
-    session.delete :last_delivery_id
+  def pre_fill_from_last
+    return unless session[:last_delivery_id]
+    last_delivery = Delivery.find(session[:last_delivery_id])
+    return unless last_delivery
+    @delivery.date      = last_delivery.date
+    @delivery.number    = last_delivery.number.next
+    @delivery.seller_id = last_delivery.seller_id
+  end
+
+  def pre_fill_customer
+    return unless params[:customer_id].present?
+    customer             = Customer.includes(prices: :product).find params[:customer_id]
+    @delivery.customer   = customer
+    @delivery.on_account = customer.gets_invoice
+  end
+
+  def prepare_items
+    @delivery.customer.prices.where(active: true).each do |price|
+      if !@delivery.new_record? && @delivery.items.where(product: price.product).exists?
+        next
+      end
+      @delivery.items.build product: price.product, unit_price: price.price, name: price.product.name
+    end if @delivery.customer
+    @delivery.items.build
   end
 
   def set_last_delivery
-    session[:last_delivery_id] = @delivery.id if save_and_next?
+    if save_and_next?
+      session[:last_delivery_id] = @delivery.id
+    else
+      session.delete :last_delivery_id
+    end
   end
 end
