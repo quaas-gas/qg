@@ -39,6 +39,7 @@ class window.DeliveryForm
     countBackInput = $(event.currentTarget)
     countInput = countBackInput.parents('tr').find('.delivery_items_count input')
     countInput.val(countBackInput.val()) if countInput.val() is ''
+    @renderSums()
 
   checkNumber: =>
     number = $('input[name="delivery[number]"]').val()
