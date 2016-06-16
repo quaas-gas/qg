@@ -34,7 +34,11 @@ module Importer
 
   class CustomerNode < XmlNode
     def to_h
-      @node.to_h.merge 'invoice_address' => text_element('invoice_address')
+      customer = @node.to_h.slice 'id', 'tax', 'salut', 'name', 'name2', 'city', 'zip', 'phone',
+                             'gets_invoice', 'has_stock', 'region'
+      customer[:category] = attr('kind')
+      customer[:invoice_address] = text_element('invoice_address')
+      customer
     end
 
     def prices
@@ -152,7 +156,7 @@ module Importer
 
     time = Benchmark.measure do
       PgSearch.disable_multisearch do
-        xml_data('qg-customers-since-2016', 'Customer').each do |customer_xml|
+        xml_data('qg-customers-since-2012', 'Customer').each do |customer_xml|
           customer_node = CustomerNode.new customer_xml
           customer = Customer.create! customer_node.to_h
           customer_node.prices.each     { |price|    create_price    customer, price }
