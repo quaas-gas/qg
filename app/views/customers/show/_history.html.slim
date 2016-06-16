@@ -1,0 +1,62 @@
+h3 Verlauf
+
+- products_in_stock = @customer.prices.in_stock.includes(:product).map(&:product)
+- products_ids = products_in_stock.map(&:id)
+table.table.table-condensed.table-hover.table-striped.table-clickable
+  thead
+    tr
+      th
+      th
+      th
+      - products_in_stock.each do |product|
+        th.price = product.number
+      th
+  tbody
+    - if (stock = @customer.current_stock)
+      tr.stock
+        td
+        td Aktueller Bestand
+        td = ldate stock.date
+        - products_in_stock.each do |product|
+          td.price
+            - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
+              = item.count
+        td
+    - @customer.history(24).each do |delivery|
+      - if delivery.is_a? Delivery
+        tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
+          td = delivery_type_icon delivery
+          td = delivery.number
+          td = ldate delivery.date
+          - products_in_stock.each do |product|
+            - item = delivery.items.to_a.find { |i| i.product_id == product.id }
+            - if item
+              - stock_diff = item.stock_diff
+              td.price class=('danger' if stock_diff < 0) class=('success' if stock_diff > 0)
+                = [item.count_back, item.count, stock_diff].join ' | '
+            - else
+              td
+
+          td.price = display_price delivery.total_price
+      - if delivery.is_a? Invoice
+        - invoice = delivery
+        tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
+          td = invoice_icon
+          td = invoice.number
+          td = ldate invoice.date
+          - products_in_stock.each do |product|
+            td.price
+              - if (item = invoice.items.to_a.find { |i| i.product_id == product.id })
+                = item.count
+          td.price = display_price invoice.total_price
+      - if delivery.is_a? Stock
+        - stock = delivery
+        tr.stock
+          td = stock_icon
+          td Bestand
+          td = ldate stock.date
+          - products_in_stock.each do |product|
+            td.price
+              - if (item = stock.items.to_a.find { |i| i.product_id == product.id })
+                = item.count
+          td
