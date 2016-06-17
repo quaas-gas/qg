@@ -6,6 +6,7 @@ class ProductsController < ApplicationController
   def index
     authorize Product
     @products = Product.order(:category, :number).all
+    @categories = Setting.product_categories.sort
   end
 
   def show
@@ -54,6 +55,6 @@ class ProductsController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def product_params
     params.require(:product)
-      .permit(:number, :size, :name, :content, :price, :price_currency, :category, :in_stock)
+      .permit(:number, :size, :name, :content, :unit, :category, :in_stock)
   end
 end

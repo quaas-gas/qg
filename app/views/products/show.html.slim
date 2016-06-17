@@ -19,7 +19,9 @@
       .col-md-8 = @product.name
     .row
       label.col-md-4 => Product.human_attribute_name(:content)
-      .col-md-8 = @product.content
+      .col-md-8
+        => @product.content
+        = @product.unit
     .row
       label.col-md-4  => Product.human_attribute_name(:in_stock)
       .col-md-8 = bool_icon @product.in_stock

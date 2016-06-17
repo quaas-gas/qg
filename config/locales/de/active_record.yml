@@ -90,10 +90,11 @@ de:
         discount: Provision
       product:
         category: Kategorie
-        content: Inhalt (kg)
+        content: Inhalt
         in_stock: Bestandsartikel
         number: Artikelnummer
         size: Größe
+        unit: Einheit
       seller:
         first_name: Vorname
         last_name: Nachname

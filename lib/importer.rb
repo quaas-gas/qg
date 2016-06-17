@@ -149,7 +149,7 @@ module Importer
 
     Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
     Product.create! xml_data('products', 'Product').map(&:to_h)
-    Setting.product_categories = Product.pluck(:category).uniq.compact.sort
+    Setting.product_categories!
 
     Setting.seller_map  = Seller.all.map { |s| [s.short, s.id] }.to_h
     Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
@@ -167,7 +167,7 @@ module Importer
     end
     puts time.real
 
-    Setting.customer_categories = Customer.uniq.pluck(:kind).sort
+    Setting.customer_categories!
 
     reset_pk Customer
     puts "   customers: #{Customer.count}, deliveries: #{Delivery.count}, invoices: #{Invoice.count}"
