@@ -1,17 +1,17 @@
 class CustomersFilter
-  attr_reader :params, :scope, :city, :kind, :archived
+  attr_reader :params, :scope, :city, :category, :archived
 
   def initialize(params, scope = Customer)
     yes_no_map  = { 'yes' => true, 'no' => false }
     @params     = params
     @scope      = scope
     @city       = params[:city]
-    @kind       = params[:kind]
+    @category   = params[:category]
     @archived   = yes_no_map[params[:archived]]
     @archived ||= false
 
     filter_city
-    filter_kind
+    filter_category
     filter_archived
   end
 
@@ -19,8 +19,8 @@ class CustomersFilter
     scope.group(:city).order(:city).count
   end
 
-  def kinds
-    scope.group(:kind).order(:kind).count
+  def categories
+    scope.group(:category).order(:category).count
   end
 
   def result
@@ -33,8 +33,8 @@ class CustomersFilter
     @scope = scope.where(city: city) if city.present?
   end
 
-  def filter_kind
-    @scope = scope.where(kind: kind) if kind.present?
+  def filter_category
+    @scope = scope.where(category: category) if category.present?
   end
 
   def filter_archived

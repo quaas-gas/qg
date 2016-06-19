@@ -6,10 +6,10 @@
         - @filter.cities.each do |city, count|
           option selected=(city == @filter.city) value=city  #{city} (#{count})
     .form-group
-      select.form-control name="kind"
-        option selected=(@filter.kind.blank?) value='' Kundenart
-        - @filter.kinds.each do |kind, count|
-          option selected=(kind == @filter.kind) value=kind  #{kind} (#{count})
+      select.form-control name="category"
+        option selected=(@filter.category.blank?) value='' Kategorie
+        - @filter.categories.each do |category, count|
+          option selected=(category == @filter.category) value=category  #{category} (#{count})
     .form-group
       select.form-control name="archived"
         option selected=(!@filter.archived) value='no' Aktive

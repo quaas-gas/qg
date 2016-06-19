@@ -57,7 +57,7 @@ class CustomersController < ApplicationController
   def customer_params
     params.require(:customer)
       .permit(:salut, :name, :name2, :street, :city, :zip, :phone, :mobile, :email,
-              :gets_invoice, :region, :kind, :tax, :has_stock, :invoice_address, :archived,
+              :gets_invoice, :region, :category, :tax, :has_stock, :invoice_address, :archived,
               :notes, prices_attributes: [:id, :product_id, :valid_from, :price, :discount, :active,
                                           :in_stock, :_destroy])
   end

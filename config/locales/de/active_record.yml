@@ -50,7 +50,7 @@ de:
         gets_invoice: Rechnungskunde
         has_stock: Bestandsführung
         invoice_address: Rechnungsadresse
-        kind: Kundenart
+        category: Kategorie
         notes: Notizen
         price_in_net: hat Netto-Preise
         tax: Preise mit MwSt

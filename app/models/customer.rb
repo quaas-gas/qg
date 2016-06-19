@@ -8,7 +8,7 @@ class Customer < ActiveRecord::Base
   has_many :open_deliveries, -> { where(on_account: true, invoice_id: nil) }, class_name: 'Delivery'
   has_many :stocks, inverse_of: :customer
 
-  multisearchable against: [:id, :salut, :name, :name2, :street, :city, :kind, :invoice_address]
+  multisearchable against: [:id, :salut, :name, :name2, :street, :city, :category, :invoice_address]
 
   accepts_nested_attributes_for :prices,
                                 allow_destroy: true,

@@ -10,7 +10,7 @@ FactoryGirl.define do
     email "MyString"
     gets_invoice false
     region "MyString"
-    kind "MyString"
+    category "MyString"
     has_stock false
     invoice_address "MyText"
   end

@@ -25,7 +25,7 @@ div
           td = customer.city
           td = lines_for [customer.phone, customer.mobile, customer.email]
           td
-            span.label.label-success> = customer.kind
+            span.label.label-success> = customer.category
             - if customer.has_stock
               span.label.label-warning>  Bestandsführung
             - if customer.archived
