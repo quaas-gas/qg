@@ -12,8 +12,8 @@
 .row
   .col-md-8
     .well.well-sm
-      /span.label.label-default> = @customer.region
-      span.label.label-default> = @customer.kind
+      span.label.label-default> = @customer.region
+      span.label.label-default> = @customer.category
       - if @customer.has_stock
         span.label.label-default>  Bestandsführung
       span.label.label-default> = @customer.gets_invoice ? 'Rechnungskunde' : 'Barzahler'
@@ -42,16 +42,14 @@
       spn.pull-right
         = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
           = fa_icon 'cog', text: t(:edit)
-    table.table.table-condensed.table-hover.table-striped
+    table.table.table-condensed.table-hover.table-striped.table-clickable
       tbody class=(@customer.tax ? 'tax' : 'nontax')
         - @customer.prices.joins(:product).order('products.size').each do |price|
-          tr
+          tr data={ url: edit_customer_url(@customer, part: 'prices') }
             td = price.product.number
             td
-              - res = []
-              - res << 'LS' if price.active
-              - res << 'BF' if price.in_stock
-              = res.join ', '
+              => delivery_icon if price.active
+              = stock_icon if price.in_stock
             td.price = display_price price.price
             td.price = display_price price.discount
 = render 'customers/show/history'
