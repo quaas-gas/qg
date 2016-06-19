@@ -12,9 +12,9 @@
         p =< @delivery.errors[:items].first
 
 
-  section
+  .row
     .col-md-9
-      section
+      .row
         .col-md-8
           .form-inputs
             - if @delivery.customer.present?
@@ -29,15 +29,16 @@
             = f.association :seller
             = f.input :on_account, input_html: { tabindex: 1000 }
 
-      table.table.table-condensed
+      table.table.table-condensed.table-hover.table-striped
         thead
           tr
-            th Artikel
-            th leer
-            th Anzahl / voll
-            th Bezeichnung
-            th.price Einzelpreis
-            th.price Gesamtpreis
+            th.product Artikel
+            th.count-back leer
+            th.count Anzahl / voll
+            th.name Bezeichnung
+            th.unit-price.price Einzelpreis (Netto)
+            th.total-price-net.price Gesamt (Netto)
+            th.total-price.price Gesamt (Brutto)
         tbody
           = f.simple_fields_for :items do |item_form|
             tr
@@ -50,10 +51,13 @@
               td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
               td.price
+                p.total-price-net 121212
+              td.price
                 p.total-price
         tfoot
           tr
             th.price colspan=5 Summe
+            th.price.total-price-net
             th.price.total-price
 
       = f.input :description, input_html: { tabindex: 1000 }
@@ -75,3 +79,9 @@
 
 coffee:
   $(document).on 'ready page:load', -> new DeliveryForm()
+
+sass:
+  table
+    th
+      &.product, &.count-back, &.count, &.unit-price, &.total-price-net, &.total-price
+        width: 12%

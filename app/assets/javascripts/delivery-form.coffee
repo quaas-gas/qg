@@ -21,7 +21,7 @@ class window.DeliveryForm
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
   parsePriceInput: (val) -> val.replace(',', '.')
-  parsePriceOutput: (val) -> val.toFixed(4).toString().replace('.', ',')
+  parsePriceOutput: (val) -> val.toFixed(2).toString().replace('.', ',')
 
   renderSums: =>
     sum = 0
@@ -30,10 +30,12 @@ class window.DeliveryForm
       count = tr.find('.delivery_items_count input').val()
       unitPrice = @parsePriceInput tr.find('.delivery_items_unit_price input').val()
       total = count * unitPrice
-      tr.find('p.total-price').text @parsePriceOutput(total)
+      tr.find('p.total-price-net').text @parsePriceOutput(total)
+      tr.find('p.total-price').text @parsePriceOutput(total * 1.19)
       sum += total
 
-    $('table tfoot .total-price').text @parsePriceOutput(sum)
+    $('table tfoot .total-price-net').text @parsePriceOutput(sum)
+    $('table tfoot .total-price').text @parsePriceOutput(sum * 1.19)
 
   setCount: (event) =>
     countBackInput = $(event.currentTarget)
