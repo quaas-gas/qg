@@ -24,7 +24,8 @@ module Importer
 
     def monetize(field)
       val = attr(field) || 0
-      Money.from_amount val.to_f, (@tax ? 'EU4TAX' : 'EU4NET')
+      m = Money.from_amount val.to_f, (@tax ? 'EU4TAX' : 'EU4NET')
+      m.exchange_to 'EU4NET'
     end
 
     def bool(field)
@@ -137,8 +138,8 @@ module Importer
       deactivate_old_customers
       link_deliveries_to_invoices
       link_invoice_items_to_products
-      generate_initial_stocks
-      generate_stocks_for_invoices
+      # generate_initial_stocks
+      # generate_stocks_for_invoices
       rebuild_search_index
     end
     puts time.real
@@ -156,7 +157,7 @@ module Importer
 
     time = Benchmark.measure do
       PgSearch.disable_multisearch do
-        xml_data('qg-customers-since-2012', 'Customer').each do |customer_xml|
+        xml_data('qg-customers-since-2016', 'Customer').each do |customer_xml|
           customer_node = CustomerNode.new customer_xml
           customer = Customer.create! customer_node.to_h
           customer_node.prices.each     { |price|    create_price    customer, price }
@@ -166,6 +167,8 @@ module Importer
       end
     end
     puts time.real
+
+    Customer.update_all tax: false
 
     Setting.customer_categories!
 
