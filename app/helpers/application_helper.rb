@@ -54,6 +54,16 @@ module ApplicationHelper
     txt + content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')
   end
 
+  def tax_price(price)
+    price = Money.from_amount price unless price.is_a? Money
+    price.exchange_to('EU4TAX')
+  end
+
+  def nontax_price(price)
+    price = Money.from_amount price unless price.is_a? Money
+    price.exchange_to('EU4NET')
+  end
+
   def list_link(url)
     link_to fa_icon('chevron-left', text: t(:list)), url, class: 'btn btn-default'
   end

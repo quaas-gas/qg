@@ -1,0 +1,40 @@
+.overflow
+  h4
+    |  Preise
+    span.pull-right
+      = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
+        = fa_icon 'cog', text: t(:edit)
+  table.table.table-condensed.table-hover.table-striped.table-clickable
+    thead
+      tr
+        th
+        th
+        th.price Netto
+        th.price Brutto
+        th
+    tbody class=(@customer.tax ? 'tax' : 'nontax')
+      - @customer.prices.joins(:product).order('products.size').each do |price|
+        tr data={ url: edit_customer_url(@customer, part: 'prices') }
+          td = price.product.number
+          td
+            => delivery_icon if price.active
+            = stock_icon if price.in_stock
+          td.price = nontax_price price.price
+          td.price = tax_price price.price
+          td.price
+            => price.per_content
+            => price.per_content_unit
+
+sass:
+  .overflow
+    overflow-y: scroll
+    height: 175px
+
+  /*.overflow:before*/
+    content: ''
+    width: 100%
+    height: 100%
+    position: absolute
+    left: 0
+    bottom: 0
+    background: linear-gradient(transparent 150px, white)
