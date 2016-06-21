@@ -44,14 +44,12 @@
             tr
               td = item_form.association :product, collection: Product.order(:number),
                   label: false, label_method: :number, input_html: { tabindex: 1000 }
-              td
-                - if item_form.object.product&.in_stock
-                  = item_form.input :count_back, label: false
+              td = item_form.input :count_back, label: false if item_form.object.product&.in_stock
               td = item_form.input :count, label: false
               td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
               td.price
-                p.total-price-net 121212
+                p.total-price-net
               td.price
                 p.total-price
         tfoot
