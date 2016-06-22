@@ -7,7 +7,7 @@
       h4 = t('.error')
 
   section
-    .col-md-6 = panel_box title: Customer.model_name.human do
+    .col-md-4 = panel_box title: Customer.model_name.human do
       .form-inputs
         = f.input :salut, input_html: { autofocus: true }
         = f.input :name
@@ -16,7 +16,7 @@
         = f.input :category, collection: Setting.customer_categories
         = f.input :archived
         = f.input :notes, as: :text
-    .col-md-6 = panel_box title: 'Kontaktdaten' do
+    .col-md-4 = panel_box title: 'Kontaktdaten' do
       .form-inputs
         = f.input :street
         = f.input :city
@@ -24,8 +24,7 @@
         = f.input :phone
         = f.input :mobile
         = f.input :email
-  section
-    .col-md-6 = panel_box title: 'Rechnungen' do
+    .col-md-4 = panel_box title: 'Rechnungen' do
       .form-inputs
         = f.input :gets_invoice
         = f.input :invoice_address, input_html: { rows: 6 }
