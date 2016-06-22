@@ -1,9 +1,12 @@
+h4
+  |  Artikel
+  span.pull-right>
+    = link_to edit_customer_url(@customer, part: 'stocks'), class: 'btn btn-default btn-xs' do
+      = stock_icon 'Bestand'
+  span.pull-right>
+    = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
+      = fa_icon 'cog', text: 'Preise'
 .overflow
-  h4
-    |  Preise
-    span.pull-right
-      = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
-        = fa_icon 'cog', text: t(:edit)
   table.table.table-condensed.table-hover.table-striped.table-clickable
     thead
       tr

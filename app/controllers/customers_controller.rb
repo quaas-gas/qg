@@ -59,6 +59,6 @@ class CustomersController < ApplicationController
       .permit(:salut, :name, :name2, :street, :city, :zip, :phone, :mobile, :email, :gets_invoice,
               :region, :category, :tax, :has_stock, :invoice_address, :archived, :initial_stock_date,
               :notes, prices_attributes: [:id, :product_id, :valid_from, :price, :discount, :active,
-                                          :in_stock, :_destroy])
+                                          :in_stock, :initial_stock_balance, :_destroy])
   end
 end

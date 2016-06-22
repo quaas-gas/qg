@@ -86,6 +86,7 @@ de:
       price:
         active: in Lieferschein
         in_stock: Bestandsführung
+        initial_stock_balance: Anfangsbestand
         product: Artikel
         valid_from: gilt ab
         discount: Provision

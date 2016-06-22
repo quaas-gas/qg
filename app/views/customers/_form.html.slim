@@ -14,7 +14,6 @@
         = f.input :name2
         /= f.input :region
         = f.input :category, collection: Setting.customer_categories
-        /= f.input :tax
         = f.input :archived
         = f.input :notes, as: :text
     .col-md-6 = panel_box title: 'Kontaktdaten' do
@@ -30,10 +29,6 @@
       .form-inputs
         = f.input :gets_invoice
         = f.input :invoice_address, input_html: { rows: 6 }
-    .col-md-6 = panel_box title: 'Bestand' do
-      .form-inputs
-        = f.input :has_stock
-        = f.input :initial_stock_date
 
   section.action-buttons
     .col-md-12

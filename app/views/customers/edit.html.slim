@@ -5,14 +5,16 @@
       small = Price.model_name.human(count: 2)
 
   = simple_form_for(@customer) do |f|
-    /- if @customer.errors.any?
-    /  .alert.alert-danger.alert-dismissable@alert
-    /    button.close type="button" data-dismiss="alert"
-    /      span aria-hidden="true" &times;
-    /      span.sr-only Close
-    /    h4 = t('.error')
-
     = render 'customers/form/prices', f: f
+
+- elsif params[:part] == 'stocks'
+  .page-header
+    h2
+      => @customer.name
+      small Bestand
+
+  = simple_form_for(@customer) do |f|
+    = render 'customers/form/stocks', f: f
 
 - else
   .page-header

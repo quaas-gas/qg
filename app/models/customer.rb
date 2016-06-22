@@ -12,10 +12,12 @@ class Customer < ActiveRecord::Base
   accepts_nested_attributes_for :prices,
                                 allow_destroy: true,
                                 reject_if: lambda { |attributes|
-                                  if attributes['id'].present?
-                                    attributes['price'].blank?
-                                  else
-                                    attributes['product_id'].blank? || attributes['price'].blank?
+                                  unless attributes['in_stock'].present?
+                                    if attributes['id'].present?
+                                      attributes['price'].blank?
+                                    else
+                                      attributes['product_id'].blank? || attributes['price'].blank?
+                                    end
                                   end
                                 }
 

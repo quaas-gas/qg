@@ -1,0 +1,22 @@
+= f.input :has_stock, label: 'Bestandsübersicht als Anhang zur Rechnung'
+= f.input :initial_stock_date
+section
+  .col-md-6
+    table.table.table-condensed.table-no-border.table-striped.table-hover
+      thead
+        tr
+          th = Price.human_attribute_name :product
+          th.price = Price.human_attribute_name :in_stock
+          th.price = Price.human_attribute_name :initial_stock_balance
+          th
+      tbody
+        = f.simple_fields_for :prices do |price_form|
+          tr
+            td = price_form.association :product, collection: Product.order(:number),
+                                label: false, label_method: :number, disabled: true
+            td.price = price_form.input :in_stock, label: false
+            td.price = price_form.input :initial_stock_balance, label: false
+
+    div.pull-right
+      => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+      = f.submit t(:save), class: 'btn btn-primary'

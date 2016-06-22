@@ -8,7 +8,6 @@ section
           th = Price.human_attribute_name :active
           th.price = Price.human_attribute_name :price
           th.price = Price.human_attribute_name :discount
-          th.price = Price.human_attribute_name :in_stock
           th
       tbody
         = f.simple_fields_for :prices do |price_form|
@@ -25,7 +24,6 @@ section
             td = price_form.input :active, label: false
             td.price = price_form.input :price, label: false
             td.price = price_form.input :discount, label: false
-            td.price = price_form.input :in_stock, label: false
             td.delete-price
               - unless price.new_record?
                 = link_to fa_icon('trash', text: t(:delete)), '#', class: 'btn btn-danger btn-xs'

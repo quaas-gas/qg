@@ -10,7 +10,7 @@
     small = Customer.model_name.human
 
 .row
-  .col-md-7
+  .col-md-6
     .well.well-sm
       span.label.label-default> = @customer.region
       span.label.label-default> = @customer.category
@@ -36,6 +36,6 @@
         p = @customer.mobile
         p = @customer.email
 
-  .col-md-5 = render 'customers/show/prices'
+  .col-md-6 = render 'customers/show/prices'
 
 = render 'customers/show/history'
