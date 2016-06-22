@@ -4,20 +4,31 @@
   = simple_form_for :invoice, url: new_invoice_url, method: :get, defaults: { label: false, required: false } do |f|
     input type="hidden" name="customer_id" value=customer.id
     .row
-      .col-md-6
+      .col-md-4
         h4 = link_to customer.name, customer
-        table.table.table-hover.table-striped
+      .col-md-5
+        table.table.table-hover.table-striped.table-condensed.table-no-border
           tbody
             - grouped_deliveries[customer].each do |delivery|
-              - sum += delivery.total_price
+              - delivery_total_price = delivery.total_price
+              - sum += delivery_total_price
               tr class=(delivery.tax ? 'tax' : 'nontax')
-                td
-                  input type="checkbox" name="delivery_ids[]" checked=true value=delivery.id
+                td: input type="checkbox" name="delivery_ids[]" checked=true value=delivery.id
                 td = link_to delivery.number, delivery
                 td = ldate delivery.date
-                td = display_price delivery.total_price
-      .col-md-2
+                td.price = nontax_price delivery_total_price
+                td.price = tax_price delivery_total_price
+      .col-md-1
         label.pull-right class=(customer.tax ? 'tax' : 'nontax') = display_price sum
       .col-md-2
-        = f.submit t('.create_invoice'), class: 'btn btn-primary btn-block'
+        = f.submit t('invoices.new.title'), class: 'btn btn-primary btn-block'
   hr
+
+sass:
+  hr
+    margin-bottom: 10px
+    margin-top: 10px
+  .table
+    margin-bottom: 0
+    td
+      width: 20%
