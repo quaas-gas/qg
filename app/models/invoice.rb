@@ -54,6 +54,10 @@ class Invoice < ActiveRecord::Base
     items.sort.each { |item| item.position = (position += 1) }
   end
 
+  def previous
+    self.class.where(customer: self.customer).where.not(id: id).order(date: :desc).first
+  end
+
   private
 
   def validate_items

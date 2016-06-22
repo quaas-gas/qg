@@ -2,7 +2,7 @@ require 'prawn/measurement_extensions'
 
 class InvoicePdf < ApplicationDocument
 
-  attr_reader :invoice, :company
+  attr_reader :invoice, :customer, :company
 
   def initialize(invoice)
     @debug = false
@@ -11,6 +11,7 @@ class InvoicePdf < ApplicationDocument
     @margin_side = 20.mm
     super(page_size: 'A4', margin: [@margin_top, @margin_side, @margin_bottom])
     @invoice = invoice
+    @customer = invoice.customer
     @company = Company.current
     @header_text_options = { size: 30, style: :italic, align: :center }
     generate
@@ -39,6 +40,7 @@ class InvoicePdf < ApplicationDocument
     move_down 20
     text invoice.post_message
     write_footer
+    write_stock_overview if customer.has_stock
   end
 
   def write_header
@@ -83,7 +85,7 @@ class InvoicePdf < ApplicationDocument
         text company.fax
         text company.email
         move_down 20
-        text invoice.customer_id.to_s
+        text customer.id.to_s
         text ldate(invoice.date)
         stroke_bounds if @debug
       end
@@ -157,6 +159,68 @@ class InvoicePdf < ApplicationDocument
       width: bounds.right,
       column_widths: { 1 => 90 },
       cell_style: { border_width: 0, padding: [2, 5] }
+    }
+  end
+
+  ### Stock Overview ###############################################################################
+
+  def write_stock_overview
+    start_new_page :layout => :landscape
+    height = @margin_top / 2
+    bounding_box [0, bounds.top + height], width: bounds.right, height: height do
+      text company.name, @header_text_options
+    end
+    move_down 40
+    text t(:stock_invoice, number: invoice.number, date: ldate(invoice.date)), size: 16
+    text customer.name, size: 13
+    move_down 20
+
+    font_size 11 do
+      table stock_array, stock_table_options do |t|
+        t.row(0).font_style = :italic
+        t.row(1).font_style = :bold
+        t.row(-1).font_style = :bold
+        t.cells.style { |c| c.align = :right unless c.column == 0 }
+      end
+    end
+  end
+
+  def stock_array
+    [%w(Lieferschein Datum) + products_in_stock.map(&:number)] +
+      stock_row('Anfangsbestand', (invoice.previous&.date || customer.initial_stock_date)) +
+      stock_deliveries.map { |delivery| stock_delivery_row(delivery) } +
+      stock_row('neuer Bestand', invoice.date)
+  end
+
+  def stock_deliveries
+    invoice.deliveries.order(:date).includes(items: :product)
+  end
+
+  def stock_delivery_row(delivery)
+    [delivery.number, ldate(delivery.date)] + products_in_stock.map { |product| stock_diff delivery, product }
+  end
+
+  def stock_diff(delivery, product)
+    item = delivery.items.to_a.find { |i| i.product_id == product.id }
+    item ? item.stock_diff.to_s : ''
+  end
+
+  def stock_row(label, date)
+    stock = customer.stock_at date
+    [[label, ldate(date)] + products_in_stock.map { |product| stock[product.number] }]
+  end
+
+  def products_in_stock
+    @products_in_stock ||= Product.where(id: customer.prices.in_stock.select(:product_id)).to_a
+  end
+
+  def stock_table_options
+    {
+      row_colors:    %w(EEEEEE FFFFFF),
+      header:        true,
+      width:         bounds.right,
+      column_widths: { 0 => 100, 1 => 70 },
+      cell_style:    { border_width: 0, padding: [4, 5] }
     }
   end
 

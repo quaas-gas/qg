@@ -17,4 +17,8 @@ class ApplicationDocument < Prawn::Document
     currency = money.currency.to_s.sub 'EU4', 'EUR'
     money.exchange_to(currency).format
   end
+
+  def t(*attrs)
+    I18n.t *attrs
+  end
 end

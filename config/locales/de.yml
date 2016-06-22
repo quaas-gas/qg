@@ -54,3 +54,4 @@ de:
   new: Neu
   save: Speichern
   save_and_next: Speichern und Neu
+  stock_invoice: Anlage zur Rechnung %{number} vom %{date}
