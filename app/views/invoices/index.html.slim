@@ -1,5 +1,6 @@
+- title_for Invoice
 .page-header
-  = new_link new_invoice_path, label: t('.write_invoice')
+  = new_link new_invoice_path, label: t('invoices.new.title')
   h2
     => invoice_icon
     => @invoices.count

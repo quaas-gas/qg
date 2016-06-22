@@ -49,19 +49,19 @@ module ApplicationHelper
 
   def display_price(price, separator: '<br>')
     price = Money.from_amount price unless price.is_a? Money
-    txt = content_tag(:span, price.exchange_to('EU4NET'), class: 'nontax', title: 'netto')
+    txt = nontax_price(price)
     txt += separator.html_safe
-    txt + content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')
+    txt + tax_price(price)
   end
 
   def tax_price(price)
     price = Money.from_amount price unless price.is_a? Money
-    price.exchange_to('EU4TAX')
+    content_tag(:span, price.exchange_to('EU4TAX'), class: 'tax', title: 'brutto')
   end
 
   def nontax_price(price)
     price = Money.from_amount price unless price.is_a? Money
-    price.exchange_to('EU4NET')
+    content_tag(:span, price.exchange_to('EU4NET'), class: 'nontax', title: 'netto')
   end
 
   def list_link(url)
@@ -87,5 +87,26 @@ module ApplicationHelper
     link_to label, record, method: :delete, data: { confirm: confirm }, class: 'btn btn-danger'
   end
 
+  def title_for(model_or_record, attr = nil)
+    title = if model_or_record.is_a? ActiveRecord::Base
+      title_for_record model_or_record, attr
+    else
+      title_for_model model_or_record, attr
+    end
+    content_for :title, title
+  end
 
+  def title_for_record(record, attr = nil)
+    attr ||= :id
+    id = attr.is_a?(Symbol) ? record.send(attr) : attr
+    t("#{record.class.model_name.name.tableize}.single.title", id: id)
+  end
+
+  def title_for_model(model, attr = nil)
+    if attr
+      t("#{model.model_name.name.tableize}.#{attr}.title")
+    else
+      model.model_name.human count: 2
+    end
+  end
 end

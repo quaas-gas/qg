@@ -1,25 +1,14 @@
+- title_for @customer, :name
 - if params[:part] == 'prices'
-  .page-header
-    h2
-      => @customer.name
-      small = Price.model_name.human(count: 2)
-
+  .page-header = render 'header', title: @customer.name, small: Price.model_name.human(count: 2)
   = simple_form_for(@customer) do |f|
     = render 'customers/form/prices', f: f
 
 - elsif params[:part] == 'stocks'
-  .page-header
-    h2
-      => @customer.name
-      small Bestand
-
+  .page-header = render 'header', title: @customer.name, small: 'Bestand'
   = simple_form_for(@customer) do |f|
     = render 'customers/form/stocks', f: f
 
 - else
-  .page-header
-    h2
-      => @customer.name
-      small = Customer.model_name.human
-
+  .page-header = render 'header', title: @customer.name, small: Customer.model_name.human
   = render 'form'

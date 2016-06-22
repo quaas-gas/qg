@@ -11,20 +11,19 @@ de:
   updated: "%{model} gespeichert."
   destroyed: "%{model} gelöscht."
   confirm_delete: "%{model} löschen?"
-  bottles:
-    form:
-      error: Flasche konnte nicht gespeichert werden.
-    new:
-      title: "Flaschen anlegen"
   customers:
+    single:
+      title: "%{id}"
     form:
       error: Kunde konnte nicht gespeichert werden.
     new:
-      title: "Kunden anlegen"
+      title: Kunden anlegen
   dashboard:
     index:
       write_invoices: Rechnungen schreiben
   deliveries:
+    single:
+      title: "Lieferung %{id}"
     form:
       error: Lieferung konnte nicht gespeichert werden.
     index:
@@ -36,18 +35,23 @@ de:
       edit_confirm: "Dieser Lieferschein kann nicht bearbeitet werden, da er schon abgerechnet wurde. Wollen Sie stattdessen  die Rechnung ansehen?"
       new_delivery: Lieferschein eingeben
   invoices:
-    open_delivery_list:
-      create_invoice: "Rechnung schreiben"
-    index:
-      write_invoice: "Rechnungen schreiben"
-  prices:
-    form:
-      error: Preis konnte nicht gespeichert werden.
+    single:
+      title: "Rechnung %{id}"
     new:
-      title: "Preis anlegen"
+      title: Rechnung schreiben
   products:
+    single:
+      title: "Artikel %{id}"
     new:
-      title: "Neuen Artikel anlegen"
+      title: Neuen Artikel anlegen
+  search:
+    index:
+      title: Suchergebnisse
+  sellers:
+    single:
+      title: "Verkäufer %{id}"
+    new:
+      title: Neuen Verkäufer anlegen
   delete: Löschen
   edit: Bearbeiten
   list: Liste

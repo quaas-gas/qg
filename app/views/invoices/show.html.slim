@@ -1,3 +1,4 @@
+- title_for @invoice, "#{@invoice.number} #{@invoice.customer.name}"
 ul.list-inline.pull-right
   li = pdf_link invoice_path(@invoice, format: :pdf)
   li = list_link invoices_url
