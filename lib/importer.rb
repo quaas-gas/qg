@@ -39,6 +39,7 @@ module Importer
                              'gets_invoice', 'has_stock', 'region'
       customer[:category] = attr('kind')
       customer[:invoice_address] = text_element('invoice_address')
+      customer[:initial_stock_date] = Date.new 2000
       customer
     end
 
@@ -62,7 +63,8 @@ module Importer
         price:    monetize('price'),
         discount: monetize('discount'),
         active:   true,
-        in_stock: true
+        in_stock: true,
+        initial_stock_balance: 0
       }
     end
   end
@@ -128,24 +130,25 @@ module Importer
     models.each { |model| ActiveRecord::Base.connection.reset_pk_sequence!(model.table_name) }
   end
 
-  def self.import_all(with_delete: true)
-    reset Stock, Invoice, Delivery, Price, Customer, Product, Seller if with_delete
-
+  def self.import_all(with_delete: true, from_year: 2016)
+    log_level = ActiveRecord::Base.logger.level
     ActiveRecord::Base.logger.level = 1
 
+    reset Stock, Invoice, Delivery, Price, Customer, Product, Seller if with_delete
+
     time = Benchmark.measure do
-      import_xml
+      import_xml from_year
       deactivate_old_customers
       link_deliveries_to_invoices
       link_invoice_items_to_products
-      # generate_initial_stocks
-      # generate_stocks_for_invoices
       rebuild_search_index
     end
     puts time.real
+
+    ActiveRecord::Base.logger.level = log_level
   end
 
-  def self.import_xml
+  def self.import_xml(year)
     puts __method__
 
     Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
@@ -157,7 +160,7 @@ module Importer
 
     time = Benchmark.measure do
       PgSearch.disable_multisearch do
-        xml_data('qg-customers-since-2016', 'Customer').each do |customer_xml|
+        xml_data("qg-customers-since-#{year}", 'Customer').each do |customer_xml|
           customer_node = CustomerNode.new customer_xml
           customer = Customer.create! customer_node.to_h
           customer_node.prices.each     { |price|    create_price    customer, price }
@@ -168,7 +171,7 @@ module Importer
     end
     puts time.real
 
-    Customer.update_all tax: false
+    Customer.where(gets_invoice: true).update_all tax: false
 
     Setting.customer_categories!
 
@@ -223,29 +226,9 @@ module Importer
     end
   end
 
-  def self.generate_initial_stocks
-    puts __method__
-    Stock.transaction do
-      Customer.all.each { |customer| customer.initialize_stock(20.years.ago).save }
-    end
-  end
-
-  def self.generate_stocks_for_invoices
-    puts __method__
-    Stock.transaction do
-      Customer.all.each do |customer|
-        customer.invoices.order(:date).pluck(:date).uniq.each do |invoice_date|
-          customer.calculate_new_stock(invoice_date).save
-        end
-      end
-    end
-  end
-
   def self.rebuild_search_index
     puts __method__
-    PgSearch::Multisearch.rebuild(Customer)
-    PgSearch::Multisearch.rebuild(Delivery)
-    PgSearch::Multisearch.rebuild(Invoice)
+    [Customer, Delivery, Invoice].each { |model| PgSearch::Multisearch.rebuild model }
     nil
   end
 

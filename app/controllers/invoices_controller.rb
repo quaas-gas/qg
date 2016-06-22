@@ -43,7 +43,6 @@ class InvoicesController < ApplicationController
     @invoice.build_items_from_deliveries
 
     if @invoice.save
-      @invoice.customer.calculate_new_stock(@invoice.date).save
       redirect_to @invoice, notice: t(:created, model: Invoice.model_name.human)
     else
       render :new

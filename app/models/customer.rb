@@ -6,7 +6,6 @@ class Customer < ActiveRecord::Base
   has_many :prices, -> { includes(:product).order('products.number') }, inverse_of: :customer
   has_many :invoices, inverse_of: :customer
   has_many :open_deliveries, -> { where(on_account: true, invoice_id: nil) }, class_name: 'Delivery'
-  has_many :stocks, inverse_of: :customer
 
   multisearchable against: [:id, :salut, :name, :name2, :street, :city, :category, :invoice_address]
 
@@ -45,36 +44,26 @@ class Customer < ActiveRecord::Base
 
   def history(months = 4)
     date        = months.month.ago.to_date.at_end_of_month
-    _deliveries = deliveries.includes(:items).where('date > ?', date).order(date: :desc).to_a
-    _invoices   = invoices.  includes(:items).where('date > ?', date).order(date: :desc).to_a
-    _stocks     = stocks.    includes(:items).where('date > ?', date).order(date: :desc).to_a
-    (_stocks + _deliveries + _invoices).sort do |a, b|
+    _deliveries = deliveries.includes(items: :product).where('date > ?', date).order(date: :desc).to_a
+    _invoices   = invoices.  includes(items: :product).where('date > ?', date).order(date: :desc).to_a
+    (_deliveries + _invoices).sort do |a, b|
       res = b.date <=> a.date
       (res == 0) ? b.class.name <=> a.class.name : res
     end
   end
 
-  def calculate_new_stock(date)
-    l_stock = last_stock
-    raise "date #{date} must be greater than last stock date (#{l_stock.date})" if date < l_stock.date
-
-    initialize_stock(date, last_stock: l_stock).tap { |stock| stock.calculate_items }
+  def stock_at(date = Date.current)
+    change = stock_change date
+    prices.in_stock.includes(:product).each_with_object({}) do |price, stock|
+      product_number = price.product.number
+      stock[product_number] = price.initial_stock_balance + (change[product_number] || 0)
+    end
   end
 
-  def initialize_stock(date, last_stock: nil)
-    stocks.build(date: date).tap { |stock| stock.initialize_items last_stock: last_stock }
-  end
-
-  def current_stock
-    return nil if stocks.empty?
-    calculate_new_stock Date.current
-  end
-
-  def last_stock
-    stocks.includes(:items).order(date: :desc).first
-  end
-
-  def initial_stock
-    stocks.includes(:items).order(date: :asc).first
+  def stock_change(date = Date.current)
+    customer_deliveries = Delivery.where(customer: self)
+      .where('date > ?', initial_stock_date || 20.years.ago).where('date <= ?', date)
+    DeliveryItem.where(delivery: customer_deliveries).joins(:product).where('products.in_stock')
+      .group('products.number').sum('count - count_back')
   end
 end

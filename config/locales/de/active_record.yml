@@ -50,6 +50,7 @@ de:
         gets_invoice: Rechnungskunde
         has_stock: Bestandsführung
         invoice_address: Rechnungsadresse
+        initial_stock_date: Anfangsbestand vom
         category: Kategorie
         notes: Notizen
         price_in_net: hat Netto-Preise

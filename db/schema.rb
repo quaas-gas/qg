@@ -11,14 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160616082813) do
+ActiveRecord::Schema.define(version: 20160622003828) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "customers", force: :cascade do |t|
     t.string   "salut"
-    t.string   "name",                            null: false
+    t.string   "name",                               null: false
     t.string   "name2"
     t.string   "street"
     t.string   "city"
@@ -26,18 +26,19 @@ ActiveRecord::Schema.define(version: 20160616082813) do
     t.string   "phone"
     t.string   "mobile"
     t.string   "email"
-    t.boolean  "gets_invoice",    default: true
+    t.boolean  "gets_invoice",       default: true
     t.string   "region"
     t.string   "kind"
-    t.boolean  "tax",             default: true
-    t.boolean  "has_stock",       default: false
+    t.boolean  "tax",                default: true
+    t.boolean  "has_stock",          default: false
     t.date     "last_stock_date"
     t.text     "invoice_address"
-    t.boolean  "archived",        default: false
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.boolean  "archived",           default: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
     t.text     "notes"
     t.string   "category"
+    t.date     "initial_stock_date"
   end
 
   add_index "customers", ["category"], name: "index_customers_on_category", using: :btree
@@ -127,15 +128,16 @@ ActiveRecord::Schema.define(version: 20160616082813) do
     t.integer  "customer_id"
     t.integer  "product_id"
     t.date     "valid_from"
-    t.integer  "price_cents",       default: 0,        null: false
-    t.string   "price_currency",    default: "EU4TAX", null: false
-    t.integer  "discount_cents",    default: 0,        null: false
-    t.string   "discount_currency", default: "EU4TAX", null: false
+    t.integer  "price_cents",           default: 0,        null: false
+    t.string   "price_currency",        default: "EU4TAX", null: false
+    t.integer  "discount_cents",        default: 0,        null: false
+    t.string   "discount_currency",     default: "EU4TAX", null: false
     t.jsonb    "others"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.boolean  "active",            default: true
-    t.boolean  "in_stock",          default: true
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",                default: true
+    t.boolean  "in_stock",              default: true
+    t.integer  "initial_stock_balance", default: 0
   end
 
   add_index "prices", ["customer_id"], name: "index_prices_on_customer_id", using: :btree
@@ -178,27 +180,6 @@ ActiveRecord::Schema.define(version: 20160616082813) do
 
   add_index "settings", ["thing_type", "thing_id", "var"], name: "index_settings_on_thing_type_and_thing_id_and_var", unique: true, using: :btree
 
-  create_table "stock_items", force: :cascade do |t|
-    t.integer  "stock_id"
-    t.integer  "product_id"
-    t.integer  "count",      default: 0, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "stock_items", ["product_id"], name: "index_stock_items_on_product_id", using: :btree
-  add_index "stock_items", ["stock_id"], name: "index_stock_items_on_stock_id", using: :btree
-
-  create_table "stocks", force: :cascade do |t|
-    t.integer  "customer_id"
-    t.date     "date",        null: false
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
-  end
-
-  add_index "stocks", ["customer_id", "date"], name: "index_stocks_on_customer_id_and_date", unique: true, using: :btree
-  add_index "stocks", ["customer_id"], name: "index_stocks_on_customer_id", using: :btree
-
   create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
@@ -226,7 +207,4 @@ ActiveRecord::Schema.define(version: 20160616082813) do
   add_foreign_key "invoices", "customers"
   add_foreign_key "prices", "customers"
   add_foreign_key "prices", "products"
-  add_foreign_key "stock_items", "products"
-  add_foreign_key "stock_items", "stocks", on_delete: :cascade
-  add_foreign_key "stocks", "customers", on_delete: :cascade
 end
