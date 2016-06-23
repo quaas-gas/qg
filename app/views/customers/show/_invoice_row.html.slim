@@ -1,0 +1,9 @@
+tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
+  td = invoice_icon
+  td = invoice.number
+  td = ldate invoice.date
+  - @customer.stock_products.each do |product|
+    td.price
+      - if (item = invoice.items.to_a.find { |i| i.product_id == product.id })
+        = item.count
+  td.price = display_price invoice.total_price

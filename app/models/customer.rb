@@ -47,25 +47,17 @@ class Customer < ActiveRecord::Base
   def history(months = 4)
     date        = months.month.ago.to_date.at_end_of_month
     _deliveries = deliveries.includes(items: :product).where('date > ?', date).order(date: :desc).to_a
-    _invoices   = invoices.  includes(items: :product).where('date > ?', date).order(date: :desc).to_a
-    (_deliveries + _invoices).sort do |a, b|
+    _invoices   = invoices.  includes(items: :product).where('date > ?', date).order(date: :desc)
+    _stocks = _invoices.where('date >= ?', initial_stock_date).map { |invoice| Stock.new self, invoice.date }
+    _stocks << Stock.new(self, initial_stock_date) if _stocks.none?(&:initial?)
+    [Stock.new(self, Date.current)] + (_deliveries + _invoices.to_a + _stocks).sort do |a, b|
       res = b.date <=> a.date
       (res == 0) ? b.class.name <=> a.class.name : res
     end
   end
 
-  def stock_at(date = Date.current)
-    change = stock_change date
-    prices.in_stock.includes(:product).each_with_object({}) do |price, stock|
-      product_number = price.product.number
-      stock[product_number] = price.initial_stock_balance + (change[product_number] || 0)
-    end
+  def stock_products
+    @stock_products ||= prices.in_stock.includes(:product).map(&:product).to_a
   end
 
-  def stock_change(date = Date.current)
-    customer_deliveries = Delivery.where(customer: self)
-      .where('date > ?', initial_stock_date || 20.years.ago).where('date <= ?', date)
-    DeliveryItem.where(delivery: customer_deliveries).joins(:product).where('products.in_stock')
-      .group('products.number').sum('count - count_back')
-  end
 end

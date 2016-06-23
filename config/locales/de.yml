@@ -18,6 +18,11 @@ de:
       error: Kunde konnte nicht gespeichert werden.
     new:
       title: Kunden anlegen
+    show:
+      stock_row:
+        initial_stock: "Anfangsbestand"
+        stock: "Bestand"
+        current_stock: "Aktueller Bestand"
   dashboard:
     index:
       write_invoices: Rechnungen schreiben

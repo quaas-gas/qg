@@ -1,0 +1,13 @@
+tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nontax') class=(delivery.pending? ? 'warning' : '')
+  td = delivery_type_icon delivery
+  td = delivery.number
+  td = ldate delivery.date
+  - @customer.stock_products.each do |product|
+    - item = delivery.items.to_a.find { |i| i.product_id == product.id }
+    - if item
+      - stock_diff = item.stock_diff
+      td.price class=('danger' if stock_diff < 0) class=('success' if stock_diff > 0)
+        = [item.count_back, item.count, stock_diff].join ' | '
+    - else
+      td
+  td.price = display_price delivery.total_price

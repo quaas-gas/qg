@@ -1,0 +1,9 @@
+- label = stock.initial? ? t('.initial_stock') : t('.stock')
+- label = t('.current_stock') if stock.current?
+tr.stock
+  td = stock_icon
+  td = label
+  td = ldate stock.date
+  - @customer.stock_products.each do |product|
+    td.price = stock[product.number]
+  td
