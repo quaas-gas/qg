@@ -31,15 +31,23 @@ module Importer
     def bool(field)
       attr(field) == '1'
     end
+
+    def date(field)
+      val = attr(field)
+      return nil unless val.present?
+      Date.strptime(val, '%m/%d/%Y')
+    end
   end
 
   class CustomerNode < XmlNode
     def to_h
-      customer = @node.to_h.slice 'id', 'tax', 'salut', 'name', 'name2', 'city', 'zip', 'phone',
-                             'gets_invoice', 'has_stock', 'region'
-      customer[:category] = attr('kind')
-      customer[:invoice_address] = text_element('invoice_address')
-      customer[:initial_stock_date] = Date.new 2000
+      customer                      = @node.to_h.slice 'id', 'salut', 'name', 'name2', 'city', 'zip', 'phone', 'region'
+      customer[:has_stock]          = bool 'has_stock'
+      customer[:gets_invoice]       = bool 'gets_invoice'
+      customer[:tax]                = customer[:gets_invoice] ? false : bool('tax')
+      customer[:category]           = attr('kind')
+      customer[:invoice_address]    = text_element('invoice_address')
+      customer[:initial_stock_date] = date('last_stock_date') || Date.new(2000)
       customer
     end
 
@@ -64,7 +72,7 @@ module Importer
         discount: monetize('discount'),
         active:   true,
         in_stock: true,
-        initial_stock_balance: 0
+        initial_stock_balance: attr('stock_current').to_i
       }
     end
   end
@@ -74,7 +82,7 @@ module Importer
       {
         number:           attr('number_show'),
         seller_id:        Setting.seller_map[attr('seller')],
-        date:             Date.strptime(attr('date'), '%m/%d/%Y'),
+        date:             date('date'),
         invoice_number:   attr('invoice_number'),
         tax:              @tax,
         on_account:       bool('on_account'),
@@ -98,7 +106,7 @@ module Importer
     def to_h
       {
         number:           attr('number'),
-        date:             Date.strptime(attr('date'), '%m/%d/%Y'),
+        date:             date('date'),
         tax:              @tax,
         printed:          (attr('printed').to_i > 0),
         address:          text_element('address'),
@@ -134,7 +142,7 @@ module Importer
     log_level = ActiveRecord::Base.logger.level
     ActiveRecord::Base.logger.level = 1
 
-    reset Stock, Invoice, Delivery, Price, Customer, Product, Seller if with_delete
+    reset Invoice, Delivery, Price, Customer, Product, Seller if with_delete
 
     time = Benchmark.measure do
       import_xml from_year
@@ -166,12 +174,13 @@ module Importer
           customer_node.prices.each     { |price|    create_price    customer, price }
           customer_node.deliveries.each { |delivery| create_delivery customer, delivery }
           customer_node.invoices.each   { |invoice|  create_invoice  customer, invoice }
+          print '.'
         end
       end
     end
-    puts time.real
+    puts '', time.real
 
-    Customer.where(gets_invoice: true).update_all tax: false
+    # Customer.where(gets_invoice: true).update_all tax: false
 
     Setting.customer_categories!
 
