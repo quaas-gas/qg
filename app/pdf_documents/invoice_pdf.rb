@@ -165,7 +165,7 @@ class InvoicePdf < ApplicationDocument
   ### Stock Overview ###############################################################################
 
   def write_stock_overview
-    start_new_page :layout => :landscape
+    start_new_page layout: :landscape
     height = @margin_top / 2
     bounding_box [0, bounds.top + height], width: bounds.right, height: height do
       text company.name, @header_text_options
@@ -206,7 +206,7 @@ class InvoicePdf < ApplicationDocument
   end
 
   def stock_row(label, date)
-    stock = customer.stock_at date
+    stock = Stock.new customer, date
     [[label, ldate(date)] + products_in_stock.map { |product| stock[product.number] }]
   end
 
