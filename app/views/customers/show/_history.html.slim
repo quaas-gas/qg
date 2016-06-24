@@ -1,4 +1,11 @@
-h3 Verlauf
+h3
+  |  Verlauf der letzten
+  form.filter-months.form-inline action=url_for(@customer)
+    select.form-control name="months"
+      - 1.upto(24) do |i|
+        - month = i * 3
+        option selected=(params[:months].to_i == month ) value=month = month
+  |  Monate
 
 table.table.table-condensed.table-hover.table-striped.table-clickable
   thead
@@ -10,6 +17,13 @@ table.table.table-condensed.table-hover.table-striped.table-clickable
         th.price = product.number
       th
   tbody
-    - @customer.history(5).each do |history_item|
+    - @customer.history(params[:months].to_i).each do |history_item|
       - type = history_item.class.name.underscore.to_sym
       = render "customers/show/#{type}_row", type => history_item
+
+sass:
+  form.filter-months
+    display: inline !important
+coffee:
+  $(document).on 'ready page:load', ->
+    $('select[name="months"]').change -> $('form.filter-months').submit()

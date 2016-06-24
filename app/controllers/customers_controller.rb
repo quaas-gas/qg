@@ -10,6 +10,7 @@ class CustomersController < ApplicationController
   end
 
   def show
+    params[:months] ||= 3
   end
 
   def new
