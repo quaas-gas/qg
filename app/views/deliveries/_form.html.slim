@@ -1,5 +1,13 @@
+.data data={ tax: @delivery.customer&.tax.to_s }
 .page-header
-  h2 = delivery_icon delivery_type_icon(@delivery, @delivery.on_account ? 'Lieferschein' :  'Quittung')
+  h2
+    => delivery_icon
+    span class=('hidden' unless @delivery.on_account)
+      = fa_icon 'list-alt'
+      |  Lieferschein
+    span class=('hidden' if @delivery.on_account)
+      = fa_icon 'eur'
+      |  Quittung
 
 = simple_form_for(@delivery) do |f|
   - if @delivery.errors.any?
@@ -36,7 +44,9 @@
             th.count-back leer
             th.count Anzahl / voll
             th.name Bezeichnung
-            th.unit-price.price Einzelpreis (Netto)
+            th.unit-price.price
+              |  Einzelpreis
+              =< @delivery.customer&.tax ? '(Brutto)' : '(Netto)'
             th.total-price-net.price Gesamt (Netto)
             th.total-price.price Gesamt (Brutto)
         tbody

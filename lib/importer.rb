@@ -44,7 +44,8 @@ module Importer
       customer                      = @node.to_h.slice 'id', 'salut', 'name', 'name2', 'street', 'city', 'zip', 'phone', 'region'
       customer[:has_stock]          = bool 'has_stock'
       customer[:gets_invoice]       = bool 'gets_invoice'
-      customer[:tax]                = customer[:gets_invoice] ? false : bool('tax')
+      # customer[:tax]                = customer[:gets_invoice] ? false : bool('tax')
+      customer[:tax]                = bool 'tax'
       customer[:category]           = attr('kind')
       customer[:invoice_address]    = text_element('invoice_address')
       customer[:initial_stock_date] = date('last_stock_date') || Date.new(2000)
