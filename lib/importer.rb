@@ -25,7 +25,7 @@ module Importer
     def monetize(field)
       val = attr(field) || 0
       m = Money.from_amount val.to_f, (@tax ? 'EU4TAX' : 'EU4NET')
-      m.exchange_to 'EU4NET'
+      # m.exchange_to 'EU4NET'
     end
 
     def bool(field)
@@ -41,7 +41,7 @@ module Importer
 
   class CustomerNode < XmlNode
     def to_h
-      customer                      = @node.to_h.slice 'id', 'salut', 'name', 'name2', 'city', 'zip', 'phone', 'region'
+      customer                      = @node.to_h.slice 'id', 'salut', 'name', 'name2', 'street', 'city', 'zip', 'phone', 'region'
       customer[:has_stock]          = bool 'has_stock'
       customer[:gets_invoice]       = bool 'gets_invoice'
       customer[:tax]                = customer[:gets_invoice] ? false : bool('tax')
