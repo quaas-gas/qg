@@ -8,6 +8,7 @@ class Price < ActiveRecord::Base
   monetize :discount_cents, with_model_currency: :discount_currency
 
   def per_content
+    return nil if product.content == 0
     price.exchange_to('EU4NET') / product.content
   end
 
