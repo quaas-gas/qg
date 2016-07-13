@@ -4,36 +4,31 @@
   nav.navbar.navbar-inverse.navbar-fixed-top
     .container
       .navbar-header
-        button.navbar-toggle[type="button" data-toggle="collapse" data-target=".navbar-collapse"]
+        button.navbar-toggle[type='button' data-toggle='collapse' data-target='.navbar-collapse']
           span.sr-only Toggle navigation
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        = link_to 'Quaas-Gas', root_path, class: 'navbar-brand'
+        = link_to Company.current.name, root_path, class: 'navbar-brand'
       .collapse.navbar-collapse
         ul.nav.navbar-nav
-          li class=('active' if params[:controller] == 'customers')
-            = link_to customers_icon( Customer.model_name.human(count: 2)), customers_url
-          li class=('active' if params[:controller] == 'deliveries')
-            = link_to delivery_icon(Delivery.model_name.human(count: 2)), deliveries_url
-          li class=('active' if params[:controller] == 'invoices')
-            = link_to invoice_icon(Invoice.model_name.human(count: 2)), invoices_url
-          li class=('active' if params[:controller] == 'products')
-            = link_to Product.model_name.human(count: 2), products_url
-          li class=('active' if params[:controller] == 'sellers')
-            = link_to Seller.model_name.human(count: 2), sellers_url
-
+          li class=('active' if controller_name == 'customers')
+            = link_to customers_title, customers_url
+          li class=('active' if controller_name == 'deliveries')
+            = link_to deliveries_title, deliveries_url
+          li class=('active' if controller_name == 'invoices')
+            = link_to invoices_title, invoices_url
+          = navbar_dropdown 'Stammdaten', active: controller_name.in?(%w(products sellers)) do
+            li class=('active' if controller_name == 'products')
+              = link_to title_for_model(Product), products_url
+            li class=('active' if controller_name == 'sellers')
+              = link_to title_for_model(Seller), sellers_url
 
         ul.nav.navbar-nav.navbar-right
           li
             form.navbar-form.navbar-right role="search" action=search_url
               .form-group
                 input.form-control type="text" placeholder="Suche" name="q" value=@query autofocus=(params[:controller] == 'search')
-          li.dropdown
-            a.dropdown-toggle@button href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
-              |  #{current_user.username} <span class="caret"></span>
-            ul.dropdown-menu
-              /li = link_to 'Profil', current_user, title: current_user.name
-              li = link_to 'Passwort ändern', edit_user_registration_url(current_user.username)
-              li = link_to 'Abmelden', destroy_user_session_path, method: 'delete', title: current_user.username
-
+          = navbar_dropdown current_user.username do
+            li = link_to 'Passwort ändern', edit_user_registration_url(current_user.username)
+            li = link_to 'Abmelden', destroy_user_session_path, method: 'delete', title: current_user.username
