@@ -4,8 +4,9 @@ class Price < ActiveRecord::Base
 
   scope :in_stock, -> { where in_stock: true }
 
-  monetize :price_cents, with_model_currency: :price_currency
-  monetize :discount_cents, with_model_currency: :discount_currency
+  register_currency :eu4net
+  monetize :price_cents
+  monetize :discount_cents
 
   def per_content
     return nil if product.content == 0

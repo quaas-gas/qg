@@ -24,7 +24,7 @@ div
         th Artikel
         /th = Delivery.human_attribute_name(:invoice_number)
         /th = Delivery.human_attribute_name(:tax)
-        th Gesamt
+        th colspan=2 Gesamt
 
         /th
     tbody
@@ -39,10 +39,12 @@ div
           /td = ldate delivery.date
           td = delivery.seller&.name
           td = delivery.items.map { |i| "#{i.count} x #{i.product&.number || i.name }" }.join('<br>').html_safe
-          td.price = display_price total_price
+          td.price = nontax_price total_price
+          td.price = tax_price total_price
           /td
             pre = JSON.pretty_generate(delivery.others)
     tfoot
       tr
         th.price colspan=5 Summe
-        th.price = display_price sum
+        th.price = nontax_price sum
+        th.price = tax_price sum

@@ -6,8 +6,8 @@ section
         tr
           th = Price.human_attribute_name :product
           th = Price.human_attribute_name :active
-          th.price = Price.human_attribute_name :price
-          th.price = Price.human_attribute_name :discount
+          th.price Nettopreis
+          th.price Nettoprovision
           th
       tbody
         = f.simple_fields_for :prices do |price_form|

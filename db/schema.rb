@@ -72,7 +72,7 @@ ActiveRecord::Schema.define(version: 20160622003828) do
     t.integer  "count"
     t.integer  "count_back"
     t.integer  "unit_price_cents",    default: 0,        null: false
-    t.string   "unit_price_currency", default: "EU4TAX", null: false
+    t.string   "unit_price_currency", default: "EU4NET", null: false
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.jsonb    "others"
@@ -87,7 +87,7 @@ ActiveRecord::Schema.define(version: 20160622003828) do
     t.integer  "count"
     t.string   "name",                                   null: false
     t.integer  "unit_price_cents",    default: 0,        null: false
-    t.string   "unit_price_currency", default: "EU4TAX", null: false
+    t.string   "unit_price_currency", default: "EU4NET", null: false
     t.jsonb    "others"
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
@@ -129,9 +129,9 @@ ActiveRecord::Schema.define(version: 20160622003828) do
     t.integer  "product_id"
     t.date     "valid_from"
     t.integer  "price_cents",           default: 0,        null: false
-    t.string   "price_currency",        default: "EU4TAX", null: false
+    t.string   "price_currency",        default: "EU4NET", null: false
     t.integer  "discount_cents",        default: 0,        null: false
-    t.string   "discount_currency",     default: "EU4TAX", null: false
+    t.string   "discount_currency",     default: "EU4NET", null: false
     t.jsonb    "others"
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
@@ -149,7 +149,7 @@ ActiveRecord::Schema.define(version: 20160622003828) do
     t.string   "size"
     t.float    "content",        default: 0.0
     t.integer  "price_cents",    default: 0,        null: false
-    t.string   "price_currency", default: "EU4TAX", null: false
+    t.string   "price_currency", default: "EU4NET", null: false
     t.jsonb    "others"
     t.datetime "created_at",                        null: false
     t.datetime "updated_at",                        null: false

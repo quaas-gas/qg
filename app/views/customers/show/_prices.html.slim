@@ -14,7 +14,7 @@ h4
         th
         th.price Netto
         th.price Brutto
-        th
+        th.price Netto/kg
     tbody class=(@customer.tax ? 'tax' : 'nontax')
       - @customer.prices.joins(:product).order('products.size').each do |price|
         tr data={ url: edit_customer_url(@customer, part: 'prices') }

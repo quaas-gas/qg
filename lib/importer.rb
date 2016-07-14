@@ -25,7 +25,7 @@ module Importer
     def monetize(field)
       val = attr(field) || 0
       m = Money.from_amount val.to_f, (@tax ? 'EU4TAX' : 'EU4NET')
-      # m.exchange_to 'EU4NET'
+      m.exchange_to 'EU4NET'
     end
 
     def bool(field)
@@ -98,7 +98,7 @@ module Importer
         product_id: Setting.product_map[attr('product_number')],
         count:      attr('count'),
         count_back: attr('count_back'),
-        unit_price: monetize(@tax ? 'unit_price_tax' : 'unit_price_net')
+        unit_price: Money.from_amount((attr('unit_price_net') || 0).to_f, 'EU4NET')
       }
     end
   end

@@ -4,7 +4,8 @@ class DeliveryItem < ActiveRecord::Base
 
   validates :unit_price, :count, presence: true
 
-  monetize :unit_price_cents, with_model_currency: :unit_price_currency
+  register_currency :eu4net
+  monetize :unit_price_cents
 
   def stock_diff
     return 0 unless product.in_stock

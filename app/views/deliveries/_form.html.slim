@@ -1,4 +1,3 @@
-.data data={ tax: @delivery.customer&.tax.to_s }
 .page-header
   h2
     => delivery_icon
@@ -10,6 +9,7 @@
       |  Quittung
 
 = simple_form_for(@delivery) do |f|
+  = f.input :tax, as: :hidden
   - if @delivery.errors.any?
     .alert.alert-danger.alert-dismissable@alert
       button.close type="button" data-dismiss="alert"
@@ -44,9 +44,9 @@
             th.count-back leer
             th.count Anzahl / voll
             th.name Bezeichnung
+            th.unit-price.price Einzelpreis (Netto)
             th.unit-price.price
-              |  Einzelpreis
-              =< @delivery.customer&.tax ? '(Brutto)' : '(Netto)'
+              |  (Brutto)
             th.total-price-net.price Gesamt (Netto)
             th.total-price.price Gesamt (Brutto)
         tbody
@@ -59,12 +59,14 @@
               td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
               td.price
+                p.unit-price = tax_price item_form.object.unit_price
+              td.price
                 p.total-price-net
               td.price
                 p.total-price
         tfoot
           tr
-            th.price colspan=5 Summe
+            th.price colspan=6 Summe
             th.price.total-price-net
             th.price.total-price
 

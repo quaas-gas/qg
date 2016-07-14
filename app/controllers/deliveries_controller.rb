@@ -74,7 +74,7 @@ class DeliveriesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def delivery_params
     params.require(:delivery)
-      .permit(:number, :customer_id, :date, :seller_id, :description, :on_account,
+      .permit(:number, :customer_id, :date, :seller_id, :description, :on_account, :tax,
               items_attributes: [:id, :product_id, :count, :count_back, :unit_price, :name])
   end
 
@@ -96,6 +96,7 @@ class DeliveriesController < ApplicationController
     customer             = Customer.includes(prices: :product).find params[:customer_id]
     @delivery.customer   = customer
     @delivery.on_account = customer.gets_invoice
+    @delivery.tax        = customer.tax
   end
 
   def prepare_items

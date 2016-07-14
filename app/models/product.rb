@@ -6,6 +6,7 @@ class Product < ActiveRecord::Base
 
   scope :in_stock, -> { where in_stock: true }
 
-  monetize :price_cents, with_model_currency: :price_currency
+  register_currency :eu4net
+  monetize :price_cents
 
 end

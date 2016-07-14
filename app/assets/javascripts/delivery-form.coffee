@@ -11,10 +11,9 @@ class window.DeliveryForm
 
     $('input:checkbox[name="delivery[on_account]"]').change @toggleHeader
 
-    @tax = $('.data').data('tax')
-
     @renderSums()
     $('.delivery_items_count input, .delivery_items_unit_price input').change @renderSums
+    $('.delivery_items_unit_price input').change @renderTaxUnitPrice
     $('.delivery_items_count_back input').change @setCount
 
     $('input[name="delivery[number]"]').change @checkNumber
@@ -32,16 +31,17 @@ class window.DeliveryForm
       count = tr.find('.delivery_items_count input').val()
       unitPrice = @parsePriceInput tr.find('.delivery_items_unit_price input').val()
       total = count * unitPrice
-      [total_net, total_tax] = @taxPrice(total)
-      tr.find('p.total-price-net').text @parsePriceOutput(total_net)
-      tr.find('p.total-price').text @parsePriceOutput(total_tax)
+      tr.find('p.total-price-net').text @parsePriceOutput(total)
+      tr.find('p.total-price').text @parsePriceOutput(total * 1.19)
       sum += total
 
-    [sum_net, sum_tax] = @taxPrice(sum)
-    $('table tfoot .total-price-net').text @parsePriceOutput(sum_net)
-    $('table tfoot .total-price').text @parsePriceOutput(sum_tax)
+    $('table tfoot .total-price-net').text @parsePriceOutput(sum)
+    $('table tfoot .total-price').text @parsePriceOutput(sum * 1.19)
 
-  taxPrice: (price) => if @tax then [price / 1.19, price] else [price, price * 1.19]
+  renderTaxUnitPrice: (event) =>
+    input = $(event.target)
+    val = @parsePriceInput input.val()
+    input.parents('tr').find('p.unit-price').text @parsePriceOutput(val * 1.19)
 
   setCount: (event) =>
     countBackInput = $(event.currentTarget)

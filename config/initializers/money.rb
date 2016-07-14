@@ -48,7 +48,7 @@ MoneyRails.configure do |config|
                              type: :string,
                              present: true,
                              null: false,
-                             default: 'EU4TAX'
+                             default: 'EU4NET'
                            }
 
   # Register a custom currency
@@ -66,7 +66,7 @@ MoneyRails.configure do |config|
   #   :decimal_mark        => ","
   # }
   config.register_currency = {
-    priority:            1,
+    priority:            2,
     iso_code:            'EU4TAX',
     name:                'Euro with subunit of 4 digits (with tax)',
     symbol:              '€',
@@ -78,7 +78,7 @@ MoneyRails.configure do |config|
     no_cents_if_whole:  false,
   }
   config.register_currency = {
-    priority:            2,
+    priority:            1,
     iso_code:            'EU4NET',
     name:                'Euro with subunit of 4 digits',
     symbol:              '€',
@@ -133,7 +133,7 @@ MoneyRails.configure do |config|
   config.add_rate 'EU4TAX', 'TAX', (1 / 0.19)
   config.add_rate 'EU4NET', 'TAX', 0.19
 
-  config.default_currency = :eu4tax
+  config.default_currency = :eu4net
   config.no_cents_if_whole = false
 
   # Set default money format globally.
