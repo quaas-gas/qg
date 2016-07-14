@@ -38,20 +38,24 @@ ul.list-inline.pull-right
               th = InvoiceItem.human_attribute_name :position
               th = InvoiceItem.human_attribute_name :count
               th = InvoiceItem.human_attribute_name :name
-              th.price = InvoiceItem.human_attribute_name :unit_price
-              th.price Gesamtpreis
+              th.price[colspan=2] = InvoiceItem.human_attribute_name :unit_price
+              th.price[colspan=2] Gesamtpreis
           tbody
             - @invoice.items.order(:position).each do |item|
               tr
                 td = item.position
                 td = item.count
                 td = link_to_if item.product_id.present?, item.name, item.product
-                td.price = display_price item.unit_price
-                td.price = display_price item.total_price
+                td.price = nontax_price item.unit_price
+                td.price = tax_price item.unit_price
+                td.price = nontax_price item.total_price
+                td.price = tax_price item.total_price
           tfoot
             tr
-              th.price colspan=4 Summe
-              th.price = display_price @invoice.total_price
+              th.price colspan=5 Summe
+              - total_price = @invoice.total_price
+              th.price = nontax_price total_price
+              th.price = tax_price total_price
 
       p = lines_for @invoice.post_message.split("\n")
 

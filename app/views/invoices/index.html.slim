@@ -18,11 +18,13 @@ div
         th = Invoice.human_attribute_name(:number)
         th = Invoice.human_attribute_name(:date)
         th = Invoice.human_attribute_name(:customer)
-        th Gesamt
+        th colspan=2 Gesamt
     tbody
       - @invoices.each do |invoice|
         tr data = {url: url_for(invoice)} class=(invoice.tax ? 'tax' : 'nontax')
+          - total_price = invoice.total_price
           td = invoice.number
           td = ldate invoice.date
           td = invoice.customer.name
-          td = display_price invoice.total_price
+          td = nontax_price total_price
+          td = tax_price total_price

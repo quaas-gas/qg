@@ -33,8 +33,8 @@
             th leer
             th Anzahl / voll
             th Bezeichnung
-            th.price Einzelpreis
-            th.price Gesamtpreis
+            th.price colspan=2 Einzelpreis
+            th.price colspan=2 Gesamtpreis
         tbody
           - @delivery.items.includes(:product).each do |item|
             tr
@@ -42,12 +42,15 @@
               td = item.count_back
               td = item.count
               td = item.name
-              td.price = display_price item.unit_price
-              td.price = display_price item.total_price
+              td.price = nontax_price item.unit_price
+              td.price = tax_price item.unit_price
+              td.price = nontax_price item.total_price
+              td.price = tax_price item.total_price
         tfoot
           tr
-            th.price colspan=5 Summe
-            th.price = display_price @delivery.total_price
+            th.price colspan=6 Summe
+            th.price = nontax_price @delivery.total_price
+            th.price = tax_price @delivery.total_price
       p = @delivery.description
     .col-md-3
       = render 'customer_info', customer: @delivery.customer
