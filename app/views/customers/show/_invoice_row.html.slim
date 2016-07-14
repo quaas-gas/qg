@@ -6,4 +6,5 @@ tr.invoice data={ url: url_for(invoice) } class=(invoice.tax ? 'tax' : 'nontax')
     td.price
       - if (item = invoice.items.to_a.find { |i| i.product_id == product.id })
         = item.count
-  td.price = display_price invoice.total_price
+  td.price = nontax_price invoice.total_price
+  td.price = tax_price invoice.total_price

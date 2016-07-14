@@ -22,7 +22,7 @@ h4
           td
             => delivery_icon if price.active
             = stock_icon if price.in_stock
-          td.price = nontax_price price.price
+          td.price = price.price
           td.price = tax_price price.price
           td.price
             => price.per_content

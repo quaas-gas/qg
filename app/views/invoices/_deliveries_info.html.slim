@@ -4,16 +4,17 @@ table.table.table-striped.table-hover.table-bordered.table-condensed
   thead
     tr
       th LSN
-      th Datum
+      th colspan=2 Datum
       /th.price Gesamtpreis
   tbody
     - deliveries.each do |delivery|
       - sum += delivery.total_price
       tr
         td = link_to delivery.number, delivery
-        td = ldate delivery.date
+        td colspan=2 = ldate delivery.date
         /td.price = display_price delivery.total_price
   tfoot
     tr class=(tax ? 'tax' : 'nontax')
       th.price Summe
-      th.price = display_price sum
+      th.price = nontax_price sum
+      th.price = tax_price sum

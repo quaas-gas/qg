@@ -10,4 +10,5 @@ tr.delivery data={ url: url_for(delivery) } class=(delivery.tax ? 'tax' : 'nonta
         = [item.count_back, item.count, stock_diff].join ' | '
     - else
       td
-  td.price = display_price delivery.total_price
+  td.price = nontax_price delivery.total_price
+  td.price = tax_price delivery.total_price

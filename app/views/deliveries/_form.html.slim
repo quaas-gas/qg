@@ -57,6 +57,7 @@
                 - if item_form.object.product.present? || @delivery.customer.blank?
                   = item_form.association :product, collection: Product.order(:number),
                     label: false, label_method: :number, input_html: { tabindex: 1000, disabled: true }
+                  = item_form.input :product_id, as: :hidden
                 - else
                   = item_form.association :product, collection: Product.order(:number).where.not(id: @delivery.customer.prices.where(active: true).select(:product_id)),
                     label: false, label_method: :number, input_html: { tabindex: 1000 }

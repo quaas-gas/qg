@@ -10,12 +10,10 @@ h3
 table.table.table-condensed.table-hover.table-striped.table-clickable
   thead
     tr
-      th
-      th
-      th
+      th colspan=3
       - @customer.stock_products.each do |product|
         th.price = product.number
-      th
+      th colspan=2
   tbody
     - @customer.history(params[:months].to_i).each do |history_item|
       - type = history_item.class.name.underscore.to_sym

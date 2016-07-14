@@ -26,5 +26,5 @@ div
           td = invoice.number
           td = ldate invoice.date
           td = invoice.customer.name
-          td = nontax_price total_price
-          td = tax_price total_price
+          td.price = nontax_price total_price
+          td.price = tax_price total_price
