@@ -7,6 +7,7 @@ section
           th = Price.human_attribute_name :product
           th = Price.human_attribute_name :active
           th.price Nettopreis
+          th.price Bruttopreis
           th.price Nettoprovision
           th
       tbody
@@ -23,6 +24,7 @@ section
                 /p = price_form.object.product.number
             td = price_form.input :active, label: false
             td.price = price_form.input :price, label: false
+            td.price.tax = tax_price price_form.object.price
             td.price = price_form.input :discount, label: false
             td.delete-price
               - unless price.new_record?
@@ -34,9 +36,17 @@ section
       = f.submit t(:save), class: 'btn btn-primary'
 
 coffee:
+  parsePriceInput  = (val) -> val.replace(',', '.')
+  parsePriceOutput = (val) -> val.toFixed(2).toString().replace('.', ',')
+
   $(document).on 'ready page:load', ->
     $('td.delete-price a').click (event) =>
       event.preventDefault()
       row = $(event.currentTarget).parents('tr')
       row.find('td.delete-price input[type=hidden]').attr('value', '1')
       row.fadeOut(1000)
+
+    $('.customer_prices_price input').keyup (event) =>
+      input = $(event.target)
+      val = parsePriceInput(input.val())
+      input.parents('tr').find('td.price.tax').text parsePriceOutput(val * 1.19)
