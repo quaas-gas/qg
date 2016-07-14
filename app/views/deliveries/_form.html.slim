@@ -1,4 +1,4 @@
-.data data={ customer_price_url: customer_price_url(@delivery.customer, format: :json) }
+.data data={ customer_price_url: @delivery.customer.present? ? customer_price_url(@delivery.customer, format: :json) : '' }
 .page-header
   h2
     => delivery_icon
@@ -54,7 +54,7 @@
           = f.simple_fields_for :items do |item_form|
             tr
               td
-                - if item_form.object.product.present?
+                - if item_form.object.product.present? || @delivery.customer.blank?
                   = item_form.association :product, collection: Product.order(:number),
                     label: false, label_method: :number, input_html: { tabindex: 1000, disabled: true }
                 - else
