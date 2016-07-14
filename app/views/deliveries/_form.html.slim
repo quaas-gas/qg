@@ -1,3 +1,4 @@
+.data data={ customer_price_url: customer_price_url(@delivery.customer, format: :json) }
 .page-header
   h2
     => delivery_icon
@@ -52,9 +53,14 @@
         tbody
           = f.simple_fields_for :items do |item_form|
             tr
-              td = item_form.association :product, collection: Product.order(:number),
-                  label: false, label_method: :number, input_html: { tabindex: 1000 }
-              td = item_form.input :count_back, label: false if item_form.object.product&.in_stock
+              td
+                - if item_form.object.product.present?
+                  = item_form.association :product, collection: Product.order(:number),
+                    label: false, label_method: :number, input_html: { tabindex: 1000, disabled: true }
+                - else
+                  = item_form.association :product, collection: Product.order(:number).where.not(id: @delivery.customer.prices.where(active: true).select(:product_id)),
+                    label: false, label_method: :number, input_html: { tabindex: 1000 }
+              td = item_form.input :count_back, label: false
               td = item_form.input :count, label: false
               td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }

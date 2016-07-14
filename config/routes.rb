@@ -3,8 +3,8 @@ Rails.application.routes.draw do
 
   get 'search', to: 'search#index', as: :search
 
-  resources :customers, shallow: true do
-    resources :prices
+  resources :customers do
+    get :price
   end
   resources :deliveries
   resources :invoices

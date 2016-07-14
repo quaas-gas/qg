@@ -19,6 +19,10 @@ class window.DeliveryForm
     $('input[name="delivery[number]"]').change @checkNumber
     @checkNumber()
 
+    @customerPriceUrl = $('.data').data('customerPriceUrl')
+
+    $('.delivery_items_product select').change @productChanged
+
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
   parsePriceInput: (val) -> val.replace(',', '.')
@@ -70,3 +74,10 @@ class window.DeliveryForm
         else
           inputWrapper.removeClass('has-warning')
 
+  productChanged: (event) =>
+    input = $(event.target)
+    product_id = input.val()
+    tr = input.parents('tr')
+    $.getJSON @customerPriceUrl + '?product_id=' + product_id, {}, (price) =>
+      tr.find('.delivery_items_name input').val price.name
+      tr.find('.delivery_items_unit_price input').val(price.price).change()

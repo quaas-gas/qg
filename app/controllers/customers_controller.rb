@@ -46,6 +46,17 @@ class CustomersController < ApplicationController
     redirect_to customers_url, notice: t(:destroyed, model: Customer.model_name.human)
   end
 
+  def price
+    customer = Customer.find params[:customer_id]
+    authorize customer
+    product_id = params[:product_id]
+    product = Product.find product_id
+    price = customer.prices.find_by(product_id: product_id)
+    json_price = { name: product.name, price: 0 }
+    json_price[:price] = price.price.to_s if price
+    render json: json_price
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.
