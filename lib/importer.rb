@@ -68,7 +68,7 @@ module Importer
   class PriceNode < XmlNode
     def to_h
       {
-        product_id: Setting.product_map[attr('product_number')],
+        product_id: Setting.product_map[attr('product_number')][:id],
         price:    monetize('price'),
         discount: monetize('discount'),
         active:   true,
@@ -94,8 +94,10 @@ module Importer
 
   class DeliveryItemNode < XmlNode
     def to_h
+      product = Setting.product_map[attr('product_number')]
       {
-        product_id: Setting.product_map[attr('product_number')],
+        product_id: product[:id],
+        name:       product[:name],
         count:      attr('count'),
         count_back: attr('count_back'),
         unit_price: Money.from_amount((attr('unit_price_net') || 0).to_f, 'EU4NET')
@@ -165,7 +167,7 @@ module Importer
     Setting.product_categories!
 
     Setting.seller_map  = Seller.all.map { |s| [s.short, s.id] }.to_h
-    Setting.product_map = Product.all.map { |p| [p.number, p.id] }.to_h
+    Setting.product_map = Product.all.map { |p| [p.number, { id: p.id, name: p.name }] }.to_h
 
     time = Benchmark.measure do
       PgSearch.disable_multisearch do
