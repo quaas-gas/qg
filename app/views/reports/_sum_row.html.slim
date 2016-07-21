@@ -1,0 +1,11 @@
+- if hash.is_a? Hash
+  tr class=css_class
+    th colspan=2 = label
+    - @report.products.each do |product|
+      th.price = hash[:products][product]
+    th
+    - @report.content_product_categories.each do |category|
+      th.content = number_to_human hash[:content][category]
+    th.content = number_to_human hash[:content][:total]
+    th.price = nontax_price hash[:total_price]
+    th.price = tax_price hash[:total_price]

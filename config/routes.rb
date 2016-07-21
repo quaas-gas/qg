@@ -10,6 +10,7 @@ Rails.application.routes.draw do
   resources :invoices
   resources :products
   resources :sellers, except: :show
+  resources :reports
 
   get 'dashboard' => 'dashboard#index'
   root to: 'dashboard#show'

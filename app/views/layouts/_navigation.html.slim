@@ -18,6 +18,10 @@
             = link_to deliveries_title, deliveries_url
           li class=('active' if controller_name == 'invoices')
             = link_to invoices_title, invoices_url
+          = navbar_dropdown 'Auswertungen' do
+            - Report.in_menu.all.each do |report|
+              li
+                = link_to report.name, report
           = navbar_dropdown 'Stammdaten', active: controller_name.in?(%w(products sellers)) do
             li class=('active' if controller_name == 'products')
               = link_to title_for_model(Product), products_url

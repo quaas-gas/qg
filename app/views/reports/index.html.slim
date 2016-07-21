@@ -1,0 +1,26 @@
+.page-header
+  = link_to reports_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_report_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @reports.count
+    = Report.model_name.human count: @reports.count
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Report.human_attribute_name(:name)
+        th = Report.human_attribute_name(:product_categories)
+        th = Report.human_attribute_name(:products)
+        th = Report.human_attribute_name(:in_menu)
+    tbody
+      - @reports.each do | report |
+        tr data = {url: url_for(report)}
+          td = report.name
+          td = report.product_categories
+          td = report.products
+          td = report.in_menu

@@ -15,4 +15,8 @@ class DeliveryItem < ActiveRecord::Base
   def total_price
     unit_price * (count || 0)
   end
+
+  def total_content
+    product.content * (count || 0)
+  end
 end

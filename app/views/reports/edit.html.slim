@@ -1,0 +1,6 @@
+.page-header
+  h2
+    => @report.name
+    small = Report.model_name.human
+
+= render 'form'
