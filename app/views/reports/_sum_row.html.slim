@@ -5,7 +5,7 @@
       th.price = hash[:products][product]
     th
     - @report.content_product_categories.each do |category|
-      th.content = number_to_human hash[:content][category]
-    th.content = number_to_human hash[:content][:total]
+      th.content = hash[:content][category]
+    th.content = hash[:content][:total]
     th.price = nontax_price hash[:total_price]
     th.price = tax_price hash[:total_price]

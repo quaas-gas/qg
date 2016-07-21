@@ -32,9 +32,6 @@ table.table.table-condensed.table-striped.table-hover.table-clickable
           h3 = ldate date, format: '%a %d.%m.%Y'
     tbody
       - date_hash[:on_account].each do |on_account, on_account_hash|
-        /tr
-          th colspan=(7 + @report.products.size + @report.content_product_categories.size)
-            = on_account ? 'auf Rechnung' : 'Bareinnahmen'
         tr.header-row
           th = on_account ? 'Lieferschein' : 'Quittung'
           th Kunde
@@ -55,12 +52,10 @@ table.table.table-condensed.table-striped.table-hover.table-clickable
               td.price = delivery[:products][product]
             td = delivery[:other_products].map { |i| "#{i[:count]} x #{i[:name] }" }.join('<br>').html_safe
             - @report.content_product_categories.each do |category|
-              td.content = number_to_human delivery[:content][category]
-            th.content = number_to_human delivery[:content][:total]
+              td.content = delivery[:content][category] ? delivery[:content][category].round(0) : ''
+            th.content = delivery[:content][:total].round(0)
             td.price = nontax_price delivery[:total_price]
             td.price = tax_price delivery[:total_price]
-        /- label = on_account ? 'Summe auf Rechnung' : 'Summe Bareinnahmen'
-        /= render 'sum_row', label: label, hash: on_account_hash, css_class: 'on-account-sum-row'
       = render 'sum_row', label: 'Bareinnahmen', hash: date_hash[:on_account][false], css_class: 'on-account-sum-row'
       = render 'sum_row', label: 'auf Rechnung', hash: date_hash[:on_account][true], css_class: 'on-account-sum-row'
       = render 'sum_row', label: ldate(date), hash: date_hash, css_class: 'day-sum-row'
