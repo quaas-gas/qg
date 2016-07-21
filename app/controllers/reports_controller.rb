@@ -9,8 +9,10 @@ class ReportsController < ApplicationController
   end
 
   def show
-    start_date = Date.new 2016, 3, 1 # 18.days.ago.to_date
-    end_date   = Date.new 2016, 3, 31 # 10.days.ago.to_date
+    # start_date = Date.new 2016, 3, 1 # 18.days.ago.to_date
+    # end_date   = Date.new 2016, 3, 31 # 10.days.ago.to_date
+    start_date = 18.days.ago.to_date
+    end_date   = 10.days.ago.to_date
     @report.calculate! start_date, end_date
   end
 
