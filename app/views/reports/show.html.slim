@@ -12,16 +12,14 @@
     => @report.name
     /small = Report.model_name.human
 
-/.search-form
-  form.form-inline action=invoices_url
+.search-form
+  form.form-inline
     .form-group
-      select.form-control name="year"
-        - @filter.years.each do |year|
-          option selected=(year == @filter.year) value=year  = year
-    .form-group
-      select.form-control name="month"
-        - @filter.months.each do |month, name|
-          option selected=(month == @filter.month) value=month  = name
+      label.string.required.control-label> for="start-date" Vom
+      input#start-date.form-control.date> type="text" name="start_date" value=@start_date
+      label.string.required.control-label> for="end-date" bis
+      input#end-date.form-control.date> type="text" name="end_date" value=@end_date
+      button.btn.btn-info type="submit" Anzeigen
 
 
 table.table.table-condensed.table-striped.table-hover.table-clickable
@@ -63,11 +61,13 @@ table.table.table-condensed.table-striped.table-hover.table-clickable
     tr
       td colspan=(6 + @report.products.size + @report.content_product_categories.size)
     tr
+    = render 'sum_row', label: 'Barzahler', hash: @report.on_account_sums(false), css_class: 'total-sum-row'
+    = render 'sum_row', label: 'auf Rechnung', hash: @report.on_account_sums(true), css_class: 'total-sum-row'
     = render 'sum_row', label: 'Gesamtsumme', hash: @report.grouped_deliveries, css_class: 'total-sum-row'
 
 /coffee:
   $ ->
-    $('.search-form select').change -> $('.search-form form').submit()
+    $('.search-form input').change -> $('.search-form form').submit()
 
 sass:
   tr

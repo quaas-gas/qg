@@ -71,16 +71,10 @@ class Report < ActiveRecord::Base
   end
 
   def delivery_hash_for(delivery)
-    delivery_hash = {
-      id:          delivery.id,
-      number:      delivery.number,
-      customer:    delivery.customer.name,
-      tax:         delivery.tax,
-      total_price: delivery.total_price
-    }
-    products_hash  = delivery_hash[:products] = {}
-    other_products = delivery_hash[:other_products] = []
-    content_hash   = delivery_hash[:content] = {}
+    total_price    = Money.new(0)
+    products_hash  = {}
+    other_products = []
+    content_hash   = {}
 
     delivery.items.each do |item|
       category = item.product&.category
@@ -94,30 +88,39 @@ class Report < ActiveRecord::Base
       if category.in?(content_product_categories)
         content_hash[category] = (content_hash[category] || 0) + item.total_content
       end
+      total_price += item.total_price
     end
     content_hash[:total] = content_hash.values.sum
 
-    delivery_hash
+    {
+      id:             delivery.id,
+      number:         delivery.number,
+      customer:       delivery.customer.name,
+      tax:            delivery.tax,
+      total_price:    total_price,
+      products:       products_hash,
+      other_products: other_products,
+      content:        content_hash
+    }
   end
 
   def calculate_sums(hash, listing)
-    hash[:products] = product_counts listing
-    hash[:content] = content_sums listing
-    hash[:total_price] = listing.map { |item| item[:total_price] || Money.new(0) }.sum
-  end
-
-  def product_counts(listing)
-    products.each_with_object({}) do |product, hash|
+    hash[:products] = products.each_with_object({}) do |product, hash|
       hash[product] = listing.map { |item| item[:products][product].to_i }.sum
     end
-  end
-
-  def content_sums(listing)
-    hash = content_product_categories.each_with_object({}) do |cat, hash|
+    hash[:content] = content_product_categories.each_with_object({}) do |cat, hash|
       hash[cat] = listing.map { |del| del[:content][cat].to_i }.sum
     end
-    hash[:total] = hash.values.sum
+    hash[:content][:total] = hash[:content].values.sum
+    hash[:total_price] = listing.map { |item| item[:total_price] || Money.new(0) }.sum
     hash
   end
 
+  def on_account_sums(on_account)
+    listing = @grouped_deliveries[:dates].values.flat_map do |date_hash|
+      on_accounts = date_hash[:on_account][on_account]
+      on_accounts ? on_accounts[:deliveries] : []
+    end
+    calculate_sums({}, listing)
+  end
 end
