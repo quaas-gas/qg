@@ -2,7 +2,7 @@ class Report < ActiveRecord::Base
 
   validates :name, presence: true
 
-  attr_reader :grouped_deliveries
+  attr_reader :grouped_deliveries, :start_date, :end_date
 
   scope :in_menu, -> { where in_menu: true }
 
@@ -49,6 +49,8 @@ class Report < ActiveRecord::Base
   # }
 
   def calculate!(start_date, end_date)
+    @start_date = start_date
+    @end_date = end_date
     @grouped_deliveries = {}
     dates_hash = @grouped_deliveries[:dates] = {}
 

@@ -18,6 +18,14 @@ class ApplicationDocument < Prawn::Document
     money.exchange_to(currency).format
   end
 
+  def nontax_price(money)
+    money.exchange_to('EU4NET').exchange_to('EURNET').format
+  end
+
+  def tax_price(money)
+    money.exchange_to('EU4TAX').exchange_to('EURTAX').format
+  end
+
   def t(*attrs)
     I18n.t *attrs
   end

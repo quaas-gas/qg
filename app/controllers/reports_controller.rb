@@ -12,6 +12,14 @@ class ReportsController < ApplicationController
     @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_month
     @end_date   = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
     @report.calculate! @start_date, @end_date
+
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = ReportPdf.new(@report)
+        send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+      end
+    end
   end
 
   def new

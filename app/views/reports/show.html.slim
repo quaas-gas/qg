@@ -19,7 +19,8 @@
       input#start-date.form-control.date> type="text" name="start_date" value=@start_date
       label.string.required.control-label> for="end-date" bis
       input#end-date.form-control.date> type="text" name="end_date" value=@end_date
-      button.btn.btn-info type="submit" Anzeigen
+      button.btn.btn-info> type="submit" Anzeigen
+      = pdf_link report_url(@report, format: :pdf, start_date: @start_date, end_date: @end_date)
 
 
 table.table.table-condensed.table-striped.table-hover.table-clickable
