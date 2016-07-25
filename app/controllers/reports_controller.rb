@@ -64,6 +64,10 @@ class ReportsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def report_params
-    params.require(:report).permit(:name, :product_categories, :products, :in_menu)
+    p = params.require(:report).permit(:name, :product_categories, :content_product_categories, :products, :in_menu)
+    %i(products product_categories content_product_categories).each do |listing|
+      p[listing] = p[listing].split("\n").map(&:chomp)
+    end
+    p
   end
 end
