@@ -1,0 +1,12 @@
+= simple_form_for(@statistic) do |f|
+  = f.error_notification
+
+  .form-inputs
+    = f.input :name
+    = f.input :time_range
+    = f.input :grouping
+    = f.input :filter
+    = f.input :sums_of
+
+  .form-actions
+    = f.button :submit

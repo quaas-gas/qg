@@ -1,0 +1,28 @@
+.page-header
+  = link_to statistics_path(format: :csv), id: 'export-csv-button', class: 'btn btn-default' do
+    span.glyphicon.glyphicon-export
+    =< t(:export)
+  = link_to new_statistic_path, class: 'btn btn-primary' do 
+    span.glyphicon.glyphicon-plus
+    =< t(:new)
+  h2
+    => @statistics.count
+    = Statistic.model_name.human count: @statistics.count
+
+.table-responsive
+  table.table.table-striped.table-bordered.table-hover.table-clickable
+    thead
+      tr
+        th = Statistic.human_attribute_name(:name)
+        th = Statistic.human_attribute_name(:time_range)
+        th = Statistic.human_attribute_name(:grouping)
+        th = Statistic.human_attribute_name(:filter)
+        th = Statistic.human_attribute_name(:sums_of)
+    tbody
+      - @statistics.each do | statistic |
+        tr data = {url: url_for(statistic)}
+          td = statistic.name
+          td = statistic.time_range
+          td = statistic.grouping
+          td = statistic.filter
+          td = statistic.sums_of

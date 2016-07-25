@@ -1,0 +1,31 @@
+.page-header
+  = link_to statistics_path, class: 'btn btn-default' do 
+    span.glyphicon.glyphicon-list-alt
+    =< t(:list)
+  = link_to edit_statistic_path(@statistic), class: 'btn btn-primary' do
+    span.glyphicon.glyphicon-pencil
+    =< t(:edit)
+  => link_to @statistic, method: :delete, data: { confirm: t(:confirm_delete, model: Statistic.model_name.human) }, class: 'btn btn-danger' do
+    span.glyphicon.glyphicon-remove
+    =< t(:delete)
+  h2
+    => @statistic.name
+    small = Statistic.model_name.human
+
+.row
+  .col-md-6 = panel_box title: Statistic.model_name.human do
+    .row
+      label.col-md-4 => Statistic.human_attribute_name(:name)
+      .col-md-8 = @statistic.name
+    .row
+      label.col-md-4 => Statistic.human_attribute_name(:time_range)
+      .col-md-8 = @statistic.time_range
+    .row
+      label.col-md-4 => Statistic.human_attribute_name(:grouping)
+      .col-md-8 = @statistic.grouping
+    .row
+      label.col-md-4 => Statistic.human_attribute_name(:filter)
+      .col-md-8 = @statistic.filter
+    .row
+      label.col-md-4 => Statistic.human_attribute_name(:sums_of)
+      .col-md-8 = @statistic.sums_of
