@@ -192,12 +192,12 @@ ActiveRecord::Schema.define(version: 20160725223234) do
 
   create_table "statistics", force: :cascade do |t|
     t.string   "name"
-    t.jsonb    "time_range"
-    t.jsonb    "grouping"
-    t.jsonb    "filter"
+    t.jsonb    "time_range", default: {}
+    t.jsonb    "grouping",   default: {}
+    t.jsonb    "filter",     default: {}
     t.string   "sums_of"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "users", force: :cascade do |t|
