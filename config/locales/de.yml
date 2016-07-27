@@ -73,9 +73,9 @@ de:
       customer_category: Kundenkategorie
       product_category: Artikelkategorie
     sum:
-      content: kg
-      net: Netto
-      tax: Brutto
+      content: Inhalt
+      net: Nettoumsatz
+      tax: Bruttoumsatz
     time_range:
       this_week: aktuelle Woche
       last_week: letzte Woche

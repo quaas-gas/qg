@@ -15,19 +15,25 @@
 .row
   .col-md-3
     label #{t('statistic.grouping.' + @statistic.grouping_y)} -> #{t('statistic.grouping.' + @statistic.grouping_x)}
-  .col-md-2
-    label => t('statistic.time_range.' + @statistic.time_range['relative'])
+  .col-md-3
+    label
+      => t('statistic.time_range.' + @statistic.time_range['relative'])
+      small> #{ldate @statistic.start_date} - #{ldate @statistic.end_date}
   .col-md-1
     label => t('statistic.sum.' + @statistic.sums_of)
-  .col-md-6
+.row
+  .col-md-12
     label> Filter:
-    - @statistic.regions.each do |filter|
-      span.label.label-info> = filter
-    - @statistic.customer_categories.each do |filter|
-      span.label.label-warning> = filter
-    - @statistic.product_categories.each do |filter|
-      span.label.label-primary> = filter
-
+    - if @statistic.regions.any?
+      - @statistic.regions.each do |filter|
+        span.label.label-info> = filter
+    - if @statistic.customer_categories.any?
+      - @statistic.customer_categories.each do |filter|
+        span.label.label-warning> = filter
+    - if @statistic.product_categories.any?
+      - @statistic.product_categories.each do |filter|
+        span.label.label-primary> = filter
+- total_sums = @statistic.result.delete :total
 table.table.table-striped.table-hover
   thead
     tr
@@ -45,5 +51,5 @@ table.table.table-striped.table-hover
     tr
       th Summe #{t('statistic.sum.' + @statistic.sums_of)}
       - @statistic.labels_for(:x).each do |val|
-        td.price
-      th
+        th.price = total_sums[val]
+      th.price = total_sums[:total]

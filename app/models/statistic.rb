@@ -42,12 +42,16 @@ class Statistic < ActiveRecord::Base
     end
   end
 
-  def items_scope
+  def items_scope(only: nil)
     scope = DeliveryItem
       .joins(:product, delivery: :customer)
-      .group(group_option(:y), group_option(:x))
       .where('deliveries.date >= ?', start_date)
       .where('deliveries.date <= ?', end_date)
+    scope = if only
+      scope.group(group_option(only))
+    else
+      scope.group(group_option(:y), group_option(:x))
+    end
     if regions.any? || customer_categories.any?
       customer_scope = Customer
       customer_scope = customer_scope.where(region: regions) if regions.any?
@@ -67,9 +71,10 @@ class Statistic < ActiveRecord::Base
       @result[first] ||= {}
       @result[first][second] = cast_val value
     end
-    @result.each do |_, row|
-      row[:total] = row.values.sum
-    end
+    @result.each { |_, row| row[:total] = row.values.sum }
+    @result[:total]         = items_scope(only: :x).sum(sum_option)
+    @result[:total].each { |label, value| @result[:total][label] = cast_val value }
+    @result[:total][:total] = @result[:total].values.sum
     @result
   end
 
@@ -103,7 +108,7 @@ class Statistic < ActiveRecord::Base
       when 'this_month' then Date.current.beginning_of_month
       when 'last_month' then 1.month.ago.to_date.beginning_of_month
       when 'this_year'  then Date.current.beginning_of_year
-      when 'last_year'  then 1.month.ago.to_date.beginning_of_year
+      when 'last_year'  then 1.year.ago.to_date.beginning_of_year
     end
   end
 
@@ -114,7 +119,7 @@ class Statistic < ActiveRecord::Base
       when 'this_month' then Date.current.end_of_month
       when 'last_month' then 1.month.ago.to_date.end_of_month
       when 'this_year'  then Date.current.end_of_year
-      when 'last_month' then 1.month.ago.to_date.end_of_year
+      when 'last_year'  then 1.year.ago.to_date.end_of_year
     end
   end
 
