@@ -13,19 +13,37 @@
     small = Statistic.model_name.human
 
 .row
-  .col-md-6 = panel_box title: Statistic.model_name.human do
-    .row
-      label.col-md-4 => Statistic.human_attribute_name(:name)
-      .col-md-8 = @statistic.name
-    .row
-      label.col-md-4 => Statistic.human_attribute_name(:time_range)
-      .col-md-8 = @statistic.time_range
-    .row
-      label.col-md-4 => Statistic.human_attribute_name(:grouping)
-      .col-md-8 = @statistic.grouping
-    .row
-      label.col-md-4 => Statistic.human_attribute_name(:filter)
-      .col-md-8 = @statistic.filter
-    .row
-      label.col-md-4 => Statistic.human_attribute_name(:sums_of)
-      .col-md-8 = @statistic.sums_of
+  .col-md-3
+    label #{t('statistic.grouping.' + @statistic.grouping_y)} -> #{t('statistic.grouping.' + @statistic.grouping_x)}
+  .col-md-2
+    label => t('statistic.time_range.' + @statistic.time_range['relative'])
+  .col-md-1
+    label => t('statistic.sum.' + @statistic.sums_of)
+  .col-md-6
+    label> Filter:
+    - @statistic.regions.each do |filter|
+      span.label.label-info> = filter
+    - @statistic.customer_categories.each do |filter|
+      span.label.label-warning> = filter
+    - @statistic.product_categories.each do |filter|
+      span.label.label-primary> = filter
+
+table.table.table-striped.table-hover
+  thead
+    tr
+      th
+      - @statistic.labels_for(:x).each do |val|
+        th.price = val
+      th.price Summe #{t('statistic.sum.' + @statistic.sums_of)}
+  tbody
+    - @statistic.result.each do |label, row|
+      tr
+        th = label
+        - @statistic.labels_for(:x).each do |x|
+          td.price = row[x]
+        th.price = row[:total]
+    tr
+      th Summe #{t('statistic.sum.' + @statistic.sums_of)}
+      - @statistic.labels_for(:x).each do |val|
+        td.price
+      th

@@ -9,6 +9,7 @@ class StatisticsController < ApplicationController
   end
 
   def show
+    @statistic.calculate!
   end
 
   def new
@@ -53,6 +54,19 @@ class StatisticsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def statistic_params
-    params.require(:statistic).permit(:name, :time_range, :grouping, :filter, :sums_of)
+    p = params.require(:statistic).permit(:name, :time_range_relative, :grouping_x, :grouping_y,
+                                          :sums_of, regions: [], customer_categories: [],
+                                          product_categories: [])
+    p[:time_range] = { relative: p.delete(:time_range_relative) }
+
+    p[:grouping] = {}
+    p[:grouping][:x] = p.delete :grouping_x
+    p[:grouping][:y] = p.delete :grouping_y
+
+    p[:filter] = {}
+    p[:filter][:regions]             = p.delete(:regions).reject(&:blank?)
+    p[:filter][:customer_categories] = p.delete(:customer_categories).reject(&:blank?)
+    p[:filter][:product_categories]  = p.delete(:product_categories).reject(&:blank?)
+    p
   end
 end

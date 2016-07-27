@@ -10,4 +10,8 @@ class Setting < RailsSettings::Base
   def self.customer_categories!
     self.customer_categories = Customer.uniq.pluck(:category).sort
   end
+
+  def self.customer_regions!
+    self.customer_regions = Customer.uniq.pluck(:region).sort
+  end
 end

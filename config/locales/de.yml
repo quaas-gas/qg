@@ -57,6 +57,9 @@ de:
       title: "Verkäufer %{id}"
     new:
       title: Neuen Verkäufer anlegen
+  statistics:
+    new:
+      title: Statistik
   delete: Löschen
   edit: Bearbeiten
   list: Liste
@@ -64,3 +67,19 @@ de:
   save: Speichern
   save_and_next: Speichern und Neu
   stock_invoice: Anlage zur Rechnung %{number} vom %{date}
+  statistic:
+    grouping:
+      region: Region
+      customer_category: Kundenkategorie
+      product_category: Artikelkategorie
+    sum:
+      content: kg
+      net: Netto
+      tax: Brutto
+    time_range:
+      this_week: aktuelle Woche
+      last_week: letzte Woche
+      this_month: aktueller Monat
+      last_month: letzter Monat
+      this_year: aktuelles Jahr
+      last_year: letztes Jahr

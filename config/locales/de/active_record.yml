@@ -43,6 +43,9 @@ de:
       seller:
         one: Verkäufer
         other: Verkäufer
+      statistic:
+        one: Statistik
+        other: Statistiken
     attributes:
       customer:
         archived: archiviert
@@ -102,6 +105,14 @@ de:
         last_name: Nachname
         mobile: Telefon
         short: Kürzel
+      statistic:
+        time_range: Zeitraum
+        regions: Regionen
+        customer_categories: Kundenkategorien
+        product_categories: Artikelkategorien
+        grouping_x: Spalten
+        grouping_y: Zeilen
+        sums_of: Summen von
       user:
         login: "Handle"
         email: E-Mail

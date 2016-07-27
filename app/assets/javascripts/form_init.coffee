@@ -17,5 +17,9 @@ $(document).on 'ready page:load', ->
 
   $('[autofocus]').focus()
 
-  $(".select2").select2
-    theme: "bootstrap"
+  $(".select2").each (i, input) ->
+    $input = $(input)
+    placeholder = $input.data().placeholder
+    $input.select2
+      theme: "bootstrap"
+      placeholder: placeholder
