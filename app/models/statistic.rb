@@ -1,7 +1,7 @@
 class Statistic < ActiveRecord::Base
   validates :name, presence: true
 
-  attr_reader :result
+  attr_reader :result, :y_sums
 
   TIME_RANGES = %w(this_week last_week this_month last_month this_year last_year)
   GROUPING    = %w(region customer_category product_category)
@@ -66,15 +66,18 @@ class Statistic < ActiveRecord::Base
 
   def calculate!
     @result = {}
+    @y_sums = {}
     sums = items_scope.sum(sum_option)
     sums.each do |(first, second), value|
       @result[first] ||= {}
       @result[first][second] = cast_val value
     end
-    @result.each { |_, row| row[:total] = row.values.sum }
-    @result[:total]         = items_scope(only: :x).sum(sum_option)
+    @result[:total] = items_scope(only: :x).sum(sum_option)
     @result[:total].each { |label, value| @result[:total][label] = cast_val value }
-    @result[:total][:total] = @result[:total].values.sum
+    @y_sums[:content] = items_scope(only: :y).sum('count * products.content')
+    @y_sums[:net]     = items_scope(only: :y).sum('count * unit_price_cents')
+    @y_sums[:content][:total] = @y_sums[:content].values.sum
+    @y_sums[:net][:total] = @y_sums[:net].values.sum
     @result
   end
 

@@ -11,12 +11,13 @@ class window.StatisticForm
 
   collectData: ->
     statistic:
-      time_range_relative: $('select[name="statistic[time_range_relative]"]').val()
-      grouping_x: $('select[name="statistic[grouping_x]"]').val()
-      grouping_y: $('select[name="statistic[grouping_y]"]').val()
-      regions: $('select[name="statistic[regions][]"]').val() || ['']
-      customer_categories: $('select[name="statistic[customer_categories][]"]').val() || ['']
-      product_categories: $('select[name="statistic[product_categories][]"]').val() || ['']
-      sums_of: $('select[name="statistic[sums_of]"]').val()
+      time_range_relative: @getSelect('time_range_relative')
+      grouping_x:          @getSelect('grouping_x')
+      grouping_y:          @getSelect('grouping_y')
+      regions:             @getMultiSelect('regions')
+      customer_categories: @getMultiSelect('customer_categories')
+      product_categories:  @getMultiSelect('product_categories')
+      sums_of:             @getSelect('sums_of')
 
-
+  getSelect: (name)      -> $('select[name="statistic[' + name + ']"]').val()
+  getMultiSelect: (name) -> $('select[name="statistic[' + name + '][]"]').val() || ['']

@@ -73,7 +73,7 @@ de:
       customer_category: Kundenkategorie
       product_category: Artikelkategorie
     sum:
-      content: Inhalt
+      content: Inhalt (kg)
       net: Nettoumsatz
       tax: Bruttoumsatz
     time_range:
