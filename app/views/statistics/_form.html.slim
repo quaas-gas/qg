@@ -19,9 +19,7 @@
     .col-md-3.col-md-offset-8 = f.input :name, label: false, placeholder: 'Name'
     .col-md-1 = f.submit t(:save), class: 'btn btn-primary'
 
-
-
-
+.preview
 
 coffee:
-  #$(document).on 'ready page:load', -> new StatisticForm()
+  $(document).on 'ready page:load', -> new StatisticForm()

@@ -25,6 +25,8 @@
             - Statistic.all.each do |stat|
               li
                 = link_to stat.name, stat
+            li
+              = link_to 'Neue Statistik', new_statistic_url
           = navbar_dropdown 'Stammdaten', active: controller_name.in?(%w(products sellers)) do
             li class=('active' if controller_name == 'products')
               = link_to title_for_model(Product), products_url

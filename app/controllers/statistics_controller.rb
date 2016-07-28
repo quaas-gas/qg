@@ -14,7 +14,8 @@ class StatisticsController < ApplicationController
 
   def new
     authorize Statistic
-    @statistic = Statistic.new
+    @statistic = Statistic.new time_range: { relative: 'this_week' },
+                               grouping: { x: 'product_category', y: 'customer_category' }
   end
 
   def edit
@@ -44,6 +45,12 @@ class StatisticsController < ApplicationController
     redirect_to statistics_url, notice: t(:destroyed, model: Statistic.model_name.human)
   end
 
+  def preview
+    authorize Statistic
+    @statistic = Statistic.new statistic_params
+    @statistic.calculate!
+    render partial: 'table', layout: false
+  end
   private
 
   # Use callbacks to share common setup or constraints between actions.

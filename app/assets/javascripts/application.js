@@ -23,6 +23,7 @@
 //= require components
 //  require_tree .
 //= require delivery-form
+//= require statistic-form
 //= require form_init
 //= require table
 

@@ -33,23 +33,5 @@
     - if @statistic.product_categories.any?
       - @statistic.product_categories.each do |filter|
         span.label.label-primary> = filter
-- total_sums = @statistic.result.delete :total
-table.table.table-striped.table-hover
-  thead
-    tr
-      th
-      - @statistic.labels_for(:x).each do |val|
-        th.price = val
-      th.price Summe #{t('statistic.sum.' + @statistic.sums_of)}
-  tbody
-    - @statistic.result.each do |label, row|
-      tr
-        th = label
-        - @statistic.labels_for(:x).each do |x|
-          td.price = row[x]
-        th.price = row[:total]
-    tr
-      th Summe #{t('statistic.sum.' + @statistic.sums_of)}
-      - @statistic.labels_for(:x).each do |val|
-        th.price = total_sums[val]
-      th.price = total_sums[:total]
+
+= render 'table'

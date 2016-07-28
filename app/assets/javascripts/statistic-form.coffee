@@ -1,21 +1,22 @@
 class window.StatisticForm
   constructor: ->
-    newForm = $('form.new_statistic')
-#    timeRangeSelect = newForm.find('select[name="statistic[time_range]"]')
-#    groupingXSelect = newForm.find('select[name="statistic[grouping_x]"]')
-#    groupingYSelect = newForm.find('select[name="statistic[grouping_y]"]')
-#    filterRegionsSelect = newForm.find('select[name="statistic[filter_regions][]"]')
-    newForm.find('select').change @inputChanged
+    $('select').change @inputChanged
+    @inputChanged()
 
   inputChanged: (event) =>
-#    @collectData()
-    jQuery.ajax({
-      url: "test.html",
-      context: this
-    }).done ->
-      this
+    jQuery.ajax(
+      url: '/statistics/preview',
+      data: @collectData()
+    ).done (data) -> $('.preview').html data
 
-  parsePriceOutput: (val) -> val.toFixed(2).toString().replace('.', ',')
+  collectData: ->
+    statistic:
+      time_range_relative: $('select[name="statistic[time_range_relative]"]').val()
+      grouping_x: $('select[name="statistic[grouping_x]"]').val()
+      grouping_y: $('select[name="statistic[grouping_y]"]').val()
+      regions: $('select[name="statistic[regions][]"]').val() || ['']
+      customer_categories: $('select[name="statistic[customer_categories][]"]').val() || ['']
+      product_categories: $('select[name="statistic[product_categories][]"]').val() || ['']
+      sums_of: $('select[name="statistic[sums_of]"]').val()
 
-  renderResult: (result) ->
 
