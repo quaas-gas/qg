@@ -9,7 +9,7 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_month
+    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_week
     @end_date   = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
     @report.calculate! @start_date, @end_date
 

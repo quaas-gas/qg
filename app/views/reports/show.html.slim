@@ -19,7 +19,7 @@
       input#start-date.form-control.date> type="text" name="start_date" value=@start_date
       label.string.required.control-label> for="end-date" bis
       input#end-date.form-control.date> type="text" name="end_date" value=@end_date
-      button.btn.btn-info> type="submit" Anzeigen
+      /button.btn.btn-info> type="submit" Anzeigen
       = pdf_link report_url(@report, format: :pdf, start_date: @start_date, end_date: @end_date)
 
 
@@ -66,9 +66,9 @@ table.table.table-condensed.table-striped.table-hover.table-clickable
     = render 'sum_row', label: 'auf Rechnung', hash: @report.on_account_sums(true), css_class: 'total-sum-row'
     = render 'sum_row', label: 'Gesamtsumme', hash: @report.grouped_deliveries, css_class: 'total-sum-row'
 
-/coffee:
-  $ ->
-    $('.search-form input').change -> $('.search-form form').submit()
+coffee:
+  $(document).on 'ready page:load', ->
+    $('.search-form input').change( -> $('.search-form form').submit())
 
 sass:
   tr

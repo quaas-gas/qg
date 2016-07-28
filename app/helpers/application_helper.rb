@@ -56,12 +56,12 @@ module ApplicationHelper
 
   def tax_price(price)
     price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, price.exchange_to('EU4TAX').exchange_to('EURTAX'), class: 'tax', title: 'brutto')
+    content_tag(:span, number_with_delimiter(price.exchange_to('EU4TAX').exchange_to('EURTAX')), class: 'tax', title: 'brutto')
   end
 
   def nontax_price(price)
     price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, price.exchange_to('EU4NET').exchange_to('EURNET').to_s, class: 'nontax', title: 'netto')
+    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET').to_s), class: 'nontax', title: 'netto')
   end
 
   def list_link(url)

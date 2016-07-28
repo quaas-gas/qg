@@ -34,7 +34,7 @@ class ReportPdf < ApplicationDocument
       height = @margin_top / 2
       bounding_box [0, bounds.top + height], width: bounds.right, height: height do
 
-        text @report.name, size: 18
+        text @report.name, size: 16
         text "#{ldate @report.start_date} - #{ldate @report.end_date}", size: 12, style: :italic
         # stroke_bounds if @debug
       end
@@ -50,7 +50,7 @@ class ReportPdf < ApplicationDocument
     @report.grouped_deliveries[:dates].each do |date, date_hash|
 
       start_new_page unless date == first_day
-      text ldate(date, format: '%a %d.%m.%Y'), size: 14, style: :bold
+      text ldate(date, format: '%a %d.%m.%Y'), size: 12, style: :bold
 
       cash_hash = date_hash[:on_account][false]
       on_account_hash = date_hash[:on_account][true]
@@ -60,7 +60,7 @@ class ReportPdf < ApplicationDocument
       sum_rows += [-2, -3] if cash_hash && on_account_hash
 
 
-      font_size 10 do
+      font_size 9 do
         table deliveries_array(date_hash), deliveries_table_options do |t|
           header_rows.each do |row_number|
             t.row(row_number).style background_color: 'dddddd'
@@ -125,7 +125,7 @@ class ReportPdf < ApplicationDocument
       # header:        true,
       width:         bounds.right,
       column_widths: { 0 => 70, 1 => 170 },
-      cell_style:    { border_width: 0, padding: [4, 5] }
+      cell_style:    { border_width: 0, padding: [3, 3] }
     }
   end
 
