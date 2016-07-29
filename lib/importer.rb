@@ -236,7 +236,7 @@ module Importer
   def self.create_delivery(customer, delivery)
     customer.deliveries.create! delivery
   rescue ActiveRecord::RecordInvalid => e
-    puts "#{e.message}: LSN #{e.record.number}"
+    puts "#{e.message}: LSN #{e.record.number} #{e.record.date} #{e.record.customer.name}"
   end
 
   def self.create_invoice(customer, invoice)
