@@ -1,26 +1,26 @@
-- total_sums = @statistic.result.delete :total
+- total_sums = statistic.result.delete :total
 table.table.table-striped.table-hover
   thead
     tr
       th
-      - @statistic.labels_for(:x).each do |val|
+      - statistic.labels_for(:x).each do |val|
         th.price = val
       th.price = t('statistic.sum.content')
       th.price = t('statistic.sum.net')
       th.price = t('statistic.sum.tax')
   tbody
-    - @statistic.result.each do |label, row|
+    - statistic.result.each do |label, row|
       tr
         th = label
-        - @statistic.labels_for(:x).each do |x|
+        - statistic.labels_for(:x).each do |x|
           td.price = number_with_delimiter row[x]
-        th.price = number_with_delimiter @statistic.y_sums[:content][label]
-        th.price = nontax_price Money.new(@statistic.y_sums[:net][label])
-        th.price = tax_price Money.new(@statistic.y_sums[:net][label])
+        th.price = number_with_delimiter statistic.y_sums[:content][label]
+        th.price = nontax_price Money.new(statistic.y_sums[:net][label])
+        th.price = tax_price Money.new(statistic.y_sums[:net][label])
     tr
-      th Summe #{t('statistic.sum.' + @statistic.sums_of)}
-      - @statistic.labels_for(:x).each do |val|
+      th Summe #{t('statistic.sum.' + statistic.sums_of)}
+      - statistic.labels_for(:x).each do |val|
         th.price = number_with_delimiter total_sums[val]
-      th.price = number_with_delimiter @statistic.y_sums[:content][:total]
-      th.price = nontax_price Money.new(@statistic.y_sums[:net][:total])
-      th.price = tax_price Money.new(@statistic.y_sums[:net][:total])
+      th.price = number_with_delimiter statistic.y_sums[:content][:total]
+      th.price = nontax_price Money.new(statistic.y_sums[:net][:total])
+      th.price = tax_price Money.new(statistic.y_sums[:net][:total])

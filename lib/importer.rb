@@ -18,8 +18,9 @@ module Importer
       text
     end
 
-    def elements(name)
-      @node.elements.select { |el| el.name == name }
+    def elements(name, scope: nil)
+      base = scope ? @node.elements.find { |e| e.name == scope } : @node
+      base.elements.select { |el| el.name == name }
     end
 
     def monetize(field)
@@ -95,6 +96,7 @@ module Importer
   class DeliveryItemNode < XmlNode
     def to_h
       product = Setting.product_map[attr('product_number')]
+      puts "no product for '#{attr('product_number')}'" unless product
       {
         product_id: product[:id],
         name:       product[:name],
@@ -126,6 +128,36 @@ module Importer
     end
   end
 
+  class ReportNode < XmlNode
+    def to_h
+      {
+        name: attr('name'),
+        in_menu: bool('in_menu'),
+        products: elements('product').map(&:text),
+        product_categories: elements('product_category').map(&:text),
+        content_product_categories: elements('content_product_category').map(&:text)
+      }
+    end
+  end
+
+  class StatisticNode < XmlNode
+    def to_h
+      {
+        name: attr('name'),
+        sums_of: attr('sums_of'),
+        time_range: { relative: attr('time_range_relative') },
+        grouping: { x: attr('grouping_x'), y: attr('grouping_y') },
+        filter: {
+          regions: elements('region', scope: 'filter').map(&:text),
+          # regions: @node['filter'].elements.select { |el| el.name == name },
+          product_categories: elements('product_category', scope: 'filter').map(&:text),
+          # product_categories: @node.elements.find{|e| e.name == 'filter'}.elements.select {|e| e.name == 'product_category' }.map(&:text),
+          customer_categories: elements('customer_category', scope: 'filter').map(&:text)
+        }
+      }
+    end
+  end
+
   def self.xml_data(file_name, node_name = nil)
     node_name ||= file_name
     file_name = Rails.root.join('db', 'seeds', "#{file_name}.xml")
@@ -145,7 +177,7 @@ module Importer
     log_level = ActiveRecord::Base.logger.level
     ActiveRecord::Base.logger.level = 1
 
-    reset Invoice, Delivery, Price, Customer, Product, Seller if with_delete
+    reset Invoice, Delivery, Price, Customer, Product, Seller, Report, Statistic if with_delete
 
     time = Benchmark.measure do
       import_xml from_year
@@ -153,6 +185,7 @@ module Importer
       link_deliveries_to_invoices
       link_invoice_items_to_products
       rebuild_search_index
+      generate_reports_and_statstics
     end
     puts time.real
 
@@ -161,6 +194,9 @@ module Importer
 
   def self.import_xml(year)
     puts __method__
+
+    Report.create xml_data('reports', 'Report').map{ |node| ReportNode.new(node).to_h }
+    Statistic.create xml_data('statistics', 'Statistic').map{ |node| res = StatisticNode.new(node).to_h; puts res; res }
 
     Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
     Product.create! xml_data('products', 'Product').map(&:to_h)
@@ -241,6 +277,12 @@ module Importer
   def self.rebuild_search_index
     puts __method__
     [Customer, Delivery, Invoice].each { |model| PgSearch::Multisearch.rebuild model }
+    nil
+  end
+
+  def self.generate_reports_and_statstics
+    puts __method__
+    Report.create name: 'Gasbuch Propan', products:
     nil
   end
 

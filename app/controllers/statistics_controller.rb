@@ -49,8 +49,9 @@ class StatisticsController < ApplicationController
     authorize Statistic
     @statistic = Statistic.new statistic_params
     @statistic.calculate!
-    render partial: 'table', layout: false
+    render partial: 'table', layout: false, locals: { statistic: @statistic }
   end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

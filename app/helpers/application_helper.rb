@@ -61,7 +61,7 @@ module ApplicationHelper
 
   def nontax_price(price)
     price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET').to_s), class: 'nontax', title: 'netto')
+    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET')), class: 'nontax', title: 'netto')
   end
 
   def list_link(url)
