@@ -7,10 +7,7 @@ class InvoicesController < ApplicationController
     authorize Invoice
 
     @filter = InvoicesFilter.new(params)
-    @invoices = @filter.result
-      .where(customer: Customer.active)
-      .includes(:customer, :items)
-      .all
+    @invoices = @filter.result.includes(:customer, :items).all
   end
 
   def show
