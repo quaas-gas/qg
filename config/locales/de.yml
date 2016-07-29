@@ -75,6 +75,7 @@ de:
     sum:
       content: Inhalt (kg)
       net: Nettoumsatz
+      net_per_kg: Netto / kg
       tax: Bruttoumsatz
     time_range:
       this_week: aktuelle Woche
