@@ -98,8 +98,8 @@ module Importer
       product = Setting.product_map[attr('product_number')]
       puts "no product for '#{attr('product_number')}'" unless product
       {
-        product_id: product[:id],
-        name:       product[:name],
+        product_id: (product ? product[:id] : nil),
+        name:       (product ? product[:name] : ''),
         count:      attr('count'),
         count_back: attr('count_back'),
         unit_price: Money.from_amount((attr('unit_price_net') || 0).to_f, 'EU4NET')
