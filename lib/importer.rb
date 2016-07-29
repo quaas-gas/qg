@@ -43,6 +43,7 @@ module Importer
   class CustomerNode < XmlNode
     def to_h
       customer                      = @node.to_h.slice 'id', 'salut', 'name', 'name2', 'street', 'city', 'zip', 'phone', 'region'
+      customer[:archived]           = !bool('active')
       customer[:has_stock]          = bool 'has_stock'
       customer[:gets_invoice]       = bool 'gets_invoice'
       # customer[:tax]                = customer[:gets_invoice] ? false : bool('tax')
@@ -181,11 +182,10 @@ module Importer
 
     time = Benchmark.measure do
       import_xml from_year
-      deactivate_old_customers
+      # deactivate_old_customers
       link_deliveries_to_invoices
       link_invoice_items_to_products
       rebuild_search_index
-      generate_reports_and_statstics
     end
     puts time.real
 
@@ -245,12 +245,12 @@ module Importer
     puts "#{e.message}: RN #{e.record.number}"
   end
 
-  def self.deactivate_old_customers
-    print __method__, ' '
-    old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
-    Customer.where(id: old_customers).update_all(archived: true)
-    puts Customer.active.count
-  end
+  # def self.deactivate_old_customers
+  #   print __method__, ' '
+  #   old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
+  #   Customer.where(id: old_customers).update_all(archived: true)
+  #   puts Customer.active.count
+  # end
 
   def self.link_deliveries_to_invoices
     puts __method__
@@ -277,12 +277,6 @@ module Importer
   def self.rebuild_search_index
     puts __method__
     [Customer, Delivery, Invoice].each { |model| PgSearch::Multisearch.rebuild model }
-    nil
-  end
-
-  def self.generate_reports_and_statstics
-    puts __method__
-    Report.create name: 'Gasbuch Propan', products:
     nil
   end
 
