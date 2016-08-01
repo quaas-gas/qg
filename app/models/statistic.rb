@@ -4,7 +4,7 @@ class Statistic < ActiveRecord::Base
   attr_reader :result, :y_sums
 
   TIME_RANGES = %w(this_week last_week this_month last_month this_year last_year)
-  GROUPING    = %w(region customer_category product_category)
+  GROUPING    = %w(region customer_category product_category time)
   SUMS        = %w(content net tax)
 
   def time_range_relative
@@ -39,6 +39,8 @@ class Statistic < ActiveRecord::Base
       customer_categories.any? ? customer_categories : Setting.customer_categories
     when 'product_category'
       product_categories.any? ? product_categories : Setting.product_categories
+    when 'time'
+      (1..12).to_a
     end
   end
 
@@ -70,9 +72,13 @@ class Statistic < ActiveRecord::Base
     sums = items_scope.sum(sum_option)
     sums.each do |(first, second), value|
       @result[first] ||= {}
+      second = second.to_i if grouping_x == 'time' # grouping by month returns float as key
       @result[first][second] = cast_val value
     end
     @result[:total] = items_scope(only: :x).sum(sum_option)
+    if grouping_x == 'time' # grouping by month returns float as key
+      @result[:total].keys.each { |key| @result[:total][key.to_i] = @result[:total].delete key }
+    end
     @result[:total].each { |label, value| @result[:total][label] = cast_val value }
     @y_sums[:content] = items_scope(only: :y).sum('count * products.content')
     @y_sums[:net]     = items_scope(only: :y).sum('count * unit_price_cents')
@@ -94,6 +100,7 @@ class Statistic < ActiveRecord::Base
       when 'region' then 'customers.region'
       when 'customer_category' then 'customers.category'
       when 'product_category' then 'products.category'
+      when 'time' then 'extract(month from deliveries.date)'
     end
   end
 

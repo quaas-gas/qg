@@ -72,11 +72,12 @@ de:
       region: Region
       customer_category: Kundenkategorie
       product_category: Artikelkategorie
+      time: Zeit (Monate)
     sum:
       content: Inhalt (kg)
-      net: Nettoumsatz
+      net: Nettoumsatz (€)
       net_per_kg: Netto / kg
-      tax: Bruttoumsatz
+      tax: Bruttoumsatz (€)
     time_range:
       this_week: aktuelle Woche
       last_week: letzte Woche

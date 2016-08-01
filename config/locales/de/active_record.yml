@@ -106,7 +106,7 @@ de:
         mobile: Telefon
         short: Kürzel
       statistic:
-        time_range: Zeitraum
+        time_range_relative: Zeitraum
         regions: Regionen
         customer_categories: Kundenkategorien
         product_categories: Artikelkategorien
