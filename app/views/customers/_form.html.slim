@@ -12,7 +12,7 @@
         = f.input :salut, input_html: { autofocus: true }
         = f.input :name
         = f.input :name2
-        /= f.input :region
+        = f.input :region, collection: Setting.customer_regions
         = f.input :category, collection: Setting.customer_categories
         = f.input :archived
         = f.input :notes, as: :text

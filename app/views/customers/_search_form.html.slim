@@ -11,6 +11,11 @@
         - @filter.categories.each do |category, count|
           option selected=(category == @filter.category) value=category  #{category} (#{count})
     .form-group
+      select.form-control name="region"
+        option selected=(@filter.region.blank?) value='' Region
+        - @filter.regions.each do |region, count|
+          option selected=(region == @filter.region) value=region  #{region} (#{count})
+    .form-group
       select.form-control name="archived"
         option selected=(!@filter.archived) value='no' Aktive
         option selected=(@filter.archived) value='yes' Archiv

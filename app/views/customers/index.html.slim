@@ -3,7 +3,7 @@
   = new_link new_customer_url
   h2 = customers_icon "#{@customers.total_count} #{Customer.model_name.human count: @customers.count}"
 
-div
+div.hidden-print
   .pull-left = render 'search_form'
   .pull-right = paginate @customers
 .clearfix
@@ -15,6 +15,7 @@ div
         th = Customer.human_attribute_name(:id)
         th = Customer.human_attribute_name(:name)
         th = Customer.human_attribute_name(:city)
+        th = Customer.human_attribute_name(:region)
         th = Customer.human_attribute_name(:phone)
         th
     tbody
@@ -24,6 +25,7 @@ div
           td = customer.id
           td = lines_for [customer.salut, customer.name, customer.name2]
           td = customer.city
+          td = customer.region
           td = lines_for [customer.phone, customer.mobile, customer.email]
           td
             span.label.label-success> = customer.category
@@ -32,4 +34,4 @@ div
             - if customer.archived
               span.label.label-danger>  = Customer.human_attribute_name(:archived)
             /span.label.label-default = fa_icon customer.tax ? 'arrow-up' : 'arrow-down'
-.pull-right = paginate @customers
+.pull-right.hidden-print = paginate @customers
