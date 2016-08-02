@@ -21,6 +21,9 @@
         option selected=(@filter.archived) value='yes' Archiv
     .form-group
       => link_to 'Alle', customers_path, class: 'btn btn-info btn-block'
+    .form-group
+      = pdf_link customers_url(format: :pdf,
+          city: @filter.city, category: @filter.category, region: @filter.region, archived: (@filter.archived ? 'yes' : 'no'))
 
 coffee:
   $ ->

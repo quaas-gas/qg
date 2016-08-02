@@ -6,7 +6,15 @@ class CustomersController < ApplicationController
   def index
     authorize Customer
     @filter = CustomersFilter.new(params)
-    @customers = @filter.result.page(params[:page]).all
+    @customers = @filter.result
+
+    respond_to do |format|
+      format.html { @customers = @customers.page(params[:page]).all }
+      format.pdf do
+        pdf = CustomersPdf.new(@customers, @filter)
+        send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+      end
+    end
   end
 
   def show
