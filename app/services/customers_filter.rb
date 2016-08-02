@@ -53,6 +53,6 @@ class CustomersFilter
 
   def order_options
     return params[:sort] if params[:sort].in?(%w(city name))
-    :name
+    [:city, :name]
   end
 end
