@@ -175,11 +175,11 @@ de:
           billion:
             one: Milliarde
             other: Milliarden
-          million: Millionen
+          million: M
           quadrillion:
             one: Billiarde
             other: Billiarden
-          thousand: Tausend
+          thousand: T
           trillion: Billionen
           unit: ''
       format:
