@@ -20,10 +20,11 @@ div.hidden-print
         th
     tbody
       - @customers.each do | customer |
-        tr data = {url: url_for(customer)}
+        /tr data = {url: url_for(customer)}
+        tr
           td = customer_type_icon customer
-          td = customer.id
-          td = lines_for [customer.salut, customer.name, customer.name2]
+          td = link_to customer.id, customer
+          td = link_to lines_for([customer.salut, customer.name, customer.name2]), edit_customer_url(customer)
           td = customer.city
           td = customer.region
           td = lines_for [customer.phone, customer.mobile, customer.email]
