@@ -38,7 +38,7 @@
             = f.association :seller
             = f.input :on_account, input_html: { tabindex: 1000 }
 
-      table.table.table-condensed.table-hover.table-striped
+      table.table.table-condensed.table-hover.table-striped.items-table
         thead
           tr
             th.product Artikel
@@ -52,9 +52,10 @@
             th.total-price.price Gesamt (Brutto)
         tbody
           = f.simple_fields_for :items do |item_form|
-            tr
+            - item = item_form.object
+            tr class=('hidden' unless item.product.present? || @delivery.customer.blank?)
               td
-                - if item_form.object.product.present? || @delivery.customer.blank?
+                - if item.product.present? || @delivery.customer.blank?
                   = item_form.association :product, collection: Product.order(:number),
                     label: false, label_method: :number, input_html: { tabindex: 1000, disabled: true }
                   = item_form.input :product_id, as: :hidden
@@ -73,7 +74,8 @@
                 p.total-price
         tfoot
           tr
-            th.price colspan=6 Summe
+            th = link_to fa_icon('plus'), '#', class: 'add-item'
+            th.price colspan=5 Summe
             th.price.total-price-net
             th.price.total-price
 
@@ -100,5 +102,9 @@ coffee:
 sass:
   table
     th
-      &.product, &.count-back, &.count, &.unit-price, &.total-price-net, &.total-price
+      &.product
+        width: 20%
+      &.count-back, &.count, &.unit-price, &.total-price-net, &.total-price
         width: 12%
+      &.name
+        width: 40%

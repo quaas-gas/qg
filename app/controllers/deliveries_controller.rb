@@ -101,12 +101,10 @@ class DeliveriesController < ApplicationController
 
   def prepare_items
     @delivery.customer.prices.where(active: true).each do |price|
-      if !@delivery.new_record? && @delivery.items.where(product: price.product).exists?
-        next
-      end
+      next if !@delivery.new_record? && @delivery.items.where(product: price.product).exists?
       @delivery.items.build product: price.product, unit_price: price.price, name: price.product.name
     end if @delivery.customer
-    @delivery.items.build
+    3.times { @delivery.items.build }
   end
 
   def set_last_delivery

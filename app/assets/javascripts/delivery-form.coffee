@@ -17,11 +17,13 @@ class window.DeliveryForm
     $('.delivery_items_count_back input').change @setCount
 
     $('input[name="delivery[number]"]').change @checkNumber
-    @checkNumber()
+    @checkNumber() if newForm.length > 0 # not on edit form
 
     @customerPriceUrl = $('.data').data('customerPriceUrl')
 
     $('.delivery_items_product select').change @productChanged
+
+    $('a.add-item').click @showNewItem
 
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
@@ -81,3 +83,6 @@ class window.DeliveryForm
     $.getJSON @customerPriceUrl + '?product_id=' + product_id, {}, (price) =>
       tr.find('.delivery_items_name input').val price.name
       tr.find('.delivery_items_unit_price input').val(price.price).change()
+
+  showNewItem: (event) =>
+    $('table.items-table tbody tr.hidden').first().removeClass('hidden')
