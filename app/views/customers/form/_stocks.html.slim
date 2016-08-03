@@ -1,7 +1,8 @@
-= f.input :has_stock, label: 'Bestandsübersicht als Anhang zur Rechnung'
-= f.input :initial_stock_date
 section
   .col-md-6
+    = f.input :has_stock, label: 'Bestandsübersicht als Anhang zur Rechnung'
+    = f.input :initial_stock_date, as: :string, input_html: { class: 'date' }
+
     table.table.table-condensed.table-no-border.table-striped.table-hover
       thead
         tr
