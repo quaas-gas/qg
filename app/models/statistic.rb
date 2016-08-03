@@ -4,7 +4,7 @@ class Statistic < ActiveRecord::Base
   attr_reader :result, :y_sums
 
   TIME_RANGES = %w(this_week last_week this_month last_month this_year last_year custom)
-  GROUPING    = %w(region customer_category product_category time)
+  GROUPING    = %w(region customer_category product_category time seller)
   SUMS        = %w(content net tax)
 
   def time_range_relative
@@ -46,7 +46,7 @@ class Statistic < ActiveRecord::Base
 
   def items_scope(only: nil)
     scope = DeliveryItem
-      .joins(:product, delivery: :customer)
+      .joins(:product, delivery: [:customer, :seller])
       .where('deliveries.date >= ?', start_date)
       .where('deliveries.date <= ?', end_date)
     scope = if only
@@ -101,6 +101,7 @@ class Statistic < ActiveRecord::Base
       when 'customer_category' then 'customers.category'
       when 'product_category' then 'products.category'
       when 'time' then 'extract(month from deliveries.date)'
+      when 'seller' then 'sellers.short'
     end
   end
 

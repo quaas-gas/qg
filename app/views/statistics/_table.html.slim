@@ -10,7 +10,7 @@ table.table.table-striped.table-hover
       th.price = t('statistic.sum.tax')
       th.price = t('statistic.sum.net_per_kg')
   tbody
-    - statistic.result.keys.sort.each do |label|
+    - statistic.result.keys.compact.sort.each do |label|
       - row = statistic.result[label]
       tr
         th = statistic.grouping_y == 'time' ? t('date.abbr_month_names')[label.to_i] : label

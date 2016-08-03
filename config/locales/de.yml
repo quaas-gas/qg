@@ -73,6 +73,7 @@ de:
       customer_category: Kundenkategorie
       product_category: Artikelkategorie
       time: Zeit (Monate)
+      seller: Verkäufer
     sum:
       content: Inhalt (kg)
       net: Nettoumsatz (€)
