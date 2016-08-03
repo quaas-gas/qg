@@ -13,7 +13,7 @@ table.table.table-striped.table-hover
     - statistic.result.keys.sort.each do |label|
       - row = statistic.result[label]
       tr
-        th = label
+        th = statistic.grouping_y == 'time' ? t('date.abbr_month_names')[label.to_i] : label
         - statistic.labels_for(:x).each do |x|
           td.price = number_to_human row[x]
         th.price = number_to_human statistic.y_sums[:content][label]

@@ -1,21 +1,23 @@
 = simple_form_for(@statistic) do |f|
   = f.error_notification
 
-  .form-inputs
+  .form-inputs.hidden-print
     .row
       .col-md-4
         = f.input :time_range_relative, as: :select, collection: time_range_collection, include_blank: false
-        = f.input :grouping_y, collection: grouping_collection, include_blank: false
-        = f.input :grouping_x, collection: grouping_collection, include_blank: false
+        = f.input :start_date, input_html: { class: 'date' }
+        = f.input :end_date, input_html: { class: 'date' }
       .col-md-4
         - filter_options = { multiple: true, class: 'select2', data: { placeholder: 'Alle' } }
         = f.input :regions, collection: Setting.customer_regions, input_html: filter_options
         = f.input :customer_categories, collection: Setting.customer_categories, input_html: filter_options
         = f.input :product_categories, collection: Setting.product_categories, input_html: filter_options
       .col-md-4
+        = f.input :grouping_y, collection: grouping_collection, include_blank: false
+        = f.input :grouping_x, collection: grouping_collection, include_blank: false
         = f.input :sums_of, as: :select, collection: sum_collection, include_blank: false
 
-  .form-actions.row
+  .form-actions.row.hidden-print
     .col-md-3.col-md-offset-8 = f.input :name, label: false, placeholder: 'Name'
     .col-md-1 = f.submit t(:save), class: 'btn btn-primary'
 

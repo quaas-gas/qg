@@ -112,7 +112,7 @@ de:
         product_categories: Artikelkategorien
         grouping_x: Spalten
         grouping_y: Zeilen
-        sums_of: Summen von
+        sums_of: Werte
       user:
         login: "Handle"
         email: E-Mail

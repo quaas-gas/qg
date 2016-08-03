@@ -14,8 +14,8 @@ class StatisticsController < ApplicationController
 
   def new
     authorize Statistic
-    @statistic = Statistic.new time_range: { relative: 'this_week' },
-                               grouping: { x: 'product_category', y: 'customer_category' }
+    @statistic = Statistic.new time_range: { relative: 'last_year' },
+                               grouping: { x: 'time', y: 'customer_category' }
   end
 
   def edit
@@ -62,10 +62,14 @@ class StatisticsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def statistic_params
-    p = params.require(:statistic).permit(:name, :time_range_relative, :grouping_x, :grouping_y,
-                                          :sums_of, regions: [], customer_categories: [],
-                                          product_categories: [])
-    p[:time_range] = { relative: p.delete(:time_range_relative) }
+    p = params.require(:statistic).permit(:name, :time_range_relative, :start_date, :end_date,
+                                          :grouping_x, :grouping_y, :sums_of,
+                                          regions: [], customer_categories: [], product_categories: [])
+    p[:time_range] = {
+      relative:   p.delete(:time_range_relative),
+      start_date: p.delete(:start_date),
+      end_date:   p.delete(:end_date),
+    }
 
     p[:grouping] = {}
     p[:grouping][:x] = p.delete :grouping_x

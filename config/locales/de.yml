@@ -79,6 +79,7 @@ de:
       net_per_kg: Netto / kg
       tax: Bruttoumsatz (€)
     time_range:
+      custom: Benutzerdefiniert
       this_week: aktuelle Woche
       last_week: letzte Woche
       this_month: aktueller Monat

@@ -3,7 +3,7 @@ class Statistic < ActiveRecord::Base
 
   attr_reader :result, :y_sums
 
-  TIME_RANGES = %w(this_week last_week this_month last_month this_year last_year)
+  TIME_RANGES = %w(this_week last_week this_month last_month this_year last_year custom)
   GROUPING    = %w(region customer_category product_category time)
   SUMS        = %w(content net tax)
 
@@ -119,6 +119,7 @@ class Statistic < ActiveRecord::Base
       when 'last_month' then 1.month.ago.to_date.beginning_of_month
       when 'this_year'  then Date.current.beginning_of_year
       when 'last_year'  then 1.year.ago.to_date.beginning_of_year
+      when 'custom'     then Date.parse time_range['start_date']
     end
   end
 
@@ -130,6 +131,7 @@ class Statistic < ActiveRecord::Base
       when 'last_month' then 1.month.ago.to_date.end_of_month
       when 'this_year'  then Date.current.end_of_year
       when 'last_year'  then 1.year.ago.to_date.end_of_year
+      when 'custom'     then Date.parse time_range['end_date']
     end
   end
 
