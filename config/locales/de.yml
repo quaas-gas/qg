@@ -73,6 +73,7 @@ de:
       customer_category: Kundenkategorie
       product_category: Artikelkategorie
       time: Zeit (Monate)
+      time_year: Zeit (Jahre)
       seller: Verkäufer
     sum:
       content: Inhalt (kg)

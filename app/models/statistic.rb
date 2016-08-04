@@ -7,7 +7,7 @@ class Statistic < ActiveRecord::Base
     %w(this last).map { |this_last| "#{this_last}_#{period}" }
   end
   TIME_RANGES += ['custom']
-  GROUPING    = %w(region customer_category product_category time seller)
+  GROUPING    = %w(region customer_category product_category time time_year seller)
   FILTERS     = %w(regions customer_categories product_categories)
   SUMS        = %w(content net tax)
   SUM_TYPES   = %i(content net tax net_content)
@@ -26,7 +26,11 @@ class Statistic < ActiveRecord::Base
   end
 
   def label_for(x_or_y, label)
-    grouping[x_or_y.to_s] == 'time' ? I18n.t('date.abbr_month_names')[label] : label
+    case grouping[x_or_y.to_s]
+      when 'time' then I18n.t('date.abbr_month_names')[label]
+      when 'time_year' then label.to_i
+    else label
+    end
   end
 
   def items_scope(only: nil)
@@ -93,6 +97,7 @@ class Statistic < ActiveRecord::Base
       when 'customer_category' then 'customers.category'
       when 'product_category'  then 'products.category'
       when 'time'              then 'extract(month from deliveries.date)'
+      when 'time_year'         then 'extract(year from deliveries.date)'
       when 'seller'            then 'sellers.short'
     end
   end
