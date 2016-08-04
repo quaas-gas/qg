@@ -1,30 +1,28 @@
-- total_sums = statistic.result.delete :total
+- result   = statistic.result
+- x_labels = statistic.labels_for(:x)
+- y_labels = statistic.labels_for(:y)
 table.table.table-striped.table-hover
   thead
     tr
       th
-      - statistic.labels_for(:x).each do |val|
-        th.price = statistic.grouping_x == 'time' ? t('date.abbr_month_names')[val] : val
-      th.price = t('statistic.sum.content')
-      th.price = t('statistic.sum.net')
-      th.price = t('statistic.sum.tax')
-      th.price = t('statistic.sum.net_per_kg')
+      - x_labels.each do |x|
+        th.price = statistic.label_for(:x, x)
+      - Statistic::SUM_TYPES.each do |sum_type|
+        th = t("statistic.sum.#{sum_type}")
   tbody
-    - statistic.result.keys.compact.sort.each do |label|
-      - row = statistic.result[label]
+    - y_labels.each do |y|
+      - row = result[y]
       tr
-        th = statistic.grouping_y == 'time' ? t('date.abbr_month_names')[label.to_i] : label
-        - statistic.labels_for(:x).each do |x|
-          td.price = number_to_human row[x]
-        th.price = number_to_human statistic.y_sums[:content][label]
-        th.price = number_to_human Money.new(statistic.y_sums[:net][label]).to_f
-        th.price = number_to_human Money.new(statistic.y_sums[:net][label]).exchange_to('EU4TAX').to_f
-        th.price = nontax_price (Money.new(statistic.y_sums[:net][label]) / statistic.y_sums[:content][label]) if statistic.y_sums[:content][label] != 0
-    tr
-      th Summe #{t('statistic.sum.' + statistic.sums_of)}
-      - statistic.labels_for(:x).each do |x|
-        th.price = number_to_human total_sums[x]
-      th.price = number_to_human statistic.y_sums[:content][:total]
-      th.price = number_to_human Money.new(statistic.y_sums[:net][:total]).to_f
-      th.price = number_to_human Money.new(statistic.y_sums[:net][:total]).exchange_to('EU4TAX').to_f
-      th.price = nontax_price (Money.new(statistic.y_sums[:net][:total]) / statistic.y_sums[:content][:total]) if statistic.y_sums[:content][:total] != 0
+        th = statistic.label_for(:y, y)
+        - x_labels.each do |x|
+          td.price = number_to_human(row[x].to_f) if row[x]
+        - Statistic::SUM_TYPES.each do |sum_type|
+          th.price = number_to_human row[sum_type]
+  tfoot
+    - Statistic::SUM_TYPES.each_with_index do |sum_type, index|
+      tr
+        th = t("statistic.sum.#{sum_type}")
+        - x_labels.each do |x|
+          th.price = number_to_human result[sum_type][x]
+        th.price colspan=(index + 1) = number_to_human result[sum_type][:total]
+        td colspan=(4 - index)

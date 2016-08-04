@@ -77,7 +77,7 @@ de:
     sum:
       content: Inhalt (kg)
       net: Nettoumsatz (€)
-      net_per_kg: Netto / kg
+      net_content: Netto / kg
       tax: Bruttoumsatz (€)
     time_range:
       custom: Benutzerdefiniert
@@ -85,5 +85,7 @@ de:
       last_week: letzte Woche
       this_month: aktueller Monat
       last_month: letzter Monat
+      this_quart: aktuelles Quartal
+      last_quart: letztes Quartal
       this_year: aktuelles Jahr
       last_year: letztes Jahr
