@@ -7,7 +7,8 @@ class window.DeliveryForm
     if customerSelect.val() is ''
       customerSelect.select2('open')
     else
-      $('tbody tr:first-child .delivery_items_count_back input').focus()
+      #$('tbody tr:first-child .delivery_items_count_back input').focus()
+      $('.delivery_number input').focus()
 
     $('input:checkbox[name="delivery[on_account]"]').change @toggleHeader
 
