@@ -36,7 +36,7 @@
           .form-inputs
             = f.input :date, as: :string, input_html: { class: 'date' }
             = f.association :seller
-            = f.input :on_account, input_html: { tabindex: 1000 }
+            = f.input :on_account, input_html: { tabindex: -1 }
 
       table.table.table-condensed.table-hover.table-striped.items-table
         thead
@@ -57,15 +57,15 @@
               td
                 - if item.product.present? || @delivery.customer.blank?
                   = item_form.association :product, collection: Product.order(:number),
-                    label: false, label_method: :number, input_html: { tabindex: 1000, disabled: true }
+                    label: false, label_method: :number, input_html: { tabindex: -1, disabled: true }
                   = item_form.input :product_id, as: :hidden
                 - else
                   = item_form.association :product, collection: Product.order(:number).where.not(id: @delivery.customer.prices.where(active: true).select(:product_id)),
-                    label: false, label_method: :number, input_html: { tabindex: 1000 }
+                    label: false, label_method: :number, input_html: { tabindex: -1 }
               td = item_form.input :count_back, label: false
               td = item_form.input :count, label: false
-              td = item_form.input :name, label: false, input_html: { tabindex: 1000 }
-              td.price = item_form.input :unit_price, label: false, input_html: { tabindex: 1000 }
+              td = item_form.input :name, label: false, input_html: { tabindex: -1 }
+              td.price = item_form.input :unit_price, label: false, input_html: { tabindex: -1 }
               td.price
                 p.unit-price = tax_price item_form.object.unit_price
               td.price
@@ -74,20 +74,20 @@
                 p.total-price
         tfoot
           tr
-            th = link_to fa_icon('plus'), '#', class: 'add-item'
+            th = link_to fa_icon('plus'), '#', class: 'add-item', tabindex: -1
             th.price colspan=5 Summe
             th.price.total-price-net
             th.price.total-price
 
-      = f.input :description, input_html: { tabindex: 1000 }
+      = f.input :description, input_html: { tabindex: -1 }
       .action-buttons
         .pull-right
           - if @delivery.new_record?
-            => link_to t(:cancel), deliveries_url, class: 'btn btn-default', tabindex: 1000
-            => f.submit t(:save), class: 'btn btn-default', tabindex: 1000
+            => link_to t(:cancel), deliveries_url, class: 'btn btn-default', tabindex: -1
+            => f.submit t(:save), class: 'btn btn-default', tabindex: -1
             = f.submit t(:save_and_next), class: 'btn btn-primary'
           - else
-            => link_to t(:cancel), @delivery, class: 'btn btn-default', tabindex: 1000
+            => link_to t(:cancel), @delivery, class: 'btn btn-default', tabindex: -1
             = f.submit t(:save), class: 'btn btn-primary'
 
     .col-md-3

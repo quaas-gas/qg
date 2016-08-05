@@ -9,15 +9,15 @@
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        = link_to Company.current.name, root_path, class: 'navbar-brand'
+        = link_to Company.current.name, root_path, class: 'navbar-brand', tabindex: -1
       .collapse.navbar-collapse
         ul.nav.navbar-nav
           li class=('active' if controller_name == 'customers')
-            = link_to customers_title, customers_url
+            = link_to customers_title, customers_url, tabindex: -1
           li class=('active' if controller_name == 'deliveries')
-            = link_to deliveries_title, deliveries_url
+            = link_to deliveries_title, deliveries_url, tabindex: -1
           li class=('active' if controller_name == 'invoices')
-            = link_to invoices_title, invoices_url
+            = link_to invoices_title, invoices_url, tabindex: -1
           = navbar_dropdown 'Auswertungen' do
             - Report.in_menu.all.each do |report|
               li
@@ -37,7 +37,7 @@
           li
             form.navbar-form.navbar-right role="search" action=search_url
               .form-group
-                input.form-control type="text" placeholder="Suche" name="q" value=@query autofocus=(params[:controller] == 'search')
+                input.form-control type="text" placeholder="Suche" name="q" value=@query autofocus=(params[:controller] == 'search') tabindex="-1"
           = navbar_dropdown current_user.username do
             li = link_to 'Passwort ändern', edit_user_registration_url(current_user.username)
             li = link_to 'Abmelden', destroy_user_session_path, method: 'delete', title: current_user.username

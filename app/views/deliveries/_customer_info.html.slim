@@ -1,7 +1,7 @@
 - if customer.present?
   = panel_box title: 'Kundeninformation' do
     p
-      = link_to customer.name, customer
+      = link_to customer.name, customer, tabindex: -1
       br
       = customer.city
       br

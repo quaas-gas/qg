@@ -5,7 +5,7 @@ module NavigationHelper
   end
 
   def dropdown_title(title)
-    content_tag :a, href: '#', class: 'dropdown-toggle', role: 'button', aria: {expanded: 'false', hashpopup: 'true'}, data: {toggle: 'dropdown'} do
+    content_tag :a, href: '#', class: 'dropdown-toggle', role: 'button', tabindex: -1, aria: {expanded: 'false', hashpopup: 'true'}, data: {toggle: 'dropdown'} do
       "#{title} <span class='caret'></span>".html_safe
     end.html_safe
   end
