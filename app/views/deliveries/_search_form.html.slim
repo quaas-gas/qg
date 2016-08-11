@@ -9,6 +9,11 @@
       select.form-control name="date"
         - @filter.dates.each do |date, count|
           option selected=(date == @filter.date) value=date  #{ldate date, format: '%d.%m.%y %a'} (#{count})
+    .form-group
+      select.form-control name="seller"
+        option selected=(@filter.seller.blank?) value='' Verkäufer
+        - @filter.sellers.each do |seller, count|
+          option selected=(seller.id == @filter.seller.to_i) value=seller.id  #{seller.name} (#{count})
     /.form-group
       select.form-control name="year"
         - @filter.years.each do |year, count|

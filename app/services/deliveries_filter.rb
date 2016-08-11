@@ -1,5 +1,5 @@
 class DeliveriesFilter
-  attr_reader :params, :scope, :number, :date, :on_account
+  attr_reader :params, :scope, :number, :date, :on_account, :seller
 
   def initialize(params, scope = Delivery)
     yes_no_map  = { 'yes' => true, 'no' => false }
@@ -7,15 +7,21 @@ class DeliveriesFilter
     @scope      = scope
     @number     = params[:number]
     @date       = params[:date]
+    @seller     = params[:seller]
     @on_account = yes_no_map[params[:on_account]]
 
     filter_number
     filter_date
+    filter_seller
     filter_on_account
   end
 
   def dates
     Delivery.group(:date).order(date: :desc).count
+  end
+
+  def sellers
+    Delivery.where(date: date).group(:seller).count
   end
 
   def result
@@ -30,6 +36,9 @@ class DeliveriesFilter
 
   def filter_date
     @scope = scope.where(date: date) if date.present?
+  end
+  def filter_seller
+    @scope = scope.where(seller_id: seller) if seller.present?
   end
 
   def filter_on_account
