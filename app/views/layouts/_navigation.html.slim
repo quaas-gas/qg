@@ -9,7 +9,7 @@
           span.icon-bar
           span.icon-bar
           span.icon-bar
-        = link_to Company.current.name, root_path, class: 'navbar-brand', tabindex: -1
+        = link_to Company.current.short, root_path, class: 'navbar-brand', tabindex: -1
       .collapse.navbar-collapse
         ul.nav.navbar-nav
           li class=('active' if controller_name == 'customers')

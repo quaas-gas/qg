@@ -5,6 +5,7 @@ defaults: &defaults
   devise_secret_key: abc123
   company:
     name: My Company
+    short: Comp
     address: |
       234 Gingerway
       Guerneville

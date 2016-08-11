@@ -1,6 +1,6 @@
 class Company
 
-  ATTRS = %w[name address tax_info phone fax email legal_info ceo bank_info]
+  ATTRS = %w[name short address tax_info phone fax email legal_info ceo bank_info]
   attr_reader *ATTRS
 
   def self.current
@@ -10,7 +10,7 @@ class Company
   def initialize
     comp = Setting.company
     ATTRS.each do |attr|
-      instance_variable_set "@#{attr}", comp[attr].strip
+      instance_variable_set "@#{attr}", comp[attr]&.strip
     end
   end
 
