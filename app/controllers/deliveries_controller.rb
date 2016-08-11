@@ -84,7 +84,7 @@ class DeliveriesController < ApplicationController
 
   def pre_fill_from_last
     return unless session[:last_delivery_id]
-    last_delivery = Delivery.find(session[:last_delivery_id])
+    last_delivery = Delivery.where(id: session[:last_delivery_id]).first
     return unless last_delivery
     @delivery.date      = last_delivery.date
     @delivery.number    = last_delivery.number.next
