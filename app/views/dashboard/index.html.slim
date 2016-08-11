@@ -3,6 +3,7 @@ h1 Startseite
 
 .row
   .col-md-4
+    = link_to t('deliveries.index.new_delivery'), new_delivery_url, class: 'btn btn-primary btn-block btn-lg'
     h3 Letzte Lieferungen
     table.table.table-hover.table-condensed.table-clickable
       tbody
@@ -23,12 +24,12 @@ h1 Startseite
             td = invoice.customer.name
   .col-md-4
     - open_deliveries = Delivery.pending
+    = link_to t('.write_invoices'), new_invoice_url, class: 'btn btn-primary btn-block btn-lg' if open_deliveries.any?
     h3
       => open_deliveries.count
       |  offene Lieferscheine
 
     - if open_deliveries.any?
-      = link_to t('.write_invoices'), new_invoice_url, class: 'btn btn-primary btn-block btn-lg'
       table.table.table-hover.table-condensed.table-clickable
         tbody
           - open_deliveries.each do |delivery|
