@@ -38,7 +38,8 @@ class DeliveriesFilter
     @scope = scope.where(date: date) if date.present?
   end
   def filter_seller
-    @scope = scope.where(seller_id: seller) if seller.present?
+    filter_val = seller == 'none' ? nil : seller
+    @scope = scope.where(seller_id: filter_val) if seller.present?
   end
 
   def filter_on_account
