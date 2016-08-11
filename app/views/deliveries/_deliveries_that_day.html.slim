@@ -10,7 +10,7 @@
         th.price Brutto
     tbody
       - sum = Money.new(0)
-      - Delivery.where(date: delivery.date).order(:number).all.each do |delivery|
+      - Delivery.where(date: delivery.date).order(created_at: :desc).all.each do |delivery|
         - total_price = delivery.total_price
         - sum += total_price
         tr
