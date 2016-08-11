@@ -95,6 +95,7 @@
       .existing-deliveries-list.alert.alert-warning.hidden
         h5 LSN schon mal vergeben
         ul.list-unstyled
+      .deliveries-that-day = render 'deliveries_that_day', delivery: @delivery
 
 coffee:
   $(document).on 'ready page:load', -> new DeliveryForm()

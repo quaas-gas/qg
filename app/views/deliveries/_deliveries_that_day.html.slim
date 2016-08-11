@@ -1,0 +1,26 @@
+- if delivery.date
+  h5 Weitere Lieferungen vom #{ldate delivery.date}
+  table.table.table-condensed.table-striped
+    thead
+      tr
+        th
+        th LSN
+        th Kunde
+        th.price Netto
+        th.price Brutto
+    tbody
+      - sum = Money.new(0)
+      - Delivery.where(date: delivery.date).order(:number).all.each do |delivery|
+        - total_price = delivery.total_price
+        - sum += total_price
+        tr
+          td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
+          td = delivery.number
+          td = delivery.customer.name
+          td.price = nontax_price total_price
+          td.price = tax_price total_price
+    tfoot
+      tr
+        th.price colspan=3
+        th.price = nontax_price sum
+        th.price = tax_price sum
