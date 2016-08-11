@@ -33,7 +33,7 @@ class window.DeliveryForm
 
   renderSums: =>
     sum = 0
-    $('table tbody tr').each (index, tr) =>
+    $('table.items-table tbody tr').each (index, tr) =>
       tr = $(tr)
       count = tr.find('.delivery_items_count input').val()
       unitPrice = @parsePriceInput tr.find('.delivery_items_unit_price input').val()
