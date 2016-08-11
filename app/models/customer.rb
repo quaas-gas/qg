@@ -60,4 +60,8 @@ class Customer < ActiveRecord::Base
     @stock_products ||= prices.in_stock.includes(:product).map(&:product).to_a
   end
 
+  def display_name
+    "#{name}, #{city}, #{street}"
+  end
+
 end

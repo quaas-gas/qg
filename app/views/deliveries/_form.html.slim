@@ -27,10 +27,10 @@
         .col-md-8
           .form-inputs
             - if @delivery.customer.present?
-              = f.association :customer, input_html: { disabled: true }
+              = f.association :customer, label_method: :display_name, input_html: { disabled: true }
               = f.input :customer_id, as: :hidden
             - else
-              = f.association :customer, collection: Customer.order(:name).active, input_html: { class: 'select2' }
+              = f.association :customer, collection: Customer.order(:name).active, label_method: :display_name, input_html: { class: 'select2' }
             = f.input :number
         .col-md-4
           .form-inputs

@@ -15,6 +15,7 @@ div.hidden-print
         th = Customer.human_attribute_name(:id)
         th = Customer.human_attribute_name(:name)
         th = Customer.human_attribute_name(:city)
+        th = Customer.human_attribute_name(:street)
         th = Customer.human_attribute_name(:region)
         th = Customer.human_attribute_name(:phone)
         th
@@ -25,6 +26,7 @@ div.hidden-print
           td = customer.id
           td = link_to lines_for([customer.salut, customer.name, customer.name2]), edit_customer_url(customer)
           td = customer.city
+          td = customer.street
           td = customer.region
           td = lines_for [customer.phone, customer.mobile, customer.email]
           td
