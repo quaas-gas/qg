@@ -3,7 +3,7 @@ set :repo_url, 'git@github.com:quaas-gas/qg.git'
 
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }
 
-set :chruby_ruby, 'ruby-2.3.0'
+set :chruby_ruby, 'ruby-2.3.1'
 
 # set :deploy_to, '/var/www/my_app'
 set :scm, :git
