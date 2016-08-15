@@ -22,6 +22,8 @@ class DeliveriesFilter
 
   def sellers
     Delivery.where(date: date).group(:seller).count
+  rescue ActiveRecord::RecordNotFound
+    {}
   end
 
   def result
