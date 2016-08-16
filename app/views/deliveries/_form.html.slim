@@ -45,9 +45,8 @@
             th.count-back leer
             th.count Anzahl / voll
             th.name Bezeichnung
-            th.unit-price.price Einzelpreis (Netto)
-            th.unit-price.price
-              |  (Brutto)
+            th.unit-price.price EP (Netto)
+            th.unit-price.price EP (Brutto)
             th.total-price-net.price Gesamt (Netto)
             th.total-price.price Gesamt (Brutto)
         tbody
@@ -67,7 +66,7 @@
               td = item_form.input :name, label: false, input_html: { tabindex: -1 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: -1 }
               td.price
-                p.unit-price = tax_price item_form.object.unit_price
+                p.unit-price.unit-price-tax = link_to tax_price(item.unit_price), '#', tabindex: -1
               td.price
                 p.total-price-net
               td.price

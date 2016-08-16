@@ -16,6 +16,7 @@ class window.DeliveryForm
     $('.delivery_items_count input, .delivery_items_unit_price input').change @renderSums
     $('.delivery_items_unit_price input').change @renderTaxUnitPrice
     $('.delivery_items_count_back input').change @setCount
+    $('p.unit-price-tax a').click @unitPriceTaxClicked
 
     $('input[name="delivery[number]"]').change @checkNumber
     @checkNumber() if newForm.length > 0 # not on edit form
@@ -29,7 +30,7 @@ class window.DeliveryForm
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
   parsePriceInput: (val) -> val.replace(',', '.')
-  parsePriceOutput: (val) -> val.toFixed(2).toString().replace('.', ',')
+  parsePriceOutput: (val, number = 2) -> val.toFixed(number).toString().replace('.', ',')
 
   renderSums: =>
     sum = 0
@@ -48,7 +49,7 @@ class window.DeliveryForm
   renderTaxUnitPrice: (event) =>
     input = $(event.target)
     val = @parsePriceInput input.val()
-    input.parents('tr').find('p.unit-price').text @parsePriceOutput(val * 1.19)
+    input.parents('tr').find('p.unit-price-tax a').text @parsePriceOutput(val * 1.19)
 
   setCount: (event) =>
     countBackInput = $(event.currentTarget)
@@ -87,3 +88,23 @@ class window.DeliveryForm
 
   showNewItem: (event) =>
     $('table.items-table tbody tr.hidden').first().removeClass('hidden')
+
+  unitPriceTaxClicked: (event) =>
+    event.preventDefault()
+    link = $(event.target)
+    td = link.parents('td')
+    td.find('p.unit-price-tax').hide()
+    td.append $("""<div class="form-group"><input tabindex="-1" class="form-control" type="text" value="#{link.text()}" ></div>""")
+    input = td.find('input')
+    input.focus()
+    input.focusout @unitPriceTaxChanged
+
+  unitPriceTaxChanged: (event) =>
+    inputTax = $(event.target)
+    td = inputTax.parents('td')
+    inputNet = td.parents('tr').find('.delivery_items_unit_price input')
+    taxVal = @parsePriceInput inputTax.val()
+    inputNet.val @parsePriceOutput(taxVal / 1.19, 4)
+    inputNet.trigger 'change'
+    td.find('p.unit-price-tax').show()
+    td.find('div.form-group').remove()
