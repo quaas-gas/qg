@@ -87,7 +87,6 @@ class DeliveriesController < ApplicationController
     last_delivery = Delivery.where(id: session[:last_delivery_id]).first
     return unless last_delivery
     @delivery.date      = last_delivery.date
-    @delivery.number    = last_delivery.number.next
     @delivery.seller_id = last_delivery.seller_id
   end
 
