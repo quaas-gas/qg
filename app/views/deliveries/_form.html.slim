@@ -61,8 +61,8 @@
                 - else
                   = item_form.association :product, collection: Product.order(:number).where.not(id: @delivery.customer.prices.where(active: true).select(:product_id)),
                     label: false, label_method: :number, input_html: { tabindex: -1 }
-              td = item_form.input :count_back, label: false
-              td = item_form.input :count, label: false
+              td.price = item_form.input :count_back, label: false, as: :string
+              td.price = item_form.input :count, label: false, as: :string
               td = item_form.input :name, label: false, input_html: { tabindex: -1 }
               td.price = item_form.input :unit_price, label: false, input_html: { tabindex: -1 }
               td.price
@@ -100,7 +100,14 @@ coffee:
   $(document).on 'ready page:load', -> new DeliveryForm()
 
 sass:
-  table
+  table.items-table
+    tbody>tr>td
+      padding: 3px
+      input, select
+        border: none
+        box-shadow: none
+      p
+        margin: 8px 0 3px
     th
       &.product
         width: 20%
