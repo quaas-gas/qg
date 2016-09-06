@@ -7,7 +7,7 @@ class ReportPdf < ApplicationDocument
   def initialize(report)
     @debug = false
     @margin_top = 28.mm
-    @margin_bottom = 28.mm
+    @margin_bottom = 15.mm
     @margin_side = 20.mm
     super(page_size: 'A4', page_layout: :landscape, margin: [@margin_top, @margin_side, @margin_bottom])
     @report = report
@@ -25,7 +25,7 @@ class ReportPdf < ApplicationDocument
     move_down 10
     write_report
     write_total_sums
-    number_pages 'Seite <page> von <total>', at: [bounds.right - 150, 0], width: 150, align: :right
+    number_pages 'Seite <page> von <total>', at: [bounds.right - 150, 0], width: 150, align: :right, size: 10
     # write_footer
   end
 
@@ -46,26 +46,22 @@ class ReportPdf < ApplicationDocument
   end
 
   def write_report
-    first_day = @report.grouped_deliveries[:dates].keys.first
     @report.grouped_deliveries[:dates].each do |date, date_hash|
 
-      start_new_page unless date == first_day
-      text ldate(date, format: '%a %d.%m.%Y'), size: 12, style: :bold
+      text ldate(date, format: '%a %d.%m.%Y'), size: 10, style: :bold
 
       cash_hash = date_hash[:on_account][false]
       on_account_hash = date_hash[:on_account][true]
-      header_rows = [0]
-      header_rows << (cash_hash[:deliveries].size + 1) if cash_hash && on_account_hash
-      sum_rows = [-1]
+
+      rows = [deliveries_table_header] + deliveries_array(date_hash)
+      sum_rows = []
+      sum_rows << -1 if rows.size > 2
       sum_rows += [-2, -3] if cash_hash && on_account_hash
 
-
       font_size 9 do
-        table deliveries_array(date_hash), deliveries_table_options do |t|
-          header_rows.each do |row_number|
-            t.row(row_number).style background_color: 'dddddd'
-            t.row(row_number).font_style = :bold
-          end
+        table rows, deliveries_table_options do |t|
+          t.row(0).style background_color: 'dddddd'
+          t.row(0).font_style = :bold
           sum_rows.each do |row_number|
             t.row(row_number).style background_color: 'dddddd'
             t.row(row_number).font_style = :bold
@@ -73,17 +69,16 @@ class ReportPdf < ApplicationDocument
           t.cells.style { |c| c.align = :right if c.column > 1 }
         end
       end
+      move_down 20
     end
   end
 
-  def deliveries_table_header(on_account)
-    header = []
-    header << (on_account ? 'Lieferschein' : 'Quittung')
-    header << 'Kunde'
+  def deliveries_table_header
+    header = %w(LSN Kunde)
     @report.products.each { |product| header << product }
     header << 'Artikel'
     @report.content_product_categories.each { |category| header << category }
-    header += ['kg ges', 'Netto', 'Brutto']
+    header += ['kg ges', 'Netto', 'Brutto', 'R']
     header
   end
 
@@ -93,18 +88,20 @@ class ReportPdf < ApplicationDocument
     on_account_hash = date_hash[:on_account][true]
 
     date_hash[:on_account].each do |on_account, on_account_hash|
-      res << deliveries_table_header(on_account)
-      on_account_hash[:deliveries].each { |delivery| res << delivery_array(delivery) }
+      on_account_hash[:deliveries].each { |delivery| res << delivery_array(delivery, on_account) }
     end
 
-    res << sum_row(cash_hash, title: 'Bar') if cash_hash
-    res << sum_row(on_account_hash, title: 'Rechnung') if on_account_hash
-    res << sum_row(date_hash, title: 'Gesamt') if cash_hash && on_account_hash
+    if res.size > 1
+      res << sum_row(cash_hash, title: 'Bar') if cash_hash
+      res << sum_row(on_account_hash, title: 'Rechnung') if on_account_hash
+      res << sum_row(date_hash, title: 'Gesamt') if cash_hash && on_account_hash
+    end
+
     res
   end
 
 
-  def delivery_array(delivery)
+  def delivery_array(delivery, on_account)
     del = [delivery[:number], delivery[:customer]]
     @report.products.each do |product|
       del << delivery[:products][product].to_s
@@ -116,13 +113,14 @@ class ReportPdf < ApplicationDocument
     del << delivery[:content][:total].round(0)
     del << nontax_price(delivery[:total_price])
     del << tax_price(delivery[:total_price])
+    del << (on_account ? 'R' : '')
     del
   end
 
   def deliveries_table_options
     {
       row_colors:    %w(EEEEEE FFFFFF),
-      # header:        true,
+      header:        true,
       width:         bounds.right,
       column_widths: { 0 => 70, 1 => 170 },
       cell_style:    { border_width: 0, padding: [3, 3] }
@@ -137,6 +135,7 @@ class ReportPdf < ApplicationDocument
     res << hash[:content][:total]
     res << nontax_price(hash[:total_price])
     res << tax_price(hash[:total_price])
+    res << ''
     res
   end
 
@@ -172,7 +171,7 @@ class ReportPdf < ApplicationDocument
     @report.products.each { |product| header << product }
     header << ''
     @report.content_product_categories.each { |category| header << category }
-    header += ['kg ges', 'Netto', 'Brutto']
+    header += ['kg ges', 'Netto', 'Brutto', '']
     header
   end
 

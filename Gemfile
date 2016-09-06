@@ -14,7 +14,8 @@ gem 'pg_search'
 gem 'money-rails'
 gem 'rails-settings-cached'
 gem 'prawn'
-gem 'prawn-table'
+# See https://github.com/prawnpdf/prawn-table/pull/50
+gem 'prawn-table', git: 'https://github.com/J-F-Liu/prawn-table'
 
 group :development, :test do
   gem 'byebug'

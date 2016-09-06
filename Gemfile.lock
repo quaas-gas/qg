@@ -1,3 +1,10 @@
+GIT
+  remote: https://github.com/J-F-Liu/prawn-table
+  revision: 6e32ab811a162ca556644eaf942d757d8519f0be
+  specs:
+    prawn-table (0.2.3)
+      prawn (>= 1.3.0, < 3.0.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -220,8 +227,6 @@ GEM
     prawn (2.1.0)
       pdf-core (~> 0.6.1)
       ttfunk (~> 1.4.0)
-    prawn-table (0.2.2)
-      prawn (>= 1.3.0, < 3.0.0)
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -414,7 +419,7 @@ DEPENDENCIES
   pg
   pg_search
   prawn
-  prawn-table
+  prawn-table!
   pry-rails
   pry-rescue
   puma
