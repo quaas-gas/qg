@@ -5,8 +5,7 @@ class Statistic < ActiveRecord::Base
 
   TIME_RANGES = %w(week month quart year).flat_map do |period|
     %w(this last).map { |this_last| "#{this_last}_#{period}" }
-  end
-  TIME_RANGES += ['custom']
+  end + ['custom']
   GROUPING    = %w(region customer_category product_category time time_year seller)
   FILTERS     = %w(regions customer_categories product_categories)
   SUMS        = %w(content net tax)

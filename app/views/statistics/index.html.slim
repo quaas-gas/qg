@@ -14,15 +14,17 @@
     thead
       tr
         th = Statistic.human_attribute_name(:name)
-        th = Statistic.human_attribute_name(:time_range)
-        th = Statistic.human_attribute_name(:grouping)
+        th = Statistic.human_attribute_name(:time_range_relative)
+        th = Statistic.human_attribute_name(:grouping_y)
+        th = Statistic.human_attribute_name(:grouping_x)
         th = Statistic.human_attribute_name(:filter)
         th = Statistic.human_attribute_name(:sums_of)
     tbody
       - @statistics.each do | statistic |
         tr data = {url: url_for(statistic)}
           td = statistic.name
-          td = statistic.time_range
-          td = statistic.grouping
+          td = statistic.time_range_relative
+          td = statistic.grouping_y
+          td = statistic.grouping_x
           td = statistic.filter
           td = statistic.sums_of
