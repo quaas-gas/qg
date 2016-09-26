@@ -1,13 +1,8 @@
+- title_for @<%= file_name %>, :name
 .page-header
-  = link_to <%= index_helper %>_path, class: 'btn btn-default' do 
-    span.glyphicon.glyphicon-list-alt
-    =< t(:list)
-  = link_to edit_<%= singular_table_name %>_path(@<%= file_name %>), class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-pencil
-    =< t(:edit)
-  => link_to @<%= file_name %>, method: :delete, data: { confirm: t(:confirm_delete, model: <%= class_name %>.model_name.human) }, class: 'btn btn-danger' do
-    span.glyphicon.glyphicon-remove
-    =< t(:delete)
+  = list_link <%= index_helper %>_url
+  = edit_link edit_<%= singular_table_name %>_url(@<%= file_name %>)
+  = delete_link @<%= file_name %>
   h2
     => @<%= file_name %>.name
     small = <%= class_name %>.model_name.human
