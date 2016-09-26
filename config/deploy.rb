@@ -35,7 +35,7 @@ set :puma_bind, "tcp://0.0.0.0:9292"    #accept array for multi-bind
 # set :puma_worker_timeout, nil
 # set :puma_init_active_record, false
 # set :puma_preload_app, true
-set :nginx_config_name, 'school'
+set :nginx_config_name, 'gv'
 set :nginx_conf, -> { "#{shared_path}/nginx_#{fetch(:nginx_config_name)}.conf" }
 # set :nginx_use_ssl, false
 set :nginx_use_ssl, true

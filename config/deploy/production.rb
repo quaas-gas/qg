@@ -1,3 +1,4 @@
+set :rails_env, 'production'
 set :stage, :production
 
 # Simple Role Syntax
@@ -17,6 +18,8 @@ set :stage, :production
 # extended properties on the server.
 # server 'example.com', user: 'deploy', roles: %w{web app}, my_property: :my_value
 server ENV['PRODUCTION_SERVER'], user: ENV['PRODUCTION_USER'], roles: %w{web app db}
+
+set :nginx_server_name, ENV['PRODUCTION_SERVER']
 
 # you can set custom ssh options
 # it's possible to pass any option but you need to keep in mind that net/ssh understand limited list of options
