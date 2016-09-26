@@ -97,7 +97,7 @@ class Report < ActiveRecord::Base
     {
       id:             delivery.id,
       number:         delivery.number,
-      customer:       delivery.customer.name,
+      customer:       [delivery.customer.name, delivery.customer.city].join(', '),
       tax:            delivery.tax,
       total_price:    total_price,
       products:       products_hash,
