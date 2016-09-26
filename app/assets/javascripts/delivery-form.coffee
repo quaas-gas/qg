@@ -3,7 +3,7 @@ class window.DeliveryForm
     newForm = $('form.new_delivery')
     customerSelect = newForm.find('select[name="delivery[customer_id]"]')
     customerSelect.on 'change', ->
-      window.location = '/deliveries/new?customer_id=' + customerSelect.val()
+      Turbolinks.visit '/deliveries/new?customer_id=' + customerSelect.val()
     if customerSelect.val() is ''
       customerSelect.select2('open')
     else
