@@ -33,6 +33,7 @@ class CustomersController < ApplicationController
   def create
     authorize Customer
     @customer = Customer.new customer_params
+    @customer.initial_stock_date = Date.current.yesterday.beginning_of_month
 
     if @customer.save
       redirect_to @customer, notice: t(:created, model: Customer.model_name.human)
