@@ -44,7 +44,7 @@ class CustomersController < ApplicationController
 
   def update
     if @customer.update customer_params
-      redirect_to @customer, notice: t(:updated, model: Customer.model_name.human)
+      redirect_to @customer, notice: t(:updated, model: Customer.model_name.human), turbolinks: true
     else
       render :edit
     end
