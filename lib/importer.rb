@@ -182,7 +182,6 @@ module Importer
 
     time = Benchmark.measure do
       import_xml from_year
-      # deactivate_old_customers
       link_deliveries_to_invoices
       link_invoice_items_to_products
       rebuild_search_index
@@ -196,7 +195,7 @@ module Importer
     puts __method__
 
     Report.create xml_data('reports', 'Report').map{ |node| ReportNode.new(node).to_h }
-    Statistic.create xml_data('statistics', 'Statistic').map{ |node| res = StatisticNode.new(node).to_h; puts res; res }
+    Statistic.create xml_data('statistics', 'Statistic').map{ |node| StatisticNode.new(node).to_h }
 
     Seller.create! xml_data('sellers', 'Seller').map(&:to_h)
     Product.create! xml_data('products', 'Product').map(&:to_h)
@@ -218,8 +217,6 @@ module Importer
       end
     end
     puts '', time.real
-
-    # Customer.where(gets_invoice: true).update_all tax: false
 
     Setting.customer_categories!
 
@@ -244,13 +241,6 @@ module Importer
   rescue ActiveRecord::RecordInvalid => e
     puts "#{e.message}: RN #{e.record.number}"
   end
-
-  # def self.deactivate_old_customers
-  #   print __method__, ' '
-  #   old_customers = Delivery.select(:customer_id).group(:customer_id).having('max(date) < ?', 5.month.ago)
-  #   Customer.where(id: old_customers).update_all(archived: true)
-  #   puts Customer.active.count
-  # end
 
   def self.link_deliveries_to_invoices
     puts __method__
