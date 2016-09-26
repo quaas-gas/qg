@@ -68,9 +68,10 @@ module ApplicationHelper
     link_to fa_icon('chevron-left', text: t(:list)), url, class: 'btn btn-default'
   end
 
-  def new_link(url, primary: true, label: t(:new))
+  def new_link(url, primary: true, label: t(:new), options: {})
     css = primary ? 'btn btn-primary' : 'btn btn-default'
-    link_to fa_icon('plus', text: label), url, class: css
+    options[:class] = css + ' hidden-print'
+    link_to fa_icon('plus', text: label), url, options
   end
 
   def edit_link(url)
