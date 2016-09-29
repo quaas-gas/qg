@@ -9,7 +9,7 @@ class DeliveryItem < ActiveRecord::Base
 
   def stock_diff
     return 0 unless product.in_stock
-    count - count_back
+    count - count_back.to_i
   end
 
   def total_price
