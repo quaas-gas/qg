@@ -16,6 +16,7 @@ gem 'rails-settings-cached'
 gem 'prawn'
 # See https://github.com/prawnpdf/prawn-table/pull/50
 gem 'prawn-table', git: 'https://github.com/J-F-Liu/prawn-table'
+gem 'rollbar'
 
 group :development, :test do
   gem 'byebug'
