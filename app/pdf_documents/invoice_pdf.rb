@@ -40,7 +40,7 @@ class InvoicePdf < ApplicationDocument
     move_down 20
     text invoice.post_message
     write_footer
-    write_stock_overview if customer.has_stock
+    write_stock_overview if customer.has_stock && products_in_stock.any?
   end
 
   def write_header
