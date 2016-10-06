@@ -84,7 +84,7 @@ class window.DeliveryForm
     tr = input.parents('tr')
     $.getJSON @customerPriceUrl + '?product_id=' + product_id, {}, (price) =>
       tr.find('.delivery_items_name input').val price.name
-      tr.find('.delivery_items_unit_price input').val(price.price).off('change').change()
+      tr.find('.delivery_items_unit_price input').val(price.price).change()
 
   showNewItem: (event) =>
     $('table.items-table tbody tr.hidden').first().removeClass('hidden')
@@ -105,6 +105,6 @@ class window.DeliveryForm
     inputNet = td.parents('tr').find('.delivery_items_unit_price input')
     taxVal = @parsePriceInput inputTax.val()
     inputNet.val @parsePriceOutput(taxVal / 1.19, 4)
-    inputNet.trigger 'change'
+    inputNet.change()
     td.find('p.unit-price-tax').show()
     td.find('div.form-group').remove()
