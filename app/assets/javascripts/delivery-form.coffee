@@ -2,7 +2,7 @@ class window.DeliveryForm
   constructor: ->
     newForm = $('form.new_delivery')
     customerSelect = newForm.find('select[name="delivery[customer_id]"]')
-    customerSelect.on 'change', ->
+    customerSelect.off('change').change ->
       Turbolinks.visit '/deliveries/new?customer_id=' + customerSelect.val()
     if customerSelect.val() is ''
       customerSelect.select2('open')
@@ -10,22 +10,22 @@ class window.DeliveryForm
       #$('tbody tr:first-child .delivery_items_count_back input').focus()
       $('.delivery_number input').focus()
 
-    $('input:checkbox[name="delivery[on_account]"]').change @toggleHeader
+    $('input:checkbox[name="delivery[on_account]"]').off('change').change @toggleHeader
 
     @renderSums()
-    $('.delivery_items_count input, .delivery_items_unit_price input').change @renderSums
-    $('.delivery_items_unit_price input').change @renderTaxUnitPrice
-    $('.delivery_items_count_back input').change @setCount
-    $('p.unit-price-tax a').click @unitPriceTaxClicked
+    $('.delivery_items_count input, .delivery_items_unit_price input').off('change').change @renderSums
+    $('.delivery_items_unit_price input').off('change').change @renderTaxUnitPrice
+    $('.delivery_items_count_back input').off('change').change @setCount
+    $('p.unit-price-tax a').off('click').click @unitPriceTaxClicked
 
     $('input[name="delivery[number]"]').change @checkNumber
     @checkNumber() if newForm.length > 0 # not on edit form
 
     @customerPriceUrl = $('.data').data('customerPriceUrl')
 
-    $('.delivery_items_product select').change @productChanged
+    $('.delivery_items_product select').off('change').change @productChanged
 
-    $('a.add-item').click @showNewItem
+    $('a.add-item').off('click').click @showNewItem
 
   toggleHeader: -> $('.page-header h2 > span').toggleClass('hidden')
 
@@ -84,7 +84,7 @@ class window.DeliveryForm
     tr = input.parents('tr')
     $.getJSON @customerPriceUrl + '?product_id=' + product_id, {}, (price) =>
       tr.find('.delivery_items_name input').val price.name
-      tr.find('.delivery_items_unit_price input').val(price.price).change()
+      tr.find('.delivery_items_unit_price input').val(price.price).off('change').change()
 
   showNewItem: (event) =>
     $('table.items-table tbody tr.hidden').first().removeClass('hidden')

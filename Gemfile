@@ -41,6 +41,7 @@ gem 'simple_form'
 gem 'slim-rails'
 gem 'react-rails'
 gem 'font-awesome-rails'
+gem 'jquery-turbolinks'
 
 group :development do
   gem 'better_errors'

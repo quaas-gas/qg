@@ -1,8 +1,8 @@
 class window.StatisticForm
   constructor: ->
-    $('select, input.date').change @inputChanged
+    $('select, input.date').off('change').change @inputChanged
     @inputChanged()
-    $('select[name="statistic[time_range_relative]"]').change @toggleDateFields
+    $('select[name="statistic[time_range_relative]"]').off('change').change @toggleDateFields
     @toggleDateFields()
   inputChanged: (event) =>
     jQuery.ajax(

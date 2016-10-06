@@ -23,5 +23,5 @@ sass:
   form.filter-months
     display: inline !important
 coffee:
-  $(document).on 'ready page:load', ->
+  $ ->
     $('select[name="months"]').change -> $('form.filter-months').submit()
