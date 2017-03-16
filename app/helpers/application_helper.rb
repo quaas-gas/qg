@@ -59,6 +59,11 @@ module ApplicationHelper
     content_tag(:span, number_with_delimiter(price.exchange_to('EU4TAX').exchange_to('EURTAX')), class: 'tax', title: 'brutto')
   end
 
+  def display_price_or_content(value, type)
+    value = value.to_i if type.to_sym == :content
+    number_with_delimiter(value)
+  end
+
   def nontax_price(price)
     price = Money.from_amount price unless price.is_a? Money
     content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET')), class: 'nontax', title: 'netto')

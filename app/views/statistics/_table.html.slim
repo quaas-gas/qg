@@ -1,7 +1,7 @@
 - result   = statistic.result
 - x_labels = statistic.labels_for(:x)
 - y_labels = statistic.labels_for(:y)
-table.table.table-striped.table-hover
+table.table.table-striped.table-hover.statistics
   thead
     tr
       th
@@ -15,14 +15,23 @@ table.table.table-striped.table-hover
       tr
         th = statistic.label_for(:y, y)
         - x_labels.each do |x|
-          td.price = number_to_human(row[x].to_f) if row[x]
+          td.price = display_price_or_content(row[x], statistic.sums_of) if row[x]
         - Statistic::SUM_TYPES.each do |sum_type|
-          th.price = number_to_human row[sum_type]
+          th.price = display_price_or_content row[sum_type], sum_type
   tfoot
     - Statistic::SUM_TYPES.each_with_index do |sum_type, index|
       tr
         th = t("statistic.sum.#{sum_type}")
         - x_labels.each do |x|
-          th.price = number_to_human result[sum_type][x]
-        th.price colspan=(index + 1) = number_to_human result[sum_type][:total]
+          th.price = display_price_or_content result[sum_type][x], sum_type
+        th.price colspan=(index + 1) = display_price_or_content result[sum_type][:total], sum_type
         td colspan=(4 - index)
+
+sass:
+  table.statistics
+    th, td
+      white-space: nowrap
+    th
+      font-size: small
+    td
+      font-size: smaller
