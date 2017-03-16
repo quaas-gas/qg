@@ -21,5 +21,6 @@ $ ->
     $input = $(input)
     placeholder = $input.data().placeholder
     $input.select2
+      width: '100%'
       theme: "bootstrap"
       placeholder: placeholder

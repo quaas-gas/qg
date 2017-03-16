@@ -50,6 +50,8 @@ class StatisticsController < ApplicationController
     @statistic = Statistic.new statistic_params
     @statistic.calculate!
     render partial: 'table', layout: false, locals: { statistic: @statistic }
+  rescue StandardError
+    render text: ''
   end
 
   private
