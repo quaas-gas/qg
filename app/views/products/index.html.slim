@@ -5,30 +5,45 @@
     => @products.count
     = Product.model_name.human count: @products.count
 
-div
-  ul.nav.nav-tabs
-    - @categories.each_with_index do |cat, index|
-      li class=('active' if index == 0)
-        a data-toggle="tab" href="##{cat.dasherize}" = cat
-  .tab-content
-    - @categories.each_with_index do |cat, index|
-      .tab-pane id=cat.dasherize class=('active' if index == 0)
-        h3 = cat
 
-        .table-responsive
-          table.table.table-striped.table-bordered.table-hover.table-clickable
-            thead
-              tr
-                th = Product.human_attribute_name(:number)
-                th = Product.human_attribute_name(:name)
-                th.price = Product.human_attribute_name(:content)
-                th.price = Product.human_attribute_name(:unit)
-                th.price = Product.human_attribute_name(:in_stock)
-            tbody
-              - @products.where(category: cat).each do |product|
-                tr data = {url: edit_product_url(product)}
-                  td = product.number
-                  td = product.name
-                  td.price = number_to_human product.content
-                  td = product.unit
-                  td.price = bool_icon product.in_stock
+ul.nav.nav-tabs
+  - Setting.product_groups.each do |group|
+    li class=('active' if @product_group == group)
+      = link_to group, products_url(group: group)
+
+
+- [true, false].each do |in_stock|
+  - products   = @products.where(in_stock: in_stock)
+  - categories = products.pluck(:category).uniq.sort
+
+  h3 = in_stock ? 'Bestandsartikel' : 'Gebühren'
+  div
+    ul.nav.nav-tabs
+      - categories.each_with_index do |cat, index|
+        li class=('active' if index == 0)
+          a data-toggle="tab" href="#cat_#{in_stock}_#{index}" = cat
+    .tab-content
+      - categories.each_with_index do |cat, index|
+        .tab-pane id="cat_#{in_stock}_#{index}" class=('active' if index == 0)
+
+          .table-responsive
+            table.table.table-striped.table-bordered.table-hover.table-clickable
+              thead
+                tr
+                  th = Product.human_attribute_name(:number)
+                  th = Product.human_attribute_name(:name)
+                  - if in_stock
+                    th.price = Product.human_attribute_name(:content)
+                    th       = Product.human_attribute_name(:unit)
+                  th.price Preise
+                  th.price Lieferungen
+              tbody
+                - products.where(category: cat).order(:number).each do |product|
+                  tr data = {url: edit_product_url(product)}
+                    td = product.number
+                    td = product.name
+                    - if in_stock
+                      td.price = number_to_human product.content
+                      td = product.unit
+                    td.price = product.prices.count
+                    td.price = product.delivery_items.count

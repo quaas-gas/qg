@@ -6,6 +6,7 @@
       .form-inputs
         = f.input :number
         = f.input :category, collection: Setting.product_categories
+        = f.input :group, collection: Setting.product_groups
         = f.input :name
         = f.input :content
         = f.input :unit

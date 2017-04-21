@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725223234) do
+ActiveRecord::Schema.define(version: 20170316224643) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -71,11 +71,16 @@ ActiveRecord::Schema.define(version: 20160725223234) do
     t.string   "name"
     t.integer  "count"
     t.integer  "count_back"
-    t.integer  "unit_price_cents",    default: 0,        null: false
-    t.string   "unit_price_currency", default: "EU4NET", null: false
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.integer  "unit_price_cents",     default: 0,        null: false
+    t.string   "unit_price_currency",  default: "EU4NET", null: false
+    t.datetime "created_at",                              null: false
+    t.datetime "updated_at",                              null: false
     t.jsonb    "others"
+    t.string   "product_category",     default: ""
+    t.string   "product_group",        default: ""
+    t.integer  "total_price_cents",    default: 0,        null: false
+    t.string   "total_price_currency", default: "EU4NET", null: false
+    t.integer  "total_content_in_g"
   end
 
   add_index "delivery_items", ["delivery_id"], name: "index_delivery_items_on_delivery_id", using: :btree
@@ -156,6 +161,7 @@ ActiveRecord::Schema.define(version: 20160725223234) do
     t.string   "category"
     t.boolean  "in_stock",       default: false
     t.string   "unit"
+    t.string   "group"
   end
 
   add_index "products", ["category"], name: "index_products_on_category", using: :btree
