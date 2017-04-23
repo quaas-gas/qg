@@ -1,0 +1,32 @@
+h1
+  => @report.count
+  |  results
+
+.row
+  .col-md-4
+    label Filters
+    br
+    = @report.filter
+  .col-md-4
+    label Groups
+    br
+    = @report.groups
+  .col-md-4
+    label Sums
+    br
+    = @report.sums
+br
+table.table.table-condensed.table-bordered.table-hover
+  thead
+    tr
+      - for field in @report.groups
+        th = field
+      - for field in @report.sums
+        th.price = field
+  tbody
+    - @report.rows.each do |row|
+      tr
+        - for field in @report.groups
+          td = row.send field
+        - for field in @report.sums
+          td.price = row.send field

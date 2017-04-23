@@ -22,6 +22,14 @@ class ReportsController < ApplicationController
     end
   end
 
+  def free
+    authorize Report
+    # @report = DeliveryReport.new filter: { product_group: 'PG' },
+    #   groups: %i( customer_region customer_category product_category ),
+    #   sums: [:counts, :total_price, :total_content]
+    @report = DeliveryReport.new filter: { date: 1.week.ago..Date.current }
+  end
+
   def new
     authorize Report
     @report = Report.new

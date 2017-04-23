@@ -10,7 +10,9 @@ Rails.application.routes.draw do
   resources :invoices
   resources :products
   resources :sellers, except: :show
-  resources :reports
+  resources :reports do
+    get :free, on: :collection
+  end
   resources :statistics do
     get :preview, on: :collection
   end
