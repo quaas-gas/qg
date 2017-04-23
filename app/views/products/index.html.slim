@@ -17,33 +17,26 @@ ul.nav.nav-tabs
   - categories = products.pluck(:category).uniq.sort
 
   h3 = in_stock ? 'Bestandsartikel' : 'Gebühren'
-  div
-    ul.nav.nav-tabs
-      - categories.each_with_index do |cat, index|
-        li class=('active' if index == 0)
-          a data-toggle="tab" href="#cat_#{in_stock}_#{index}" = cat
-    .tab-content
-      - categories.each_with_index do |cat, index|
-        .tab-pane id="cat_#{in_stock}_#{index}" class=('active' if index == 0)
-
-          .table-responsive
-            table.table.table-striped.table-bordered.table-hover.table-clickable
-              thead
-                tr
-                  th = Product.human_attribute_name(:number)
-                  th = Product.human_attribute_name(:name)
-                  - if in_stock
-                    th.price = Product.human_attribute_name(:content)
-                    th       = Product.human_attribute_name(:unit)
-                  th.price Preise
-                  th.price Lieferungen
-              tbody
-                - products.where(category: cat).order(:number).each do |product|
-                  tr data = {url: edit_product_url(product)}
-                    td = product.number
-                    td = product.name
-                    - if in_stock
-                      td.price = number_to_human product.content
-                      td = product.unit
-                    td.price = product.prices.count
-                    td.price = product.delivery_items.count
+  .table-responsive
+    table.table.table-striped.table-bordered.table-hover.table-clickable
+      thead
+        tr
+          th = Product.human_attribute_name(:category)
+          th = Product.human_attribute_name(:number)
+          th = Product.human_attribute_name(:name)
+          - if in_stock
+            th.price = Product.human_attribute_name(:content)
+            th       = Product.human_attribute_name(:unit)
+          th.price Preise
+          th.price Lieferungen
+      tbody
+        - products.order(:category, :number).each do |product|
+          tr data = {url: edit_product_url(product)}
+            td = product.category
+            td = product.number
+            td = product.name
+            - if in_stock
+              td.price = number_to_human product.content
+              td = product.unit
+            td.price = product.prices.count
+            td.price = product.delivery_items.count
