@@ -6,10 +6,11 @@ class DeliveryReport
   GROUPS = {
     region:            'customers.region',
     customer_category: 'customers.category',
-    delivery_number:   'deliveries.number',
     on_account:        'deliveries.on_account',
+    delivery_number:   'deliveries.number',
     product_group:     'delivery_items.product_group',
     product_category:  'delivery_items.product_category',
+    product_number:    'delivery_items.product_number',
   }
   SUMS = {
     counts:        'sum(count)',
