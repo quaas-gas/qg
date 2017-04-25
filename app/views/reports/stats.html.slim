@@ -1,0 +1,37 @@
+h1 Statistik
+
+- @statistics.each do |stat|
+  h4 = stat.name
+
+  - result = stat.results
+  - sums = result.delete(:sums)
+  .table-responsive
+    table.table.table-hover.table-striped.table-condensed.table-bordered.statistic
+      thead
+        tr
+          th Kategorie
+          th
+          - stat.product_categories_content.each do |prod_cat|
+            th.price = prod_cat
+          th.price kg ges
+          - stat.product_categories_fees.each do |prod_cat|
+            th.price = prod_cat
+          th.price Netto
+          th.price Brutto
+
+      tbody
+        - result.each do |cust_cat, prod_cats|
+          = render 'stats_row', label: cust_cat, prod_cats: prod_cats, stat: stat
+      tfoot
+        = render 'stats_row', label: 'Summe', prod_cats: sums, stat: stat
+
+sass:
+  table.statistic
+    tfoot
+      td
+        font-weight: bold
+    td, th
+      padding: 3px !important
+    span.content
+      font-style: italic
+      color: blue

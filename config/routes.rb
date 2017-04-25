@@ -12,6 +12,7 @@ Rails.application.routes.draw do
   resources :sellers, except: :show
   resources :reports do
     get :free, on: :collection
+    get :stats, on: :collection
   end
   resources :statistics do
     get :preview, on: :collection

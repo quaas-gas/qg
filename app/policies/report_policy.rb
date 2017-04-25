@@ -4,6 +4,10 @@ class ReportPolicy < ApplicationPolicy
     admin?
   end
 
+  def stats?
+    admin?
+  end
+
   class Scope < Scope
     def resolve
       scope

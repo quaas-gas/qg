@@ -24,10 +24,14 @@ class ReportsController < ApplicationController
 
   def free
     authorize Report
-    # @report = DeliveryReport.new filter: { product_group: 'PG' },
-    #   groups: %i( customer_region customer_category product_category ),
-    #   sums: [:counts, :total_price, :total_content]
-    @report = DeliveryReport.new filter: { date: 1.week.ago..Date.current }
+    @report = DeliveryReport.new filter: { date: 1.month.ago..Date.current }
+  end
+
+  def stats
+    authorize Report
+    @statistics = Setting.statistics.map do |stat|
+      SalesStatistic.new stat.merge( date: 3.month.ago..Date.current ).symbolize_keys
+    end
   end
 
   def new

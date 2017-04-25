@@ -1,6 +1,8 @@
 class DeliveryReport
   FILTERS = {
     product_group: 'delivery_items.product_group',
+    region:        'customers.region',
+    has_content:   'delivery_items.has_content',
     date:          'deliveries.date'
   }
   GROUPS = {
@@ -8,6 +10,7 @@ class DeliveryReport
     customer_category: 'customers.category',
     on_account:        'deliveries.on_account',
     delivery_number:   'deliveries.number',
+    has_content:       'delivery_items.has_content',
     product_group:     'delivery_items.product_group',
     product_category:  'delivery_items.product_category',
     product_number:    'delivery_items.product_number',
@@ -79,10 +82,25 @@ class DeliveryReport
 
   class Row
     FIELDS = DeliveryReport.fields
+    SUMS = DeliveryReport.sums
     attr_reader *FIELDS
 
     def initialize(hash)
-      FIELDS.each { |attr| instance_variable_set "@#{attr}", hash[attr.to_s] }
+      @attributes = hash.symbolize_keys.slice *FIELDS
+      SUMS.each { |sum| @attributes[sum] = @attributes[sum].to_i if @attributes.has_key? sum }
+      @attributes.each { |attr, value| instance_variable_set "@#{attr}", value }
+    end
+
+    def [](key)
+      @attributes[key]
+    end
+
+    def total_content
+      @attributes[:total_content].to_i / 1000
+    end
+
+    def total_price
+      Money.new(@attributes[:total_price], 'EU4NET')
     end
   end
 end
