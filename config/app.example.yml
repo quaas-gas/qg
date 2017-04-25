@@ -1,0 +1,64 @@
+# config/app.yml for rails-settings-cached
+defaults: &defaults
+  customer_regions:
+    - Region 1
+    - Region 2
+    - Region 3
+  customer_categories:
+    - CustCat 1
+    - CustCat 2
+  product_groups:
+    - G1
+    - G2
+  product_cats:
+    has_content:
+      - ProdCat 1
+      - ProdCat 2
+    fees:
+      - Fee 1
+      - Fee 2
+  statistics:
+    - name: Bigger region
+      product_group: G1
+      region:
+        - Region 1
+        - Region 2
+    - name: Other region
+      product_group: G1
+      region:
+        - Region 3
+    - name: All
+      product_group: G1
+
+  foo: "Foo"
+  bar: 123
+  devise_secret_key: abc123
+  company:
+    name: My Company
+    short: Comp
+    address: |
+      234 Gingerway
+      Guerneville
+    tax_info: |
+      Tax-No.: 12345
+      XXXXX
+      Other tax number: 4321
+    phone: "0555-555555"
+    fax: "0555-5555556"
+    email: info@my-company.com
+    legal_info: Whatever permits you
+    ceo: John Doe
+    bank_info: |
+      Bank: Money Pot
+      Account: 873456
+      IBAN: 99999999999999999
+      BIC: KSJNFHSDJD
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+production:
+  <<: *defaults
