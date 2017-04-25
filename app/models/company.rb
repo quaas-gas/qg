@@ -9,8 +9,10 @@ class Company
 
   def initialize
     comp = Setting.company
-    ATTRS.each do |attr|
-      instance_variable_set "@#{attr}", comp[attr]&.strip
+    if comp
+      ATTRS.each do |attr|
+        instance_variable_set "@#{attr}", comp[attr]&.strip
+      end
     end
   end
 
