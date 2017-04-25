@@ -24,6 +24,7 @@ class DeliveryItem < ActiveRecord::Base
   def set_sum_values
     self.count ||= 0
     self.total_price = count * unit_price
+    self.has_content = product&.in_stock? == true
     return unless product.present?
     self.total_content_in_g = (count * product.content * 1000)
     self.product_number     = product.number

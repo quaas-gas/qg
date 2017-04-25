@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170423184014) do
+ActiveRecord::Schema.define(version: 20170423203029) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,9 +82,11 @@ ActiveRecord::Schema.define(version: 20170423184014) do
     t.string   "total_price_currency", default: "EU4NET", null: false
     t.integer  "total_content_in_g"
     t.string   "product_number"
+    t.boolean  "has_content"
   end
 
   add_index "delivery_items", ["delivery_id"], name: "index_delivery_items_on_delivery_id", using: :btree
+  add_index "delivery_items", ["has_content"], name: "index_delivery_items_on_has_content", using: :btree
   add_index "delivery_items", ["product_id"], name: "index_delivery_items_on_product_id", using: :btree
   add_index "delivery_items", ["product_number"], name: "index_delivery_items_on_product_number", using: :btree
 
