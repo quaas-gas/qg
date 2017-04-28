@@ -8,7 +8,9 @@ Rails.application.routes.draw do
   end
   resources :deliveries
   resources :invoices
-  resources :products
+  resources :products, except: :index do
+    get '(/:group)' => :index, on: :collection, as: ''
+  end
   resources :sellers, except: :show
   resources :reports do
     get :free, on: :collection
