@@ -12,6 +12,16 @@ class StatisticsController < ApplicationController
     @statistic.calculate!
   end
 
+  def overview
+    authorize Statistic
+    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_year
+    @end_date   = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
+
+    @statistics = Setting.statistics.map do |stat|
+      SalesStatistic.new stat.merge( date: @start_date..@end_date ).symbolize_keys
+    end
+  end
+
   def new
     authorize Statistic
     @statistic = Statistic.new time_range: { relative: 'last_year' },

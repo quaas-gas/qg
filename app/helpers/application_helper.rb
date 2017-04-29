@@ -64,9 +64,9 @@ module ApplicationHelper
     number_with_delimiter(value)
   end
 
-  def nontax_price(price)
+  def nontax_price(price, title: 'netto')
     price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET')), class: 'nontax', title: 'netto')
+    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET')), class: 'nontax', title: title)
   end
 
   def list_link(url)

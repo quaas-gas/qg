@@ -1,0 +1,25 @@
+tr
+  td = label
+  /td
+    | EUR
+    br
+    span.content kg
+  - stat.product_categories_content.each do |prod_cat|
+    - prod_cat_data = prod_cats[prod_cat]
+    td.price
+      span.content = prod_cat_data && number_with_delimiter(prod_cat_data[:total_content])
+    td.price = prod_cat_data && nontax_price(prod_cat_data[:total_price])
+  td.price
+    span.content = number_with_delimiter prod_cats[:sum][:total_content]
+
+  /- Setting.product_cats['fees'].each do |prod_cat|
+    td.price
+      - if (prod_cat_data = prod_cats[prod_cat])
+        = nontax_price prod_cat_data[:total_price]
+  td.price
+    - sum = Setting.product_cats['fees'].map { |prod_cat| (prod_cats[prod_cat] && prod_cats[prod_cat][:total_price]) || Money.new(0) }.sum
+    - if sum > Money.new(0)
+      - title = stat.product_categories_fees.map { |cat| prod_cats[cat] ? "#{cat}: #{prod_cats[cat][:total_price].to_f.round(2)}" : nil }
+      = nontax_price(sum, title: title.compact.join(', '))
+  td.price = nontax_price prod_cats[:sum][:total_price]
+  td.price = tax_price prod_cats[:sum][:total_price]

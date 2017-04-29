@@ -27,13 +27,6 @@ class ReportsController < ApplicationController
     @report = DeliveryReport.new filter: { date: 1.month.ago..Date.current }
   end
 
-  def stats
-    authorize Report
-    @statistics = Setting.statistics.map do |stat|
-      SalesStatistic.new stat.merge( date: 3.month.ago..Date.current ).symbolize_keys
-    end
-  end
-
   def new
     authorize Report
     @report = Report.new

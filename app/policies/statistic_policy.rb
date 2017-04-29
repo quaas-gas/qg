@@ -4,6 +4,9 @@ class StatisticPolicy < ApplicationPolicy
     true
   end
 
+  def overview?
+    admin?
+  end
   class Scope < Scope
     def resolve
       scope

@@ -22,6 +22,7 @@
             - Report.in_menu.all.each do |report|
               li
                 = link_to report.name, report
+            li = link_to 'Übersicht', overview_statistics_url
             - Statistic.all.each do |stat|
               li
                 = link_to stat.name, stat
