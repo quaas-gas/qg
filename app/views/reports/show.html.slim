@@ -1,70 +1,56 @@
 .page-header
-  /= link_to reports_path, class: 'btn btn-default' do
-    span.glyphicon.glyphicon-list-alt
-    =< t(:list)
-  /= link_to edit_report_path(@report), class: 'btn btn-primary' do
-    span.glyphicon.glyphicon-pencil
-    =< t(:edit)
-  /=> link_to @report, method: :delete, data: { confirm: t(:confirm_delete, model: Report.model_name.human) }, class: 'btn btn-danger' do
-    span.glyphicon.glyphicon-remove
-    =< t(:delete)
-  h2
-    => @report.name
-    /small = Report.model_name.human
+  h2 => @report.name
 
 .search-form
   form.form-inline
     .form-group
       label.string.required.control-label> for="start-date" Vom
-      input#start-date.form-control.date> type="text" name="start_date" value=@start_date
+      input#start-date.form-control.date> type="text" name="start_date" value=@report.start_date
       label.string.required.control-label> for="end-date" bis
-      input#end-date.form-control.date> type="text" name="end_date" value=@end_date
-      /button.btn.btn-info> type="submit" Anzeigen
-      = pdf_link report_url(@report, format: :pdf, start_date: @start_date, end_date: @end_date)
+      input#end-date.form-control.date> type="text" name="end_date" value=@report.end_date
+      = pdf_link report_url(@report, format: :pdf, start_date: @report.start_date, end_date: @report.end_date)
 
-
-table.table.table-condensed.table-striped.table-hover.table-clickable
-  - @report.grouped_deliveries[:dates].each do |date, date_hash|
+table.table.table-condensed.table-striped.table-hover
+  - @report.days.each do |day|
     thead
       tr
-        th colspan=(6 + @report.products.size + @report.content_product_categories.size)
-          h3 = ldate date, format: '%a %d.%m.%Y'
+        th colspan=(5 + @report.products.count)
+          h3 = ldate day, format: '%a %d.%m.%Y'
     tbody
-      - date_hash[:on_account].each do |on_account, on_account_hash|
-        tr.header-row
-          th = on_account ? 'Lieferschein' : 'Quittung'
-          th Kunde
-          - @report.products.each do |product|
-            th.price = product
-          th Artikel
-          - @report.content_product_categories.each do |category|
-            th.content = category
-          th.content kg ges
-          th.price Netto
-          th.price Brutto
-
-        - on_account_hash[:deliveries].each do |delivery|
-          tr data = {url: delivery_url(delivery[:id])} class=(delivery[:tax] ? 'tax' : 'nontax')
-            td = delivery[:number]
-            td = delivery[:customer]
+      - [false, true].each do |on_account|
+        - deliveries = @report.deliveries_by(day: day, on_account: on_account)
+        - if deliveries.any?
+          tr.header-row
+            th = on_account ? 'Lieferschein' : 'Quittung'
+            th Kunde
             - @report.products.each do |product|
-              td.price = delivery[:products][product]
-            td = delivery[:other_products].map { |i| "#{i[:count]} x #{i[:name] }" }.join('<br>').html_safe
-            - @report.content_product_categories.each do |category|
-              td.content = delivery[:content][category] ? delivery[:content][category].round(0) : ''
-            th.content = delivery[:content][:total].round(0)
-            td.price = nontax_price delivery[:total_price]
-            td.price = tax_price delivery[:total_price]
-      = render 'sum_row', label: 'Bareinnahmen', hash: date_hash[:on_account][false], css_class: 'on-account-sum-row'
-      = render 'sum_row', label: 'auf Rechnung', hash: date_hash[:on_account][true], css_class: 'on-account-sum-row'
-      = render 'sum_row', label: ldate(date), hash: date_hash, css_class: 'day-sum-row'
+              th.price = product.number
+            th.content kg ges
+            th.price Netto
+            th.price Brutto
+          - deliveries.each do |delivery|
+            tr
+              td = delivery.number
+              td = delivery.customer
+              - products = delivery.products
+              - @report.products.each do |product|
+                td.price = products[product.number]
+              th.content = delivery.total_content
+              td.price = nontax_price(delivery.total_price)
+              td.price =    tax_price(delivery.total_price)
+      - [false, true, nil].each do |on_account|
+        - sums = @report.sums_by(day: day, on_account: on_account)
+        - label = on_account ? 'auf Rechnung' : 'Bareinnahmen'
+        - label = ldate(day, format: '%a %d.%m.%Y') if on_account.nil?
+        = render 'sum_row', sums: sums, css_class: 'on-account-sum-row', label: label
+
   tfoot
     tr
-      td colspan=(6 + @report.products.size + @report.content_product_categories.size)
-    tr
-    = render 'sum_row', label: 'Barzahler', hash: @report.on_account_sums(false), css_class: 'total-sum-row'
-    = render 'sum_row', label: 'auf Rechnung', hash: @report.on_account_sums(true), css_class: 'total-sum-row'
-    = render 'sum_row', label: 'Gesamtsumme', hash: @report.grouped_deliveries, css_class: 'total-sum-row'
+      th colspan=(5 + @report.products.count)
+    - [false, true, nil].each do |on_account|
+      - label = on_account ? 'auf Rechnung' : 'Bareinnahmen'
+      - label = 'Gesamtsumme' if on_account.nil?
+      = render 'sum_row', sums: @report.sums_by(on_account: on_account), css_class: 'total-sum-row', label: label
 
 coffee:
   $ ->

@@ -6,8 +6,10 @@ class DeliveryReport
     date:          'deliveries.date'
   }
   GROUPS = {
+    date:              'deliveries.date',
     region:            'customers.region',
     customer_category: 'customers.category',
+    customer_name:     'customers.name',
     on_account:        'deliveries.on_account',
     delivery_number:   'deliveries.number',
     has_content:       'delivery_items.has_content',
@@ -88,6 +90,8 @@ class DeliveryReport
     def initialize(hash)
       @attributes = hash.symbolize_keys.slice *FIELDS
       SUMS.each { |sum| @attributes[sum] = @attributes[sum].to_i if @attributes.has_key? sum }
+      @attributes[:date] = Date.parse(@attributes[:date]) if @attributes.has_key? :date
+      @attributes[:on_account] = @attributes[:on_account] == 't' if @attributes.has_key? :on_account
       @attributes.each { |attr, value| instance_variable_set "@#{attr}", value }
     end
 

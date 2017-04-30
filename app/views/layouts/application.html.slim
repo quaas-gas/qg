@@ -13,7 +13,7 @@ html
     .page-wrapper
       header
         == render 'layouts/navigation'
-      main[role="main"]
+      main role="main" class=(controller_name == 'reports' ? 'container-fluid' : 'container')
         == render 'layouts/messages'
         == yield
       footer style="height: 60px;"
