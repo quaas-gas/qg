@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
+## DeliveryReport
 class DeliveryReport
   FILTERS = {
     product_group: 'delivery_items.product_group',
     region:        'customers.region',
     has_content:   'delivery_items.has_content',
     date:          'deliveries.date'
-  }
+  }.freeze
   GROUPS = {
     region:            'customers.region',
     customer_category: 'customers.category',
@@ -13,18 +16,18 @@ class DeliveryReport
     has_content:       'delivery_items.has_content',
     product_group:     'delivery_items.product_group',
     product_category:  'delivery_items.product_category',
-    product_number:    'delivery_items.product_number',
-  }
+    product_number:    'delivery_items.product_number'
+  }.freeze
   SUMS = {
     counts:        'sum(count)',
     total_price:   'sum(total_price_cents)',
     total_content: 'sum(total_content_in_g)'
-  }
+  }.freeze
 
   attr_reader :filter, :groups, :sums, :fields
 
   def initialize(filter: {}, groups: GROUPS.keys, sums: SUMS.keys)
-    @filter = filter.symbolize_keys.slice *FILTERS.keys
+    @filter = filter.symbolize_keys.slice(*FILTERS.keys)
     @groups = groups.map(&:to_sym) & GROUPS.keys
     @sums   = sums.map(&:to_sym) & SUMS.keys
     @fields = @groups + @sums
@@ -67,11 +70,12 @@ class DeliveryReport
   end
 
   def sql
-    _groups = groups.map { |g| GROUPS[g] }
-    DeliveryItem.joins(delivery: :customer)
+    mapped_groups = groups.map { |g| GROUPS[g] }
+    DeliveryItem
+      .joins(delivery: :customer)
       .where(mapped_filter)
-      .order(_groups)
-      .group(_groups)
+      .order(mapped_groups)
+      .group(mapped_groups)
       .select(mapping(groups, GROUPS) + mapping(sums, SUMS))
       .to_sql
   end
@@ -80,14 +84,15 @@ class DeliveryReport
     selected.map { |field| "#{dict[field]} as #{field}" }
   end
 
+  ## Row
   class Row
     FIELDS = DeliveryReport.fields
     SUMS = DeliveryReport.sums
-    attr_reader *FIELDS
+    attr_reader(*FIELDS)
 
     def initialize(hash)
-      @attributes = hash.symbolize_keys.slice *FIELDS
-      SUMS.each { |sum| @attributes[sum] = @attributes[sum].to_i if @attributes.has_key? sum }
+      @attributes = hash.symbolize_keys.slice(*FIELDS)
+      SUMS.each { |sum| @attributes[sum] = @attributes[sum].to_i if @attributes.key? sum }
       @attributes.each { |attr, value| instance_variable_set "@#{attr}", value }
     end
 

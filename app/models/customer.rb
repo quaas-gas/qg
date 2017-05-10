@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+## Customer
 class Customer < ActiveRecord::Base
   include PgSearch
 
@@ -7,12 +10,12 @@ class Customer < ActiveRecord::Base
   has_many :invoices, inverse_of: :customer
   has_many :open_deliveries, -> { where(on_account: true, invoice_id: nil) }, class_name: 'Delivery'
 
-  multisearchable against: [:id, :salut, :name, :name2, :street, :city, :category, :invoice_address]
+  multisearchable against: %i[id salut name name2 street city category invoice_address]
 
   accepts_nested_attributes_for :prices,
                                 allow_destroy: true,
                                 reject_if: lambda { |attributes|
-                                  unless attributes['in_stock'].present?
+                                  if attributes['in_stock'].blank?
                                     if attributes['id'].present?
                                       attributes['price'].blank?
                                     else
@@ -23,10 +26,10 @@ class Customer < ActiveRecord::Base
 
   validates :name, :city, presence: true
 
-  scope :archived, -> { where(archived: true)  }
-  scope :active,   -> { where(archived: false) }
-  scope :tax,      -> { where(tax: true)  }
-  scope :nontax,   -> { where(tax: false) }
+  scope(:archived, -> { where(archived: true)  })
+  scope(:active,   -> { where(archived: false) })
+  scope(:tax,      -> { where(tax: true)  })
+  scope(:nontax,   -> { where(tax: false) })
 
   def last_invoice
     @last_invoice ||= invoices.order(number: :desc).first
@@ -34,25 +37,21 @@ class Customer < ActiveRecord::Base
 
   def generate_next_invoice(delivery_ids)
     invoice_hash = {
-      number: Invoice.next_number,
-      tax: tax,
-      address: invoice_address,
-      date: Date.current,
+      number:     Invoice.next_number,
+      tax:        tax,
+      address:    invoice_address,
+      date:       Date.current,
       deliveries: open_deliveries.where(id: delivery_ids)
     }
     invoice_hash.merge! last_invoice.attributes.slice('pre_message', 'post_message') if last_invoice
-    invoices.build(invoice_hash) { |invoice| invoice.build_items_from_deliveries }
+    invoices.build(invoice_hash, &:build_items_from_deliveries)
   end
 
   def history(months = 4)
-    date        = months.month.ago.to_date.at_end_of_month
-    _deliveries = deliveries.includes(items: :product).where('date > ?', date).order(date: :desc).to_a
-    _invoices   = invoices.  includes(items: :product).where('date > ?', date).order(date: :desc)
-    _stocks = _invoices.where('date >= ?', initial_stock_date).map { |invoice| Stock.new self, invoice.date }
-    _stocks << Stock.new(self, initial_stock_date) if _stocks.none?(&:initial?)
-    [Stock.new(self, Date.current)] + (_deliveries + _invoices.to_a + _stocks).sort do |a, b|
+    date = months.month.ago.to_date.at_end_of_month
+    history_items(date).sort do |a, b|
       res = b.date <=> a.date
-      (res == 0) ? b.class.name <=> a.class.name : res
+      res.zero? ? b.class.name <=> a.class.name : res
     end
   end
 
@@ -64,4 +63,27 @@ class Customer < ActiveRecord::Base
     "#{name}, #{city}, #{street}"
   end
 
+  private
+
+  def history_items(date)
+    last_deliveries = deliveries_since(date).to_a
+    last_invoices   = invoices_since(date).to_a
+    last_stocks     = invoice_stocks_since(date)
+    last_stocks << Stock.new(self, initial_stock_date) if last_stocks.none?(&:initial?)
+    [Stock.new(self, Date.current)] + (last_deliveries + last_invoices + last_stocks)
+  end
+
+  def deliveries_since(date)
+    deliveries.includes(items: :product).where('date > ?', date).order(date: :desc)
+  end
+
+  def invoices_since(date)
+    invoices.includes(items: :product).where('date > ?', date).order(date: :desc)
+  end
+
+  def invoice_stocks_since(date)
+    invoices_since(date).where('date >= ?', initial_stock_date).map do |invoice|
+      Stock.new self, invoice.date
+    end
+  end
 end

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+## DeliveryItem
 class DeliveryItem < ActiveRecord::Base
   belongs_to :delivery, inverse_of: :items
   belongs_to :product
@@ -25,7 +28,7 @@ class DeliveryItem < ActiveRecord::Base
     self.count ||= 0
     self.total_price = count * unit_price
     self.has_content = product&.in_stock? == true
-    return unless product.present?
+    return if product.blank?
     self.total_content_in_g = (count * product.content * 1000)
     self.product_number     = product.number
     self.product_category   = product.category

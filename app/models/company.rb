@@ -1,7 +1,9 @@
-class Company
+# frozen_string_literal: true
 
-  ATTRS = %w[name short address tax_info phone fax email legal_info ceo bank_info]
-  attr_reader *ATTRS
+## class company
+class Company
+  ATTRS = %w[name short address tax_info phone fax email legal_info ceo bank_info].freeze
+  attr_reader(*ATTRS)
 
   def self.current
     new
@@ -9,10 +11,9 @@ class Company
 
   def initialize
     comp = Setting.company
-    if comp
-      ATTRS.each do |attr|
-        instance_variable_set "@#{attr}", comp[attr]&.strip
-      end
+    return unless comp
+    ATTRS.each do |attr|
+      instance_variable_set "@#{attr}", comp[attr]&.strip
     end
   end
 
@@ -21,11 +22,11 @@ class Company
   end
 
   def contact_lines
-    %w(name address tax_info).map { |set| send(set).strip }.join("\n")
+    %w[name address tax_info].map { |set| send(set).strip }.join("\n")
   end
 
   def legal_info_lines
-    items = %w(legal_info).map { |set| send(set).strip }
+    items = [legal_info.strip]
     items << I18n.t(:ceo) + ': ' + ceo.strip
     items.join("\n")
   end

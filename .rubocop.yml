@@ -2,3 +2,5 @@ Rails:
   Enabled: true
 Metrics/LineLength:
   Max: 100
+Metrics/AbcSize:
+  Max: 18

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+## Delivery
 class Delivery < ActiveRecord::Base
   include PgSearch
 
@@ -7,10 +10,10 @@ class Delivery < ActiveRecord::Base
 
   has_many :items, -> { order :product_id }, class_name: 'DeliveryItem', inverse_of: :delivery
 
-  validates :number, :date, presence: true #, uniqueness: true
+  validates :number, :date, presence: true
   validate :validate_items
 
-  multisearchable against: [:number, :number_show]
+  multisearchable against: %i[number number_show]
 
   accepts_nested_attributes_for :items,
                                 allow_destroy: true,
@@ -18,8 +21,12 @@ class Delivery < ActiveRecord::Base
                                   attributes['count'].blank? || attributes['unit_price'].blank?
                                 }
 
-  scope :on_account, -> { where on_account: true }
-  scope :pending, -> { includes(:customer, :items).order(date: :desc, number: :desc).where(customer: Customer.active, on_account: true, invoice_id: nil) }
+  scope(:on_account, -> { where on_account: true })
+  scope(:pending, lambda {
+    includes(:customer, :items)
+    .order(date: :desc, number: :desc)
+    .where(customer: Customer.active, on_account: true, invoice_id: nil)
+  })
 
   def self.years
     sql = 'SELECT DISTINCT extract(year from date) AS year FROM "deliveries" order by year DESC'
@@ -47,5 +54,4 @@ class Delivery < ActiveRecord::Base
   def validate_items
     errors.add(:items, :too_few) if items.empty?
   end
-
 end
