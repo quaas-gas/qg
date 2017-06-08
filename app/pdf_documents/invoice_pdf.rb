@@ -149,7 +149,7 @@ class InvoicePdf < ApplicationDocument
       tax = sum.exchange_to('TAX')
       total = sum.exchange_to('EU4TAX').exchange_to('EURTAX')
       [['Nettobetrag', display_price(sum)],
-       ['MwSt', display_price(tax)],
+       ['MwSt 19%', display_price(tax)],
        ['Rechnungsendbetrag', display_price(total)]]
     end
   end
