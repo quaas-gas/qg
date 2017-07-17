@@ -68,12 +68,13 @@ class ReportsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def report_params
-    p = params.require(:report).permit(:name, :product_group, :product_categories,
-      :content_product_categories, :products, :in_menu)
-    %i(products product_categories content_product_categories).each do |listing|
-      p[listing] = p[listing].split("\n").map(&:chomp)
+    allowed = [
+      :name, :in_menu, :product_group, product_categories: [], content_product_categories: []
+    ]
+    params.require(:report).permit(allowed).tap do |p|
+      p[:product_categories].reject!(&:blank?)
+      p[:content_product_categories].reject!(&:blank?)
     end
-    p
   end
 
   def get_date(date, default)
