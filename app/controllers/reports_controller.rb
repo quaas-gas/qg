@@ -9,9 +9,9 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @start_date = get_date :start_date, Date.current.beginning_of_week
-    @end_date   = get_date :end_date,   Date.current
-    @report.calculate! @start_date, @end_date
+    start_date = get_date :start_date, Date.current.beginning_of_week
+    end_date   = get_date :end_date,   Date.current
+    @report.calculate! start_date, end_date
 
     respond_to do |format|
       format.html
