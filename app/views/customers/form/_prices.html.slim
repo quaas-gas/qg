@@ -23,8 +23,9 @@ section
                                   label: false, label_method: :number, disabled: true
                 /p = price_form.object.product.number
             td = price_form.input :active, label: false
-            td.price = price_form.input :price, label: false
-            td.price.tax = tax_price price_form.object.price
+            td.price.non-tax = price_form.input :price, label: false
+            td.price
+              p.price-tax = link_to tax_price(price_form.object.price), '#'
             td.price = price_form.input :discount, label: false
             td.delete-price
               - unless price.new_record?
@@ -37,7 +38,18 @@ section
 
 coffee:
   parsePriceInput  = (val) -> val.replace(',', '.')
-  parsePriceOutput = (val) -> val.toFixed(2).toString().replace('.', ',')
+  parsePriceOutput = (val, num) -> parseFloat(val).toFixed(num).toString().replace('.', ',')
+  customerPriceTaxChanged = (event) =>
+    inputTax = $(event.target)
+    td       = inputTax.closest('td')
+    tr       = td.closest('tr')
+    taxVal   = parsePriceInput(inputTax.val())
+    inputNet = tr.find('td.price.non-tax input')
+    inputNet.val parsePriceOutput(taxVal / 1.19, 4)
+    tr.find('p.price-tax a').text parsePriceOutput(taxVal, 2)
+    inputNet.change()
+    td.find('p.price-tax').show()
+    td.find('div.form-group').remove()
 
   $ ->
     $('td.delete-price a').off('click').click (event) =>
@@ -49,4 +61,15 @@ coffee:
     $('.customer_prices_price input').off('keyup').keyup (event) =>
       input = $(event.target)
       val = parsePriceInput(input.val())
-      input.parents('tr').find('td.price.tax').text parsePriceOutput(val * 1.19)
+      input.parents('tr').find('td.price.tax a').text parsePriceOutput(val * 1.19)
+
+    $('p.price-tax a').off('click').click (event) =>
+      event.preventDefault()
+      link = $(event.target)
+      td = link.closest('td')
+      td.find('p.price-tax').hide()
+      td.append $("""<div class="form-group"><input class="form-control" type="text" value="#{link.text()}" ></div>""")
+      input = td.find('input')
+      input.focus()
+      input.focusout customerPriceTaxChanged
+
