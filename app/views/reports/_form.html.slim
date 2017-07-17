@@ -1,24 +1,15 @@
 = simple_form_for(@report) do |f|
   = f.error_notification
 
-  .form-inputs
-    = f.input :name
-    = f.input :product_group, collection: Setting.product_groups, include_blank: false
-    /= f.input :product_categories
-    /= f.input :products_field, as: :text
-    .form-group.text.optional.report_products
-      label.text.optional.control-label for="report_products" Artikel in Liste
-      textarea#report_products.text.optional.form-control name="report[products]" rows=@report.products&.size
-        = @report.products&.join("\n")
-    .form-group.text.optional.report_product_categories
-      label.text.optional.control-label for="report_product_categories" Berücksichtigte Artikelkategorien
-      textarea#report_product_categories.text.optional.form-control name="report[product_categories]" rows=@report.product_categories&.size
-        = @report.product_categories&.join("\n")
-    .form-group.text.optional.report_content_product_categories
-      label.text.optional.control-label for="report_content_product_categories" Artikelkategorien mit Inhalt
-      textarea#report_content_product_categories.text.optional.form-control name="report[content_product_categories]" rows=@report.content_product_categories&.size
-        = @report.content_product_categories&.join("\n")
-    = f.input :in_menu
+  .row
+    .col-md-6
+      = f.input :name
+      = f.input :in_menu
+    .col-md-6
+      - category_select_options = { collection: Setting.product_categories, input_html: { class: 'select2', multiple: true } }
+      = f.input :product_group, collection: Setting.product_groups, include_blank: false
+      = f.input :product_categories,         category_select_options
+      = f.input :content_product_categories, category_select_options
 
   .form-actions
     = f.button :submit
