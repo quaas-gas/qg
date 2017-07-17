@@ -4,7 +4,7 @@ class Report < ActiveRecord::Base
 
   attr_reader :start_date, :end_date
 
-  scope :in_menu, -> { where in_menu: true }
+  scope(:in_menu, -> { where in_menu: true })
 
   def products
     @products ||= Product.where(group: product_group, in_stock: true).order(:number).all
@@ -15,35 +15,44 @@ class Report < ActiveRecord::Base
   end
 
   def calculate!(start_date, end_date)
-    @start_date, @end_date = start_date, end_date
-    @_deliveries = ReportDelivery.get(product_group, @start_date, @end_date).group_by do |del|
-      [del.date, del.on_account]
-    end
-    @_sums = {}
-
-    product_counts.each do |day_on_account, sums|
-      @_sums[day_on_account] = { products: sums.map { |del| [del.product_number, del.counts] }.to_h }
-    end
-
-    deliver_sums.each do |day_on_account, sums|
-      @_sums[day_on_account] ||= {}
-      @_sums[day_on_account][:total_content] = sums.sum(&:total_content)
-      @_sums[day_on_account][:total_price]   = sums.sum(&:total_price)
-    end
+    @start_date = start_date
+    @end_date   = end_date
+    calculate_deliveries!
+    calculate_sums!
   end
 
   def deliveries_by(day:, on_account: nil)
-    @_deliveries[[day, on_account]] || []
+    @deliveries[[day, on_account]] || []
   end
 
   def sums_by(day: nil, on_account: nil)
-    @_sums[[day, on_account].compact]
+    @sums[[day, on_account].compact]
   end
 
   private
 
+  def calculate_deliveries!
+    @deliveries = ReportDelivery.get(product_group, @start_date, @end_date).group_by do |del|
+      [del.date, del.on_account]
+    end
+  end
+
+  def calculate_sums!
+    @sums = {}
+
+    product_counts.each do |day_on_account, sums|
+      @sums[day_on_account] = { products: sums.map { |del| [del.product_number, del.counts] }.to_h }
+    end
+
+    deliver_sums.each do |day_on_account, sums|
+      @sums[day_on_account] ||= {}
+      @sums[day_on_account][:total_content] = sums.sum(&:total_content)
+      @sums[day_on_account][:total_price]   = sums.sum(&:total_price)
+    end
+  end
+
   def product_counts
-    product_counts_report(         [:date, :on_account])
+    product_counts_report([:date, :on_account])
       .merge(product_counts_report([:date]))
       .merge(product_counts_report([:on_account]))
       .merge(product_counts_report([]))
@@ -73,7 +82,7 @@ class Report < ActiveRecord::Base
     DeliveryReport.new(
       filter: base_filter,
       groups: groups,
-      sums:   [:total_content, :total_price]
+      sums:   %i[total_content total_price]
     ).rows.group_by { |del| groups.map { |group| del.send(group) } }
   end
 end

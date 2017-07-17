@@ -3,7 +3,7 @@
     th colspan=2 = label
     - products = sums[:products]
     - @report.products.each do |product|
-      th.price = products[product.number]
+      th.price = products[product.number] if products
     th.content = number_with_delimiter sums[:total_content]
     td.price = nontax_price sums[:total_price]
     td.price = tax_price sums[:total_price]

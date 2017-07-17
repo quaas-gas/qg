@@ -19,8 +19,8 @@
         th = Report.human_attribute_name(:in_menu)
     tbody
       - @reports.each do | report |
-        tr data = {url: url_for(report)}
+        tr data = {url: edit_report_url(report)}
           td = report.name
-          td = report.product_categories
-          td = report.products
-          td = report.in_menu
+          td = report.product_categories.join(', ')
+          td = report.products.count
+          td = bool_icon report.in_menu
