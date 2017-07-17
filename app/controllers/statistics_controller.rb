@@ -1,7 +1,7 @@
 class StatisticsController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
-  before_action :set_statistic, only: [:show, :edit, :update, :destroy]
+  before_action :set_statistic, only: %i[show edit update destroy]
 
   def index
     authorize Statistic
@@ -14,11 +14,12 @@ class StatisticsController < ApplicationController
 
   def overview
     authorize Statistic
-    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_year
-    @end_date   = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
+    today       = Date.current
+    @start_date = get_date :start_date, today.beginning_of_year
+    @end_date   = get_date :end_date,   today
 
     @statistics = Setting.statistics.map do |stat|
-      SalesStatistic.new stat.merge( date: @start_date..@end_date ).symbolize_keys
+      SalesStatistic.new stat.merge(date: @start_date..@end_date).symbolize_keys
     end
   end
 
@@ -28,8 +29,7 @@ class StatisticsController < ApplicationController
                                grouping: { x: 'time', y: 'customer_category' }
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     authorize Statistic
@@ -92,5 +92,9 @@ class StatisticsController < ApplicationController
     p[:filter][:customer_categories] = p.delete(:customer_categories).reject(&:blank?)
     p[:filter][:product_categories]  = p.delete(:product_categories).reject(&:blank?)
     p
+  end
+
+  def get_date(date, default)
+    params[date] ? Date.parse(params[date]) : default
   end
 end
