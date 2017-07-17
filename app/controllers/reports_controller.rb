@@ -9,9 +9,9 @@ class ReportsController < ApplicationController
   end
 
   def show
-    @start_date = params[:start_date] ? Date.parse(params[:start_date]) : Date.current.beginning_of_week
-    @end_date   = params[:end_date] ? Date.parse(params[:end_date]) : Date.current
-    @report.calculate! @start_date, @end_date
+    start_date = get_date :start_date, Date.current.beginning_of_week
+    end_date   = get_date :end_date,   Date.current
+    @report.calculate! start_date, end_date
 
     respond_to do |format|
       format.html
@@ -32,8 +32,7 @@ class ReportsController < ApplicationController
     @report = Report.new
   end
 
-  def edit
-  end
+  def edit; end
 
   def create
     authorize Report
@@ -69,10 +68,15 @@ class ReportsController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def report_params
-    p = params.require(:report).permit(:name, :product_categories, :content_product_categories, :products, :in_menu)
+    p = params.require(:report).permit(:name, :product_group, :product_categories,
+      :content_product_categories, :products, :in_menu)
     %i(products product_categories content_product_categories).each do |listing|
       p[listing] = p[listing].split("\n").map(&:chomp)
     end
     p
+  end
+
+  def get_date(date, default)
+    params[date] ? Date.parse(params[date]) : default
   end
 end
