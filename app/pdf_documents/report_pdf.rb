@@ -8,7 +8,7 @@ class ReportPdf < ApplicationDocument
     @debug = false
     @margin_top = 28.mm
     @margin_bottom = 15.mm
-    @margin_side = 20.mm
+    @margin_side = 10.mm
     super(page_size: 'A4', page_layout: :landscape, margin: [@margin_top, @margin_side, @margin_bottom])
     @report = report
     @company = Company.current
@@ -65,7 +65,7 @@ class ReportPdf < ApplicationDocument
           t.cells.style { |c| c.align = :right if c.column > 1 }
         end
       end
-      move_down 20
+      move_down 10
     end
   end
 
@@ -82,7 +82,7 @@ class ReportPdf < ApplicationDocument
       deliveries = @report.deliveries_by(day: day, on_account: on_account)
       res += deliveries.map do |delivery|
         products = delivery.products
-        [ delivery.number, delivery.customer] +
+        [delivery.number, delivery.customer.to_s[0..35]] +
           @report.products.map { |product| products[product.number] } +
           [ delivery.total_content,
             nontax_price(delivery.total_price),
@@ -93,8 +93,8 @@ class ReportPdf < ApplicationDocument
     end
     [false, true, nil].each do |on_account|
       sums = @report.sums_by(day: day, on_account: on_account)
-      label = on_account ? 'auf Rechnung' : 'Bareinnahmen'
-      label = ldate(day, format: '%a %d.%m.%Y') if on_account.nil?
+      label = on_account ? 'Rechnung' : 'Bar'
+      label = ldate(day, format: '%d.%m.') if on_account.nil?
       if sums
         res << sum_row(sums, title: label)
       end
@@ -123,8 +123,8 @@ class ReportPdf < ApplicationDocument
       row_colors:    %w(EEEEEE FFFFFF),
       header:        true,
       width:         bounds.right,
-      column_widths: { 0 => 70, 1 => 170 },
-      cell_style:    { border_width: 0, padding: [3, 3] }
+      column_widths: { 0 => 45, 1 => 180 },
+      cell_style:    { border_width: 0, padding: [1, 1] }
     }
   end
 
@@ -142,7 +142,7 @@ class ReportPdf < ApplicationDocument
   end
 
   def write_total_sums
-    move_down 20
+    move_down 15
 
     font_size 10 do
       table sums_array, sums_table_options do |t|
@@ -154,9 +154,9 @@ class ReportPdf < ApplicationDocument
   def sums_array
     [
       sums_table_header,
-      sum_row(@report.sums_by(on_account: false), title: 'Bareinnahmen'),
-      sum_row(@report.sums_by(on_account: true),  title: 'auf Rechnung'),
-      sum_row(@report.sums_by,                    title: 'Gesamtsumme'),
+      sum_row(@report.sums_by(on_account: false), title: 'Bar'),
+      sum_row(@report.sums_by(on_account: true),  title: 'Rechnung'),
+      sum_row(@report.sums_by,                    title: 'Gesamt'),
     ]
   end
 
@@ -165,7 +165,7 @@ class ReportPdf < ApplicationDocument
       row_colors:    %w(dddddd),
       width:         bounds.right,
       column_widths: { 0 => 230, 1 => 10 },
-      cell_style:    { border_width: 0, padding: [4, 5], font_style: :bold }
+      cell_style:    { border_width: 0, padding: [2, 3], font_style: :bold }
     }
   end
 
