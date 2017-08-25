@@ -46,15 +46,15 @@ class ReportPdf < ApplicationDocument
   end
 
   def write_report
-    @report.days.each do |day|
-      text ldate(day, format: '%a %d.%m.%Y'), size: 10, style: :bold
+    @report.daily_reports.each do |daily_report|
+      text ldate(daily_report.day, format: '%a %d.%m.%Y'), size: 10, style: :bold
 
-      rows = deliveries_array_by day
+      rows = deliveries_array_by daily_report
 
-      sum_rows = 1
-      sum_rows += 1 if @report.sums_by(day: day, on_account: false)
-      sum_rows += 1 if @report.sums_by(day: day, on_account: true)
-      font_size 9 do
+      sum_rows = 3
+      # sum_rows += 1 if @report.sums_by(day: day, on_account: false)
+      # sum_rows += 1 if @report.sums_by(day: day, on_account: true)
+      font_size 8 do
         table rows, deliveries_table_options do |t|
           t.row(0).style background_color: 'dddddd'
           t.row(0).font_style = :bold
@@ -72,55 +72,37 @@ class ReportPdf < ApplicationDocument
   def deliveries_table_header
     header = %w(LSN Kunde)
     @report.products.each { |product| header << product.number }
+    header += @report.content_product_categories
     header += ['kg ges', 'Netto', 'Brutto', 'R']
     header
   end
 
-  def deliveries_array_by(day)
+  def deliveries_array_by(daily_report)
     res = [deliveries_table_header]
-    [false, true].each do |on_account|
-      deliveries = @report.deliveries_by(day: day, on_account: on_account)
-      res += deliveries.map do |delivery|
-        products = delivery.products
-        [delivery.number, delivery.customer.to_s[0..35]] +
-          @report.products.map { |product| products[product.number] } +
-          [ delivery.total_content,
-            nontax_price(delivery.total_price),
-            tax_price(delivery.total_price),
-            (delivery.on_account ? 'R' : '')
-          ]
-      end
+    daily_report.deliveries.each do |delivery|
+      row = [delivery.number, delivery.customer.to_s[0..35]]
+      products = delivery.products
+      row += @report.products.map { |product| products[product.number] }
+      row += @report.content_product_categories.map { |cat| delivery.cat_content[cat] }
+      row += [
+        delivery.total_content,
+        nontax_price(delivery.total_price),
+        tax_price(delivery.total_price),
+        (delivery.on_account ? 'R' : '')
+      ]
+      res << row
     end
     [false, true, nil].each do |on_account|
-      sums = @report.sums_by(day: day, on_account: on_account)
       label = on_account ? 'Rechnung' : 'Bar'
-      label = ldate(day, format: '%d.%m.') if on_account.nil?
-      if sums
-        res << sum_row(sums, title: label)
-      end
+      label = ldate(daily_report.day, format: '%d.%m.') if on_account.nil?
+      res << sum_row(daily_report, title: label, on_account: on_account)
     end
     res
   end
 
-  def delivery_array(delivery, on_account)
-    del = [delivery[:number], delivery[:customer]]
-    @report.products.each do |product|
-      del << delivery[:products][product].to_s
-    end
-    del << delivery[:other_products].map { |i| "#{i[:count]} x #{i[:name] }" }.join("\n")
-    @report.content_product_categories.each do |category|
-      del << (delivery[:content][category] ? delivery[:content][category].round(0) : '')
-    end
-    del << delivery[:content][:total].round(0)
-    del << nontax_price(delivery[:total_price])
-    del << tax_price(delivery[:total_price])
-    del << (on_account ? 'R' : '')
-    del
-  end
-
   def deliveries_table_options
     {
-      row_colors:    %w(EEEEEE FFFFFF),
+      row_colors:    %w[EEEEEE FFFFFF],
       header:        true,
       width:         bounds.right,
       column_widths: { 0 => 45, 1 => 180 },
@@ -128,23 +110,23 @@ class ReportPdf < ApplicationDocument
     }
   end
 
-  def sum_row(sums, title: '')
+  def sum_row(daily_report, title: '', on_account: nil)
     res = [title, '']
-    products = sums[:products]
-    @report.products.each { |product| res << products[product.number] }
-    # res << ''
-    # @report.content_product_categories.each { |category| res << sums[:content][category] }
-    res << sums[:total_content]
-    res << nontax_price(sums[:total_price])
-    res << tax_price(sums[:total_price])
-    res << ''
+    count_sums = daily_report.count_sums on_account: on_account
+    res += @report.products.map { |product| count_sums[product.number] }
+    content_sums = daily_report.content_sums on_account: on_account
+    cat_sums = @report.content_product_categories.map { |cat| content_sums[cat] }
+    res += cat_sums
+    res << cat_sums.compact.sum
+    total_price = daily_report.total_price(on_account: on_account)
+    res += [nontax_price(total_price), tax_price(total_price), '']
     res
   end
 
   def write_total_sums
     move_down 15
 
-    font_size 10 do
+    font_size 9 do
       table sums_array, sums_table_options do |t|
         t.cells.style { |c| c.align = :right if c.column > 1 }
       end
@@ -152,11 +134,12 @@ class ReportPdf < ApplicationDocument
   end
 
   def sums_array
+    sum_report = @report.sum_report
     [
       sums_table_header,
-      sum_row(@report.sums_by(on_account: false), title: 'Bar'),
-      sum_row(@report.sums_by(on_account: true),  title: 'Rechnung'),
-      sum_row(@report.sums_by,                    title: 'Gesamt'),
+      sum_row(sum_report, title: 'Bar',      on_account: false),
+      sum_row(sum_report, title: 'Rechnung', on_account: true),
+      sum_row(sum_report, title: 'Gesamt')
     ]
   end
 
@@ -165,13 +148,14 @@ class ReportPdf < ApplicationDocument
       row_colors:    %w(dddddd),
       width:         bounds.right,
       column_widths: { 0 => 230, 1 => 10 },
-      cell_style:    { border_width: 0, padding: [2, 3], font_style: :bold }
+      cell_style:    { border_width: 0, padding: [2, 2], font_style: :bold }
     }
   end
 
   def sums_table_header
     header = ['', '']
     @report.products.each { |product| header << product.number }
+    header += @report.content_product_categories
     header += ['kg ges', 'Netto', 'Brutto', '']
     header
   end

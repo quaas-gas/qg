@@ -1,9 +1,15 @@
-- if sums
-  tr class=css_class
-    th colspan=2 = label
-    - products = sums[:products]
-    - @report.products.each do |product|
-      th.price = products[product.number] if products
-    th.content = number_with_delimiter sums[:total_content]
-    td.price = nontax_price sums[:total_price]
-    td.price = tax_price sums[:total_price]
+tr class=css_class
+  td = fa_icon on_account ? 'list-alt' : 'eur' unless on_account.nil?
+  th colspan=2 = label
+  - count_sums = daily_report.count_sums on_account: on_account
+  - @report.products.each do |product|
+    th.price = count_sums[product.number]
+  - content_sums = daily_report.content_sums on_account: on_account
+  - cat_sums = @report.content_product_categories.map { |cat| content_sums[cat] }
+  - cat_sums.each do |sum|
+    th.content = number_with_delimiter sum
+  th.content = number_with_delimiter cat_sums.compact.sum
+
+  - total_price = daily_report.total_price(on_account: on_account)
+  th.price = nontax_price total_price
+  th.price = tax_price total_price

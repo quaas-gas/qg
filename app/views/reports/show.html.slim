@@ -11,46 +11,50 @@
       = pdf_link report_url(@report, format: :pdf, start_date: @report.start_date, end_date: @report.end_date)
 
 table.table.table-condensed.table-striped.table-hover
-  - @report.days.each do |day|
+  - @report.daily_reports.each do |daily_report|
     thead
       tr
-        th colspan=(5 + @report.products.count)
-          h3 = ldate day, format: '%a %d.%m.%Y'
+        th colspan=(6 + @report.products.count + @report.content_product_categories.count)
+          h3 = ldate daily_report.day, format: '%a %d.%m.%Y'
     tbody
-      - [false, true].each do |on_account|
-        - deliveries = @report.deliveries_by(day: day, on_account: on_account)
-        - if deliveries.any?
-          tr.header-row
-            th = on_account ? 'Lieferschein' : 'Quittung'
-            th Kunde
-            - @report.products.each do |product|
-              th.price = product.number
-            th.content kg ges
-            th.price Netto
-            th.price Brutto
-          - deliveries.each do |delivery|
-            tr
-              td = delivery.number
-              td = delivery.customer
-              - products = delivery.products
-              - @report.products.each do |product|
-                td.price = products[product.number]
-              th.content = delivery.total_content
-              td.price = nontax_price(delivery.total_price)
-              td.price =    tax_price(delivery.total_price)
+      tr.header-row
+        td
+        th Lieferschein
+        th Kunde
+        - @report.products.each do |product|
+          th.price = product.number
+        - @report.content_product_categories.each do |cat|
+          th.content = cat
+        th.content kg ges
+        th.price Netto
+        th.price Brutto
+      - daily_report.deliveries.each do |delivery|
+        tr
+          td = fa_icon delivery.on_account ? 'list-alt' : 'eur'
+          td = link_to delivery.number, delivery.delivery
+          td = delivery.customer
+          - products = delivery.products
+          - @report.products.each do |product|
+            td.price = products[product.number]
+          - @report.content_product_categories.each do |cat|
+            td.content = delivery.cat_content[cat]
+          th.content = delivery.total_content
+          td.price = nontax_price(delivery.total_price)
+          td.price =    tax_price(delivery.total_price)
+
       - [false, true, nil].each do |on_account|
-        - sums = @report.sums_by(day: day, on_account: on_account)
         - label = on_account ? 'auf Rechnung' : 'Bareinnahmen'
-        - label = ldate(day, format: '%a %d.%m.%Y') if on_account.nil?
-        = render 'sum_row', sums: sums, css_class: 'on-account-sum-row', label: label
+        - label = ldate(daily_report.day, format: '%a %d.%m.%Y') if on_account.nil?
+        = render 'sum_row', daily_report: daily_report, css_class: 'on-account-sum-row', label: label, on_account: on_account
 
   tfoot
+    - sum_report = @report.sum_report
     tr
-      th colspan=(5 + @report.products.count)
+      th colspan=(6 + @report.products.count + @report.content_product_categories.count)
     - [false, true, nil].each do |on_account|
       - label = on_account ? 'auf Rechnung' : 'Bareinnahmen'
       - label = 'Gesamtsumme' if on_account.nil?
-      = render 'sum_row', sums: @report.sums_by(on_account: on_account), css_class: 'total-sum-row', label: label
+      = render 'sum_row', daily_report: sum_report, css_class: 'total-sum-row', label: label, on_account: on_account
 
 coffee:
   $ ->
