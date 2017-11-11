@@ -8,6 +8,11 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def company
+    @company ||= Company.current
+  end
+  helper_method :company
+
   def user_not_authorized
     flash[:alert] = 'Du bist nicht berechtigt, diese Seite zu sehen.'
     redirect_to (request.referrer || root_path)

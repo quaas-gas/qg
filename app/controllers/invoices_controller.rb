@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
+  before_action :set_invoice, only: %i[show edit update destroy]
 
   def index
     authorize Invoice
@@ -16,6 +16,7 @@ class InvoicesController < ApplicationController
       format.pdf do
         pdf = InvoicePdf.new(@invoice)
         send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+        # render pdf: "#{Invoice.model_name.human}_#{@invoice.number.sub('/', '-')}.pdf"
       end
     end
   end
