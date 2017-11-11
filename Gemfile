@@ -18,6 +18,9 @@ gem 'prawn'
 gem 'prawn-table', git: 'https://github.com/J-F-Liu/prawn-table'
 gem 'rollbar'
 
+gem 'wkhtmltopdf-binary'
+gem 'wicked_pdf'
+
 group :development, :test do
   gem 'byebug'
 end
