@@ -64,13 +64,12 @@ class InvoicesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_invoice
-    @invoice = Invoice.find params[:id]
+    @invoice = Invoice.includes(:items, :customer).find params[:id]
     authorize @invoice
   end
 
   # Only allow a trusted parameter "white list" through.
   def invoice_params
-    params.require(:invoice).permit(:customer_id, :number, :date, :pre_message, :post_message,
-                                    :address)
+    params.require(:invoice).permit(:customer_id, :number, :date, :pre_message, :post_message, :address, :tax)
   end
 end

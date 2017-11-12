@@ -2,6 +2,7 @@
   = f.error_notification
 
   = f.input :customer_id, as: :hidden
+  = f.input :tax, as: :hidden
   - @invoice.delivery_ids.each do |id|
     input type="hidden" name="delivery_ids[]" value=id
 
