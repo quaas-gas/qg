@@ -31,16 +31,14 @@ table.table.table-condensed.table-striped.positions
       th.price.sum   Einzelpreis
       th.price.sum   Gesamtpreis
   tbody
+    - currency  = invoice.tax ? 'EU4TAX' : 'EU4NET'
+    - currency2 = invoice.tax ? 'EURTAX' : 'EURNET'
     - invoice.items.order(:position).each do |item|
       tr
         td.price = item.count
         td = item.name
-        td.price
-          - currency = item.unit_price.currency.to_s.sub 'EU4', 'EUR'
-          = item.unit_price.exchange_to(currency).format
-        td.price
-          - currency = item.total_price.currency.to_s.sub 'EU4', 'EUR'
-          = item.total_price.exchange_to(currency).format
+        td.price = item.unit_price.exchange_to(currency).exchange_to(currency2).format
+        td.price = item.total_price.exchange_to(currency).exchange_to(currency2).format
   tfoot
     - if @invoice.tax
       tr.total-price
