@@ -1,0 +1,101 @@
+.row.address-block
+  .col-md-6
+    p.company-address  = company.full_address.join(' • ')
+    p.customer-address = lines_for(invoice.address.split("\n"))
+  .col-md-5.col-md-offset-1
+    table.contact
+      - %i(phone fax email).each do |attr|
+        tr
+          th = I18n.t(attr) + ':'
+          td = company.send attr
+    table.contact
+      tr
+        th = I18n.t(:customer_number) + ':'
+        td = invoice.customer.id
+      tr
+        th = Invoice.human_attribute_name(:date) + ':'
+        td = ldate invoice.date
+
+h3.invoice-title = "#{Invoice.model_name.human} Nr. #{invoice.number}"
+
+p.pre_message
+  = lines_for invoice.pre_message.split("\n")
+  br
+  span.delivery-dates =< invoice.deliveries.map { |d| "#{ldate d.date} (#{d.number})" }.join(', ')
+
+table.table.table-condensed.table-striped.positions
+  thead
+    tr
+      th.price.count Menge
+      th             Bezeichnung
+      th.price.sum   Einzelpreis
+      th.price.sum   Gesamtpreis
+  tbody
+    - invoice.items.order(:position).each do |item|
+      tr
+        td.price = item.count
+        td = item.name
+        td.price
+          - currency = item.unit_price.currency.to_s.sub 'EU4', 'EUR'
+          = item.unit_price.exchange_to(currency).format
+        td.price
+          - currency = item.total_price.currency.to_s.sub 'EU4', 'EUR'
+          = item.total_price.exchange_to(currency).format
+  tfoot
+    - if @invoice.tax
+      tr.total-price
+        td colspan=3 Rechnungsendbetrag
+        td.price = @invoice.gross_total.format
+      tr
+        td colspan=3 darin enthaltene MwSt
+        td.price = @invoice.vat.format
+    - else
+      tr.total-price
+        td colspan=3 Nettobetrag
+        td = @invoice.net_total.format
+      tr
+        td colspan=3 MwSt 19%
+        td = @invoice.vat.format
+      tr.total-price
+        td colspan=3 Rechnungsendbetrag
+        td = @invoice.gross_total.format
+
+p = lines_for @invoice.post_message.split("\n")
+
+sass:
+  .address-block
+    margin-top: 60px
+  .company-address
+    font-size: 10px
+    border-bottom: 1px solid grey
+    font-style: italic
+  table.contact
+    th
+      padding-right: 10px
+    & + table.contact
+      margin-top: 20px
+
+  h3.invoice-title
+    margin-top: 50px
+    margin-bottom: 20px
+
+  .delivery-dates
+    font-style: italic
+
+  table.positions
+    th.count
+      width: 60px
+    th.sum
+      width: 80px
+    th, td
+      &.price
+        text-align: right
+    tfoot
+      td
+        text-align: right
+        border: 0
+        padding-top: 3px
+        padding-bottom: 0
+      tr.total-price
+        td
+          font-weight: bold

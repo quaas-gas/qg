@@ -35,6 +35,18 @@ class Invoice < ActiveRecord::Base
     items.map(&:total_price).sum(Money.new 0)
   end
 
+  def gross_total
+    tax ? total_price.exchange_to('EU4TAX').exchange_to('EURTAX') : net_total + vat
+  end
+
+  def net_total
+    tax ? gross_total / 1.19 : total_price.exchange_to('EU4NET').exchange_to('EURNET')
+  end
+
+  def vat
+    tax ? gross_total - net_total : net_total * 0.19
+  end
+
   def build_items_from_deliveries
     grouped_items = {}
     deliveries.each do |delivery|
@@ -56,6 +68,18 @@ class Invoice < ActiveRecord::Base
 
   def previous
     self.class.where(customer: self.customer).where.not(id: id).order(date: :desc).first
+  end
+
+  def products_in_stock
+    @products_in_stock ||= Product.where(in_stock: true, id: customer.prices.in_stock.select(:product_id)).to_a
+  end
+
+  def start_stock
+    Stock.new customer, (previous&.date || customer.initial_stock_date)
+  end
+
+  def end_stock
+    Stock.new customer, date
   end
 
   private

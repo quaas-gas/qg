@@ -1,0 +1,50 @@
+- if invoice.customer.has_stock && invoice.products_in_stock.any?
+  .page-break
+
+  h3.first-element = t(:stock_invoice, number: invoice.number, date: ldate(invoice.date))
+  h4 = invoice.customer.name
+
+  table.table.table-condensed.stock.table-bordered.table-striped
+    thead
+      tr
+        th.title
+        - invoice.products_in_stock.map(&:number).each do |product_number|
+          th.number = product_number
+    thead
+      tr
+        - stock = invoice.start_stock
+        th #{ldate(stock.date)} Anfangsbestand
+        - invoice.products_in_stock.each do |product|
+          th.number = stock[product.number]
+    tbody
+      - invoice.deliveries.order(:date).includes(items: :product).each do |delivery|
+        tr
+          td
+            => ldate(delivery.date)
+            => delivery.number
+          - invoice.products_in_stock.each do |product|
+            - item = delivery.items.to_a.find { |i| i.product_id == product.id }
+            td.number
+              - if item
+                .count-full = item.count
+                .count-back = -item.count_back
+                span.stock-diff = item.stock_diff
+    tfoot
+      tr
+        - stock = invoice.end_stock
+        th #{ldate(stock.date)} neuer Bestand
+        - invoice.products_in_stock.each do |product|
+          th.number = stock[product.number]
+sass:
+  .first-element
+    padding-top: 30px
+  table.stock
+    font-size: 12px
+    th.title
+      width: 200px
+    th.number, td.number
+      text-align: right
+    td
+      .count-full, .count-back
+        padding-right: 20px
+        font-size: 11px

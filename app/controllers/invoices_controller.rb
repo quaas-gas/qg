@@ -1,7 +1,7 @@
 class InvoicesController < ApplicationController
   before_action :authenticate_user!
   after_action :verify_authorized
-  before_action :set_invoice, only: [:show, :edit, :update, :destroy]
+  before_action :set_invoice, only: %i[show edit update destroy]
 
   def index
     authorize Invoice
@@ -14,8 +14,16 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = InvoicePdf.new(@invoice)
-        send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+        # if true
+          render(
+            pdf:    "#{Invoice.model_name.human}_#{@invoice.number.sub('/', '-')}.pdf",
+            header: { html: { template: 'invoices/header' } },
+            footer: { html: { template: 'invoices/footer' } }
+          )
+        # else
+        #   pdf = InvoicePdf.new(@invoice)
+        #   send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+        # end
       end
     end
   end
@@ -63,13 +71,12 @@ class InvoicesController < ApplicationController
 
   # Use callbacks to share common setup or constraints between actions.
   def set_invoice
-    @invoice = Invoice.find params[:id]
+    @invoice = Invoice.includes(:items, :customer).find params[:id]
     authorize @invoice
   end
 
   # Only allow a trusted parameter "white list" through.
   def invoice_params
-    params.require(:invoice).permit(:customer_id, :number, :date, :pre_message, :post_message,
-                                    :address)
+    params.require(:invoice).permit(:customer_id, :number, :date, :pre_message, :post_message, :address, :tax)
   end
 end
