@@ -14,9 +14,16 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       format.html
       format.pdf do
-        pdf = InvoicePdf.new(@invoice)
-        send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
-        # render pdf: "#{Invoice.model_name.human}_#{@invoice.number.sub('/', '-')}.pdf"
+        # if true
+          render(
+            pdf:    "#{Invoice.model_name.human}_#{@invoice.number.sub('/', '-')}.pdf",
+            header: { html: { template: 'invoices/header' } },
+            footer: { html: { template: 'invoices/footer' } }
+          )
+        # else
+        #   pdf = InvoicePdf.new(@invoice)
+        #   send_data pdf.render, filename: pdf.filename, type: 'application/pdf', disposition: 'inline'
+        # end
       end
     end
   end

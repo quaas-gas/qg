@@ -25,6 +25,11 @@ div
           - total_price = invoice.total_price
           td = invoice.number
           td = ldate invoice.date
-          td = invoice.customer.name
+          td
+            .pull-right
+              - if invoice.customer.has_stock
+                span.label.label-default> Bestand
+              span.label.label-info> = invoice.tax ? 'Brutto' : 'Netto'
+            => invoice.customer.name
           td.price = nontax_price total_price
           td.price = tax_price total_price
