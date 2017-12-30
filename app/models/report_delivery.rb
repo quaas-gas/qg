@@ -4,7 +4,7 @@ class ReportDelivery
 
   delegate :date, :number, :on_account, to: :delivery
 
-  def initialize(delivery)
+  def initialize(delivery, product_group)
     @delivery      = delivery
     @customer      = "#{@delivery.customer.name}, #{@delivery.customer.city}"
     @products      = {}
@@ -12,7 +12,7 @@ class ReportDelivery
     @total_price   = Money.new 0, 'EU4NET'
     @cat_content   = {}
 
-    @delivery.items.each do |item|
+    @delivery.items.where(product_group: product_group).find_each do |item|
       @products[item.product_number] = item.count
       @total_content += item.total_content
       @total_price   += item.total_price

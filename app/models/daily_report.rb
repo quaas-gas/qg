@@ -12,7 +12,7 @@ class DailyReport
     Delivery
       .where(id: delivery_items_scope.select(:delivery_id))
       .joins(:customer).includes(:customer, :items)
-      .order(:on_account, :number).map { |del| ReportDelivery.new del }
+      .order(:on_account, :number).map { |del| ReportDelivery.new del, product_group }
   end
 
   def count_sums(on_account: nil)
