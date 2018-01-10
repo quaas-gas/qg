@@ -23,6 +23,22 @@ class StatisticsController < ApplicationController
     end
   end
 
+  def customers
+    authorize Statistic
+    today       = Date.current
+    @start_date = get_date :start_date, today.beginning_of_year
+    @end_date   = get_date :end_date,   today
+
+    @product_group = 'PG'
+
+    @customers =
+      DeliveryItem.joins(delivery: :customer)
+        .where('deliveries.date' => @start_date..@end_date, product_group: @product_group, has_content: true)
+        .group(:customer_id, 'customers.name')
+        .select('customers.name', 'sum(total_content_in_g / 1000) as total_kg', 'sum(total_price_cents) as sum_price')
+        .order('total_kg DESC')
+  end
+
   def new
     authorize Statistic
     @statistic = Statistic.new time_range: { relative: 'last_year' },

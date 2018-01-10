@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :statistics do
     get :preview, on: :collection
     get :overview, on: :collection
+    get :customers, on: :collection
   end
 
   get 'dashboard' => 'dashboard#index'

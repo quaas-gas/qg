@@ -7,6 +7,11 @@ class StatisticPolicy < ApplicationPolicy
   def overview?
     admin?
   end
+
+  def customers?
+    admin?
+  end
+  
   class Scope < Scope
     def resolve
       scope
