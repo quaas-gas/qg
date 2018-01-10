@@ -1,0 +1,30 @@
+.row
+  .col-md-6
+    h1 Kundenstatistik
+  .col-md-6
+    .search-form
+      form.form-inline
+        .form-group
+          label.string.required.control-label> for="start-date" Vom
+          input#start-date.form-control.date> type="text" name="start_date" value=@start_date
+          label.string.required.control-label> for="end-date" bis
+          input#end-date.form-control.date> type="text" name="end_date" value=@end_date
+
+.table-responsive
+  table.table.table-hover.table-striped.table-condensed.table-bordered
+    thead
+      tr
+        th Kunde
+        th.price kg
+        th.price Netto
+
+    tbody
+      - @customers.each do |customer|
+        tr
+          td = customer.name
+          td.price = customer.total_kg
+          td.price = nontax_price Money.new(customer.sum_price, 'EU4NET')
+
+coffee:
+  $ ->
+    $('.search-form input').off('change').change(-> $('.search-form form').submit())
