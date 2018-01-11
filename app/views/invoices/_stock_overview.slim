@@ -27,7 +27,7 @@
             td.number
               - if item
                 .count-full = item.count
-                .count-back = -item.count_back
+                .count-back = -item.count_back.to_i
                 span.stock-diff = item.stock_diff
     tfoot
       tr
