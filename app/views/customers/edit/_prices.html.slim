@@ -10,10 +10,19 @@
           tr
             th = Price.human_attribute_name :product
             th = Price.human_attribute_name :active
-            th.price Nettopreis
-            th.price Bruttopreis
-            th.price Nettoprovision
-            th.price Bruttoprovision
+            th colspan=2 Preis
+            th colspan=2 Provision
+            th colspan=2 Ladenpreis?
+            th
+          tr
+            th
+            th
+            th Netto
+            th Brutto
+            th Netto
+            th Brutto
+            th Netto
+            th Brutto
             th
         tbody
           = f.simple_fields_for :prices do |price_form|
@@ -25,11 +34,18 @@
                 = price_form.association :product, collection: collection, label: false,
                     label_method: :number, disabled: price.persisted?
               td = price_form.input :active, label: false
-              td.price.non-tax = price_form.input :price, label: false
-              td.price
-                p.price-tax = link_to tax_price(price.price), '#'
-              td.price = price_form.input :discount, label: false
-              td.price = tax_price(price.discount)
+              - if @customer.tax
+                td.price.net      = price.price
+                td.price.gross    = price_form.input :tax_price, label: false
+                td.discount.net   = price.discount
+                td.discount.gross = price_form.input :tax_discount, label: false
+              - else
+                td.price.net      = price_form.input :price, label: false
+                td.price.gross    = price.tax_price
+                td.discount.net   = price_form.input :discount, label: false
+                td.discount.gross = price.tax_discount
+              td.price = price.price + price.discount
+              td.price = price.tax_price + price.tax_discount
               td.delete-price
                 - unless price.new_record?
                   = link_to fa_icon('trash', text: t(:delete)), '#', class: 'btn btn-danger btn-xs'
@@ -42,7 +58,7 @@
 coffee:
   parsePriceInput  = (val) -> val.replace(',', '.')
   parsePriceOutput = (val, num) -> parseFloat(val).toFixed(num).toString().replace('.', ',')
-  customerPriceTaxChanged = (event) =>
+  priceChanged = (event) =>
     inputTax = $(event.target)
     td       = inputTax.closest('td')
     tr       = td.closest('tr')
@@ -66,13 +82,13 @@ coffee:
       val = parsePriceInput(input.val())
       input.parents('tr').find('td.price.tax a').text parsePriceOutput(val * 1.19)
 
-    $('p.price-tax a').off('click').click (event) =>
-      event.preventDefault()
-      link = $(event.target)
-      td = link.closest('td')
-      td.find('p.price-tax').hide()
-      td.append $("""<div class="form-group"><input class="form-control" type="text" value="#{link.text()}" ></div>""")
-      input = td.find('input')
-      input.focus()
-      input.focusout customerPriceTaxChanged
+    #$('p.price-tax a').off('click').click (event) =>
+    #  event.preventDefault()
+    #  link = $(event.target)
+    #  td = link.closest('td')
+    #  td.find('p.price-tax').hide()
+    #  td.append $("""<div class="form-group"><input class="form-control" type="text" value="#{link.text()}" ></div>""")
+    #  input = td.find('input')
+    #  input.focus()
+    #  input.focusout customerPriceTaxChanged
 

@@ -16,4 +16,12 @@ class Price < ActiveRecord::Base
   def per_content_unit
     "#{price.symbol} / #{product.unit}"
   end
+
+  def tax_price
+    price.exchange_to('EU4TAX').exchange_to('EURTAX')
+  end
+
+  def tax_discount
+    discount.exchange_to('EU4TAX').exchange_to('EURTAX')
+  end
 end

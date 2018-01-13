@@ -1,0 +1,15 @@
+- title_for @customer, :name
+.page-header
+  /= new_link new_customer_price_url(@customer), label: 'Neu'
+  h2
+    => customer_icon
+    => customer_type_icon @customer
+    |  Preise für
+    =<> link_to @customer.name, @customer
+    small = Customer.model_name.human
+
+
+= simple_form_for @price do |f|
+  = f.association :product, collection: Product.order(:number), label_method: :number, disabled: true
+  = f.input :active
+  = f.input :price

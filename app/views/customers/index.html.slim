@@ -35,5 +35,6 @@ div.hidden-print
               span.label.label-warning>  Bestandsführung
             - if customer.archived
               span.label.label-danger>  = Customer.human_attribute_name(:archived)
+            span.label.label-info> = customer.tax ? 'Brutto' : 'Netto'
             /span.label.label-default = fa_icon customer.tax ? 'arrow-up' : 'arrow-down'
 .pull-right.hidden-print = paginate @customers

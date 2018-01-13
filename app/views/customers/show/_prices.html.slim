@@ -6,6 +6,8 @@ h4
   span.pull-right>
     = link_to edit_customer_url(@customer, part: 'prices'), class: 'btn btn-default btn-xs' do
       = fa_icon 'cog', text: 'Preise'
+    /= link_to customer_prices_url(@customer), class: 'btn btn-default btn-xs' do
+      = fa_icon 'cog', text: 'Preise'
 .overflow
   table.table.table-condensed.table-hover.table-striped.table-clickable
     thead

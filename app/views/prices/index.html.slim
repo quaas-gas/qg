@@ -1,0 +1,65 @@
+/- title_for @customer, :name
+/.page-header
+/  = new_link new_customer_price_url(@customer), label: 'Neu'
+/  h2
+/    => customer_icon
+/    => customer_type_icon @customer
+/    |  Preise für
+/    =<> link_to @customer.name, @customer
+/    small = Customer.model_name.human
+/
+/table.table.table-condensed.table-hover.table-striped.table-clickable
+/  thead
+/    tr
+/      th
+/      th
+/      th.price Netto
+/      th.price Brutto
+/      th.price Netto/kg
+/  tbody class=(@customer.tax ? 'tax' : 'nontax')
+/    - @prices.joins(:product).order('products.size').each do |price|
+/      tr data={ url: edit_price_url(price) }
+/        td = price.product.number
+/        td
+/          => delivery_icon if price.active
+/          = stock_icon if price.in_stock
+/        td.price = price.price
+/        td.price = tax_price price.price
+/        td.price
+/          => price.per_content
+/          => price.per_content_unit
+
+- title_for @customer, :name
+.page-header = render 'customers/header', title: @customer.name, small: Price.model_name.human(count: 2)
+= simple_form_for(@customer) do |f|
+  = f.input :tax, disabled: true
+section
+  .col-md-9
+    table.table.table-condensed.table-no-border.table-striped.table-hover
+      thead
+        tr
+          th = Price.human_attribute_name :product
+          th = Price.human_attribute_name :active
+          th.price Nettopreis
+          th.price Bruttopreis
+          th.price Nettoprovision
+          th
+      tbody
+        - @prices.each do |price|
+          = simple_form_for price do |price_form|
+            tr
+              td = price_form.association :product, collection: Product.order(:number),
+                                    label: false, label_method: :number, disabled: true
+              td = price_form.input :active, label: false
+              td.price.non-tax = price_form.input :price, label: false
+              td.price
+                p.price-tax = link_to tax_price(price_form.object.price), '#'
+              td.price = price_form.input :discount, label: false
+              td.delete-price
+                - unless price.new_record?
+                  = link_to fa_icon('trash', text: t(:delete)), '#', class: 'btn btn-danger btn-xs'
+                  = price_form.input :_destroy, as: :hidden
+
+/div.pull-right
+  => link_to t(:cancel), 'javascript: window.history.back();', class: 'btn btn-default'
+  = f.submit t(:save), class: 'btn btn-primary'

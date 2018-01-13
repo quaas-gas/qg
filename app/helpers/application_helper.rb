@@ -55,8 +55,9 @@ module ApplicationHelper
   end
 
   def tax_price(price)
-    price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, number_with_delimiter(price.exchange_to('EU4TAX').exchange_to('EURTAX')), class: 'tax', title: 'brutto')
+    price     = Money.from_amount price unless price.is_a? Money
+    new_price = price.exchange_to('EU4TAX').exchange_to('EURTAX')
+    content_tag(:span, number_with_delimiter(new_price), class: 'tax', title: 'brutto')
   end
 
   def display_price_or_content(value, type)
@@ -65,8 +66,9 @@ module ApplicationHelper
   end
 
   def nontax_price(price, title: 'netto')
-    price = Money.from_amount price unless price.is_a? Money
-    content_tag(:span, number_with_delimiter(price.exchange_to('EU4NET').exchange_to('EURNET')), class: 'nontax', title: title)
+    price     = Money.from_amount price unless price.is_a? Money
+    new_price = price.exchange_to('EU4NET').exchange_to('EURNET')
+    content_tag(:span, number_with_delimiter(new_price), class: 'nontax', title: title)
   end
 
   def list_link(url)
