@@ -196,7 +196,7 @@ GEM
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
-    mini_portile2 (2.3.0)
+    mini_portile2 (2.4.0)
     minitest (5.10.1)
     monetize (1.4.0)
       money (~> 6.7)
@@ -213,8 +213,9 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (3.1.1)
-    nokogiri (1.8.1)
-      mini_portile2 (~> 2.3.0)
+    nio4r (2.5.2)
+    nokogiri (1.10.5)
+      mini_portile2 (~> 2.4.0)
     notiffany (0.0.8)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -240,7 +241,8 @@ GEM
     pry-rescue (1.4.2)
       interception (>= 0.5)
       pry
-    puma (3.4.0)
+    puma (4.3.0)
+      nio4r (~> 2.0)
     pundit (1.1.0)
       activesupport (>= 3.0.0)
     quiet_assets (1.1.0)
@@ -464,7 +466,7 @@ DEPENDENCIES
   wkhtmltopdf-binary
 
 RUBY VERSION
-   ruby 2.3.4p301
+   ruby 2.6.5p114
 
 BUNDLED WITH
-   1.15.3
+   1.17.3

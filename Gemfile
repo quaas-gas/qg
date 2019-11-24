@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby '2.3.4'
+ruby '2.6.5'
 
 gem 'rails', '4.2.7.1'
 gem 'sass-rails', '~> 5.0'
@@ -17,6 +17,7 @@ gem 'prawn'
 # See https://github.com/prawnpdf/prawn-table/pull/50
 gem 'prawn-table', git: 'https://github.com/J-F-Liu/prawn-table'
 gem 'rollbar'
+
 
 gem 'wkhtmltopdf-binary'
 gem 'wicked_pdf'
